@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REMMED · Nutrologia</title>
+<style>
+:root{--g:#2ecc71;--gd:#1a6b4a;--bg:#f0f4f8;--bd:#dde1e7;--tx:#2c3e50;--sub:#7f8c8d;--wh:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+/* header */
+.hdr{background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.hdr h1{font-size:17px;font-weight:700;flex:1}
+.hdr .sub{font-size:11px;opacity:.75}
+.back{font-size:22px;cursor:pointer;opacity:.85;line-height:1;flex-shrink:0}
+.back:hover{opacity:1}
+/* content */
+.pg{max-width:700px;margin:0 auto;padding:18px 14px 100px}
+/* cards */
+.card{background:var(--wh);border-radius:14px;border:1px solid var(--bd);margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cp{padding:16px}
+/* patient list */
+.prow{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s}
+.prow:last-child{border-bottom:none}
+.prow:hover{background:#f8fffe}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;flex-shrink:0}
+.pi{flex:1;min-width:0}
+.pn{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pm{font-size:11px;color:var(--sub);margin-top:3px}
+/* buttons */
+.btn{border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.bp{background:var(--g);color:#fff}.bp:hover{background:var(--gd)}
+.bs{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}.bs:hover{border-color:var(--g)}
+.bd2{background:#fee;color:#c0392b;border:1px solid #f5b7b1}.bd2:hover{background:#fadbd8}
+.bf{width:100%;justify-content:center}
+.bl{padding:13px 22px;font-size:15px}
+/* fab */
+.fab{position:fixed;bottom:22px;right:22px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;border:none;font-size:28px;cursor:pointer;box-shadow:0 4px 16px rgba(46,204,113,.45);display:flex;align-items:center;justify-content:center;z-index:100;transition:transform .2s}
+.fab:hover{transform:scale(1.08)}
+/* search */
+.sw{position:relative;margin-bottom:14px}
+.si{width:100%;padding:10px 14px 10px 38px;border:1px solid var(--bd);border-radius:12px;font-size:14px;background:var(--wh);outline:none;transition:border .2s}
+.si:focus{border-color:var(--g)}
+.sic{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.4}
+/* forms */
+.fg{margin-bottom:13px}
+.fl{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);margin-bottom:5px}
+.fi{width:100%;padding:9px 13px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:inherit;background:var(--bg);outline:none;transition:all .2s}
+.fi:focus{border-color:var(--g);background:var(--wh)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* IMC */
+.imc{display:inline-block;padding:4px 10px;border-radius:7px;font-size:12px;font-weight:700}
+.in{background:#d5f5e3;color:#1a6b4a}.is{background:#fef9e7;color:#d68910}
+.i1{background:#fdebd0;color:#a04000}.i2{background:#fadbd8;color:#922b21}.i3{background:#e8daef;color:#6c3483}
+/* blocos */
+.bloco{background:var(--wh);border-radius:13px;border:1px solid var(--bd);margin-bottom:9px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:border-left .3s}
+.bloco.done{border-left:4px solid var(--g)}
+.bh{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;user-select:none;transition:background .15s}
+.bh:hover{background:#f8fffe}
+.bn{width:29px;height:29px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;transition:all .3s}
+.bloco.done .bn{background:var(--g);color:#fff}
+.bi{flex:1}
+.bt{font-weight:600;font-size:14px}
+.bst{font-size:11px;color:var(--sub);margin-top:2px}
+.bc{font-size:11px;color:var(--sub);white-space:nowrap}
+.bloco.done .bc{color:var(--g);font-weight:700}
+.chv{transition:transform .3s;opacity:.35;flex-shrink:0}
+.bloco.open .chv{transform:rotate(180deg)}
+.bb{display:none;padding:0 15px 14px;border-top:1px solid var(--bg)}
+.bloco.open .bb{display:block}
+/* items */
+.st{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--sub);margin:13px 0 5px}
+.item{display:flex;align-items:flex-start;gap:9px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:2px}
+.item:hover{background:#f8fffe}
+.item.ck{background:#f0fbf4}
+.item input[type=checkbox]{width:16px;height:16px;accent-color:var(--g);flex-shrink:0;margin-top:1px;cursor:pointer}
+.it{font-size:13px;line-height:1.4}
+.item.ck .it{color:var(--sub);text-decoration:line-through;text-decoration-color:#bbb}
+/* alert */
+.al{display:flex;gap:8px;border-radius:8px;padding:9px 11px;font-size:13px;margin:10px 0 4px}
+.aw{background:#fef9e7;border:1px solid #f9c74f;color:#7d5a00}
+.ar{background:#fdf2f2;border:1px solid #f5b7b1;color:#7b241c}
+.ai{background:#eaf4fe;border:1px solid #aed6f1;color:#1a5276}
+/* textarea */
+.nt{width:100%;border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical;min-height:58px;background:var(--bg);outline:none;margin-top:8px;transition:all .2s}
+.nt:focus{border-color:var(--g);background:var(--wh)}
+.nl{font-size:11px;color:var(--sub);margin-top:10px;display:block}
+/* exames table */
+.et{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.et th{background:var(--bg);padding:7px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.et td{padding:6px 10px;border-bottom:1px solid var(--bg);vertical-align:middle}
+.et tr:last-child td{border:none}
+.et input[type=checkbox]{accent-color:var(--g);width:15px;height:15px;cursor:pointer}
+.tg{font-size:10px;background:#eaf4fe;color:#1a5276;border-radius:4px;padding:2px 6px;font-weight:700}
+/* meds */
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:7px;margin-top:8px}
+.mc{border:1px solid var(--bd);border-radius:10px;padding:9px 11px;cursor:pointer;transition:all .2s;display:flex;gap:8px;align-items:flex-start}
+.mc:hover{border-color:var(--g)}.mc.sel{border-color:var(--g);background:#d5f5e3}
+.mc input[type=checkbox]{accent-color:var(--g);width:15px;height:15px;flex-shrink:0;margin-top:2px;cursor:pointer}
+.mn{font-weight:600;font-size:13px}.md{font-size:11px;color:var(--sub);margin-top:2px}
+/* checklist final */
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.ci{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--bd);border-radius:8px;cursor:pointer;font-size:12px;transition:all .2s}
+.ci:hover{border-color:var(--g)}.ci.ok{border-color:var(--g);background:#d5f5e3;color:var(--gd);font-weight:700}
+.ci input[type=checkbox]{accent-color:var(--g);width:15px;height:15px;cursor:pointer}
+/* progress */
+.pb{height:5px;background:rgba(255,255,255,.3);border-radius:99px;overflow:hidden;margin-top:6px}
+.pi2{height:100%;background:#fff;border-radius:99px;transition:width .4s}
+/* top bar in consulta */
+.tb{background:var(--wh);border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+/* footer */
+.ft{position:fixed;bottom:0;left:0;right:0;background:var(--wh);border-top:1px solid var(--bd);padding:11px 16px;display:flex;gap:9px;z-index:150}
+.ft .btn{flex:1}
+/* consulta history */
+.crow{display:flex;align-items:center;gap:12px;padding:12px 15px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s}
+.crow:last-child{border-bottom:none}
+.crow:hover{background:#f8fffe}
+/* empty */
+.emp{text-align:center;padding:44px 20px;color:var(--sub)}
+.ei{font-size:44px;margin-bottom:10px}
+.et2{font-size:15px;font-weight:600;color:var(--tx);margin-bottom:5px}
+/* print */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body>*:not(#pdf){display:none!important}
+  #pdf{display:block!important;font-family:'Segoe UI',sans-serif;color:#2c3e50;padding:24px;max-width:720px;margin:0 auto}
+  .pdh{border-bottom:3px solid #2ecc71;padding-bottom:10px;margin-bottom:18px}
+  .pdh h1{font-size:20px;color:#1a6b4a;font-weight:700}
+  .pdh p{font-size:12px;color:#7f8c8d;margin-top:3px}
+  .pdb{display:flex;gap:24px;flex-wrap:wrap;background:#f0f4f8;padding:12px;border-radius:8px;margin-bottom:18px}
+  .pdb div label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7f8c8d;display:block}
+  .pdb div span{font-size:14px;font-weight:700}
+  .pds{margin-bottom:14px}
+  .pds h3{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#7f8c8d;border-bottom:1px solid #dde1e7;padding-bottom:4px;margin-bottom:7px}
+  .pds p{font-size:13px;line-height:1.5;white-space:pre-wrap}
+  .ptags{display:flex;flex-wrap:wrap;gap:5px}
+  .ptag{font-size:12px;background:#d5f5e3;color:#1a6b4a;padding:3px 9px;border-radius:5px;font-weight:600}
+  .ptag2{background:#eaf4fe;color:#1a5276}
+  .pf{margin-top:28px;font-size:11px;color:#7f8c8d;border-top:1px solid #dde1e7;padding-top:8px}
+}
+@media(max-width:480px){.fr,.cg{grid-template-columns:1fr}.mg{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="pdf" style="display:none"></div>
+
+<script>
+// ── DADOS ─────────────────────────────────────────────────────────────────────
+const EXAMES=[
+  ['Glicemia de jejum','Diabetes'],['Hemoglobina glicada (HbA1c)','Diabetes'],
+  ['Insulina de jejum + HOMA-IR','Resistência insulínica'],['TSH + T4 livre','Tireoide'],
+  ['Colesterol total, LDL, HDL, Triglicérides','Lipídeos'],['TGO, TGP, GGT','Fígado'],
+  ['Ácido úrico','Metabólico'],['Vitamina D','Deficiência'],['Vitamina B12','Deficiência'],
+  ['Hemograma completo','Anemia'],['PCR ultrassensível','Inflamação'],
+  ['Ferritina + Ferro sérico','Anemia ferropriva'],['Testosterona livre','SOP'],['Cortisol basal','Cushing'],
+];
+const MEDS=[
+  {n:'Ozempic / Wegovy',d:'Semaglutida · IMC ≥ 30'},{n:'Saxenda',d:'Liraglutida · IMC ≥ 30'},
+  {n:'Mounjaro',d:'Tirzepatida · alta eficácia'},{n:'Metformina',d:'Resistência insulínica / SOP'},
+  {n:'Topiramato',d:'Compulsão alimentar'},{n:'Bupropiona + Naltrexona',d:'Compulsão + emocional'},
+  {n:'Sibutramina',d:'Apetite · atentar PA e FC'},{n:'Nenhum por ora',d:'Só não farmacológico'},
+];
+const CHECKLIST=[
+  'Peso, altura e IMC coletados','Gatilho do ganho investigado','Compulsão alimentar rastreada',
+  'Exames pedidos ou revisados','Prescrição com indicação correta','Sono e estresse abordados',
+  'Meta realista acordada','Retorno agendado','Todos os documentos entregues',
+];
+const BDEFS=[
+  {id:'b1',n:1,t:'Queixa Principal & Expectativa',s:'Motivação, meta, tentativas anteriores',
+   secs:[
+    {t:'Motivo da consulta',is:['O que te trouxe à consulta hoje?','Faz quanto tempo você está com essa preocupação?']},
+    {t:'Objetivo & Expectativa',is:['Qual é a sua meta de peso?','Tem data ou evento importante em mente?','Além do peso: energia, sono, disposição, aparência?']},
+    {t:'Tentativas Anteriores',is:['Já tentou emagrecer antes? O que funcionou / não funcionou?','Já usou dieta, medicamento ou profissional?']},
+   ]},
+  {id:'b2',n:2,t:'Histórico de Peso',s:'IMC, evolução, gatilhos do ganho',
+   secs:[
+    {t:'Dados Antropométricos',is:['Peso atual confirmado + altura → IMC calculado','Maior peso da vida: quando? contexto?','Menor peso adulto: quando? contexto?']},
+    {t:'Gatilho do Ganho',is:['Quando começou a ganhar peso?','Gatilho: gravidez / menopausa / medicamento / estresse?','Ganho gradual ou rápido?']},
+   ]},
+  {id:'b3',n:3,t:'Hábitos Alimentares',s:'Rotina, comportamentos críticos, líquidos',
+   secs:[
+    {t:'Rotina Alimentar',is:['Quantas refeições por dia? Tem horários fixos?','Pula refeições? Qual com mais frequência?','Café da manhã: o que costuma comer?','Almoço/jantar: em casa, fora ou delivery?','Lanches: o que come entre refeições?']},
+    {t:'Comportamentos Críticos',is:['Come rápido ou devagar?','Come na frente de tela (TV, celular)?','Episódios de compulsão? Comer sem fome?','Beliscada fora das refeições?','Come à noite / depois do jantar?','Alto prazer em doces, ultraprocessados ou frituras?']},
+    {t:'Líquidos & Restrições',is:['Litros de água por dia?','Refrigerante, suco caixinha, álcool: frequência?','Café: quantas xícaras? Com açúcar?','Intolerâncias, alergias ou restrições alimentares?']},
+   ]},
+  {id:'b4',n:4,t:'Atividade Física',s:'Prática atual, limitações, sedentarismo',
+   secs:[{t:null,is:['Pratica atividade física atualmente? Qual? Frequência?','Já praticou no passado? O que fez parar?','Sedentarismo no trabalho (fica sentada o dia todo)?','Limitações físicas: joelho, coluna, dor?','Como se sente ao se exercitar: disposição, fôlego?']}]},
+  {id:'b5',n:5,t:'Sono & Descanso',s:'Qualidade, apneia, cortisol',
+   al:{c:'aw',tx:'Sono ruim → cortisol elevado → resistência ao emagrecimento. Explorar bem.'},
+   secs:[{t:null,is:['Quantas horas dorme por noite?','Dificuldade para dormir ou acordar à noite?','Acorda cansada mesmo após dormir?','Ressona? Apneia diagnosticada?','Usa algo para dormir?']}]},
+  {id:'b6',n:6,t:'Saúde Emocional & Mental',s:'Estresse, ansiedade, comer emocional, TCAP',
+   al:{c:'ar',tx:'Rastrear compulsão alimentar (TCAP). Se identificada, encaminhar para psicólogo.'},
+   secs:[{t:null,is:['Nível de estresse no dia a dia (1–10)?','Ansiedade ou depressão diagnosticada? Faz acompanhamento?','Usa a comida como conforto emocional?','Como está a autoestima em relação ao corpo?','Tem apoio da família/parceiro nessa jornada?']}]},
+  {id:'b7',n:7,t:'Histórico Médico',s:'Comorbidades, ginecologia, medicamentos que engordam',
+   al:{c:'aw',tx:'Atentar: corticoides, antidepressivos, antipsicóticos e anticonvulsivantes causam ganho de peso.'},
+   secs:[
+    {t:'Doenças Diagnosticadas',is:['Diabetes tipo 2 ou pré-diabetes?','Hipertensão arterial?','Hipotireoidismo / Hashimoto?','SOP (síndrome do ovário policístico)?','Esteatose hepática?','Colesterol/triglicérides alterados?','Outras doenças crônicas relevantes?']},
+    {t:'Histórico Ginecológico',is:['Ciclo menstrual: regular ou irregular?','Menopausa ou perimenopausa?','Anticoncepcional? Qual?','Gestações: ganhou peso? Perdeu depois?']},
+    {t:'Histórico Familiar',is:['Diabetes, obesidade ou doenças cardiovasculares na família?','Cirurgias anteriores (incluindo bariátrica)?']},
+   ]},
+  {id:'b8',n:8,t:'Medicamentos & Suplementos',s:'Uso contínuo, suplementos, emagrecedores anteriores',
+   secs:[{t:null,is:['Medicamentos de uso contínuo listados?','Suplementos em uso (whey, termogênico, vitaminas)?','Já usou medicamento para emagrecer? Qual? Resultado?']}]},
+  {id:'b11',n:11,t:'Metas & Expectativas Realistas',s:'0,5 a 1 kg/semana · foco em bem-estar',
+   al:{c:'ai',tx:'Nunca prometer acima de 1 kg/semana. Variações de retenção hídrica e ciclo são normais.'},
+   secs:[{t:null,is:['Meta de curto prazo definida (1 mês)?','Meta de longo prazo definida (3–6 meses)?','Explicou variação por retenção hídrica e ciclo menstrual?','Foco em medidas e bem-estar, não só na balança?']}]},
+];
+const PLANO=[
+  {s:'Condutas Nutricionais',is:['Déficit calórico definido (sem dieta extrema)','Distribuição de macros orientada (proteína como âncora)','Padrão alimentar recomendado (low carb / mediterrâneo / proteico)','Orientações práticas: o que tirar, incluir e moderar']},
+  {s:'Suplementação',is:['Proteína (whey / vegetal)','Vitamina D3 + K2','Ômega-3','Magnésio (se insônia ou ansiedade)','Outros conforme exames']},
+  {s:'Outras Condutas',is:['Atividade física: mín. 150 min/sem aeróbico + musculação','Higiene do sono orientada','Encaminhamento para psicólogo (se compulsão)','Encaminhamento para pneumologista (se apneia)','Encaminhamento para educador físico (se necessário)']},
+];
+
+// ── DB ────────────────────────────────────────────────────────────────────────
+const KEY='remmed_v3';
+function db(){try{return JSON.parse(localStorage.getItem(KEY))||{p:[],c:[]}}catch{return{p:[],c:[]}}}
+function sdb(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const S={view:'home',pid:null,cid:null,q:'',eid:null};
+function nav(v,x={}){Object.assign(S,{view:v},x);render();scrollTo(0,0)}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function imc(p,h){
+  if(!p||!h)return{l:'—',c:''};
+  const v=p/((h/100)**2),s=v.toFixed(1);
+  if(v<18.5)return{l:`IMC ${s} · Baixo peso`,c:'in'};
+  if(v<25)return{l:`IMC ${s} · Normal`,c:'in'};
+  if(v<30)return{l:`IMC ${s} · Sobrepeso`,c:'is'};
+  if(v<35)return{l:`IMC ${s} · Obesidade I`,c:'i1'};
+  if(v<40)return{l:`IMC ${s} · Obesidade II`,c:'i2'};
+  return{l:`IMC ${s} · Obesidade III`,c:'i3'};
+}
+function idade(d){if(!d)return'';const t=new Date(),n=new Date(d);let a=t.getFullYear()-n.getFullYear();if(t.getMonth()<n.getMonth()||(t.getMonth()===n.getMonth()&&t.getDate()<n.getDate()))a--;return a+' anos'}
+function fdt(s){if(!s)return'';const[y,m,d]=s.split('-');return`${d}/${m}/${y}`}
+function ini(n){return n.split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase()}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// ── HOME ──────────────────────────────────────────────────────────────────────
+function vHome(){
+  const d=db(),q=S.q.toLowerCase();
+  const ps=d.p.filter(p=>!q||p.nome.toLowerCase().includes(q)).sort((a,b)=>a.nome.localeCompare(b.nome));
+  const lista=ps.length===0?`<div class="emp"><div class="ei">👩‍⚕️</div><div class="et2">${q?'Nenhuma paciente encontrada':'Nenhuma paciente cadastrada'}</div><div>${q?'Tente outro nome':'Toque em + para cadastrar'}</div></div>`:
+    '<div class="card" style="padding:0">'+ps.map(p=>{
+      const cs=d.c.filter(c=>c.pid===p.id).sort((a,b)=>b.dt.localeCompare(a.dt));
+      const u=cs[0];const im=u?imc(u.peso,u.alt):{l:'',c:''};
+      return`<div class="prow" onclick="nav('pac',{pid:'${p.id}'})">
+        <div class="av">${ini(p.nome)}</div>
+        <div class="pi"><div class="pn">${esc(p.nome)}</div>
+        <div class="pm">${p.nasc?idade(p.nasc)+' · ':''}${u?'Última: '+fdt(u.dt):'Sem consultas'}</div></div>
+        ${im.c?`<span class="imc ${im.c}" style="font-size:11px">${im.l.split('·')[0].trim()}</span>`:''}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3"><path d="M9 18l6-6-6-6"/></svg>
+      </div>`;
+    }).join('')+'</div>';
+
+  document.getElementById('app').innerHTML=`
+    <div class="hdr" style="flex-direction:column;align-items:flex-start;gap:6px">
+      <div style="display:flex;align-items:center;width:100%">
+        <h1 style="flex:1">REMMED Nutrologia</h1>
+        <span style="font-size:11px;opacity:.75">Emagrecimento & Bem-Estar</span>
+      </div>
+      <div class="pb" style="width:100%;background:rgba(255,255,255,.3)"><div class="pi2" style="width:${ps.length?100:0}%"></div></div>
+    </div>
+    <div class="pg">
+      <div class="sw"><svg class="sic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="si" placeholder="Buscar paciente..." value="${esc(S.q)}" oninput="S.q=this.value;vHome()"></div>
+      <div style="font-size:12px;color:var(--sub);margin-bottom:10px">${ps.length} paciente${ps.length!==1?'s':''}</div>
+      ${lista}
+    </div>
+    <button class="fab" onclick="nav('form')" title="Nova paciente">+</button>`;
+}
+
+// ── FORM PACIENTE ─────────────────────────────────────────────────────────────
+function vForm(){
+  const d=db(),p=S.eid?d.p.find(x=>x.id===S.eid):null;
+  document.getElementById('app').innerHTML=`
+    <div class="hdr"><span class="back" onclick="nav(${p?`'pac',{pid:'${p.id}'}`:"'home'"})">←</span>
+      <h1>${p?'Editar Paciente':'Nova Paciente'}</h1></div>
+    <div class="pg">
+      <div class="card cp">
+        <div class="fg"><label class="fl">Nome completo *</label><input class="fi" id="fn" placeholder="Nome da paciente" value="${esc(p?.nome||'')}"></div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Data de nascimento</label><input class="fi" id="fna" type="date" value="${esc(p?.nasc||'')}"></div>
+          <div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="ft" placeholder="(00) 00000-0000" value="${esc(p?.tel||'')}"></div>
+        </div>
+        <div class="fg"><label class="fl">E-mail</label><input class="fi" id="fe" type="email" placeholder="email@exemplo.com" value="${esc(p?.email||'')}"></div>
+        <div class="fg"><label class="fl">Observações</label><textarea class="nt" id="fo">${esc(p?.obs||'')}</textarea></div>
+      </div>
+      ${p?`<div style="margin-top:10px"><button class="btn bd2 bf" onclick="delPac('${p.id}')">Excluir paciente</button></div>`:''}
+    </div>
+    <div class="ft"><button class="btn bs" onclick="nav(${p?`'pac',{pid:'${p.id}'}`:"'home'"})">Cancelar</button>
+      <button class="btn bp" onclick="savPac(${p?`'${p.id}'`:'null'})">${p?'Salvar':'Cadastrar'}</button></div>`;
+}
+function savPac(eid){
+  const nome=document.getElementById('fn').value.trim();
+  if(!nome){alert('Digite o nome da paciente.');return}
+  const d=db(),id=eid||uid();
+  const p={id,nome,nasc:document.getElementById('fna').value,tel:document.getElementById('ft').value,
+    email:document.getElementById('fe').value,obs:document.getElementById('fo').value,
+    criadoEm:eid?(d.p.find(x=>x.id===eid)?.criadoEm||new Date().toISOString()):new Date().toISOString()};
+  if(eid){const i=d.p.findIndex(x=>x.id===eid);d.p[i]=p}else d.p.push(p);
+  sdb(d);nav('pac',{pid:id});
+}
+function delPac(id){
+  if(!confirm('Excluir esta paciente e todas as consultas? Ação irreversível.'))return;
+  const d=db();d.p=d.p.filter(x=>x.id!==id);d.c=d.c.filter(x=>x.pid!==id);sdb(d);nav('home');
+}
+
+// ── PERFIL PACIENTE ───────────────────────────────────────────────────────────
+function vPac(){
+  const d=db(),p=d.p.find(x=>x.id===S.pid);if(!p){nav('home');return}
+  const cs=d.c.filter(c=>c.pid===p.id).sort((a,b)=>b.dt.localeCompare(a.dt));
+  const u=cs[0];const im=u?imc(u.peso,u.alt):{l:'',c:''};
+  const hist=cs.length===0?`<div class="emp" style="padding:28px"><div class="ei" style="font-size:36px">📋</div><div class="et2">Nenhuma consulta ainda</div></div>`:
+    cs.map(c=>{const ic=imc(c.peso,c.alt);const ms=(c.meds||[]).filter(Boolean);
+      return`<div class="crow" onclick="nav('consulta',{pid:'${p.id}',cid:'${c.id}'})">
+        <div style="flex:1"><div style="font-weight:600;font-size:14px">${fdt(c.dt)}</div>
+        <div style="font-size:12px;color:var(--sub)">${c.peso?c.peso+' kg · ':''}${ms.length?ms.join(', '):'Sem medicamentos'}</div></div>
+        ${ic.c?`<span class="imc ${ic.c}" style="font-size:11px">${ic.l.split('·')[0].trim()}</span>`:''}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.3"><path d="M9 18l6-6-6-6"/></svg>
+      </div>`;}).join('');
+
+  document.getElementById('app').innerHTML=`
+    <div class="hdr"><span class="back" onclick="nav('home')">←</span>
+      <div style="flex:1"><h1>${esc(p.nome)}</h1><div class="sub">${p.nasc?idade(p.nasc):''}${p.tel?' · '+p.tel:''}</div></div>
+      <button class="btn bs" style="padding:6px 11px;font-size:12px" onclick="nav('form',{eid:'${p.id}'})">Editar</button></div>
+    <div class="pg">
+      ${u?`<div class="card cp" style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--sub);margin-bottom:10px">Última consulta · ${fdt(u.dt)}</div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
+          ${u.peso?`<div><div style="font-size:11px;color:var(--sub)">Peso</div><div style="font-weight:700;font-size:20px">${u.peso} kg</div></div>`:''}
+          ${u.alt?`<div><div style="font-size:11px;color:var(--sub)">Altura</div><div style="font-weight:700;font-size:20px">${u.alt} cm</div></div>`:''}
+          ${im.c?`<span class="imc ${im.c}">${im.l}</span>`:''}
+        </div>
+        ${u.notaPlano?`<div style="margin-top:10px;font-size:13px;color:var(--sub);border-top:1px solid var(--bd);padding-top:10px">${esc(u.notaPlano.slice(0,130))}${u.notaPlano.length>130?'…':''}</div>`:''}
+      </div>`:''}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:600">Consultas (${cs.length})</div>
+        <button class="btn bp" style="padding:8px 13px;font-size:13px" onclick="novaC('${p.id}')">+ Nova Consulta</button>
+      </div>
+      <div class="card" style="padding:0">${hist}</div>
+    </div>`;
+}
+function novaC(pid){
+  const d=db(),id=uid(),hoje=new Date().toISOString().split('T')[0];
+  d.c.push({id,pid,dt:hoje,peso:'',alt:'',blocos:{},meds:[],notaPlano:'',metaC:'',metaL:'',retorno:'',enc:false});
+  sdb(d);nav('consulta',{pid,cid:id});
+}
+
+// ── CONSULTA ──────────────────────────────────────────────────────────────────
+function vConsulta(){
+  const d=db(),c=d.c.find(x=>x.id===S.cid),p=d.p.find(x=>x.id===S.pid);
+  if(!c||!p){nav('home');return}
+  const im=imc(c.peso,c.alt);
+  let bhtml='';
+  BDEFS.forEach(def=>bhtml+=renderBStd(def,c));
+  bhtml+=renderBExames(c);bhtml+=renderBPlano(c);bhtml+=renderBFinal(c);
+
+  document.getElementById('app').innerHTML=`
+    <div class="hdr"><span class="back" onclick="salvarEVoltar()">←</span>
+      <div style="flex:1"><h1>${esc(p.nome)}</h1><div class="sub">Consulta · ${fdt(c.dt)}</div></div></div>
+    <div class="tb">
+      <input class="fi" style="width:96px" type="number" step=".1" placeholder="Peso (kg)" id="ipeso" value="${esc(c.peso)}" oninput="uptImc()">
+      <input class="fi" style="width:106px" type="number" placeholder="Altura (cm)" id="ialt" value="${esc(c.alt)}" oninput="uptImc()">
+      <span class="imc ${im.c}" id="imcb">${im.l}</span>
+      <div style="flex:1;min-width:110px">
+        <div style="font-size:11px;color:var(--sub)" id="ptxt">—</div>
+        <div class="pb" style="background:var(--bg)"><div class="pi2" id="pbar" style="background:var(--g)"></div></div>
+      </div>
+    </div>
+    <div class="pg">${bhtml}</div>
+    <div class="ft">
+      <button class="btn bs" onclick="gerarPdf()">📄 PDF</button>
+      <button class="btn bp" id="btnSalvar" onclick="salvarC(true)">Salvar</button>
+    </div>`;
+
+  restoreState(c);updProg();
+  // Abre primeiro bloco
+  const f=document.querySelector('.bloco');if(f)f.classList.add('open');
+}
+
+function renderBStd(def,c){
+  const sv=c.blocos[def.id]||{};
+  let b='';
+  if(def.al)b+=`<div class="al ${def.al.c}"><span>⚠️</span><span>${def.al.tx}</span></div>`;
+  def.secs.forEach(sec=>{
+    if(sec.t)b+=`<div class="st">${sec.t}</div>`;
+    sec.is.forEach(it=>b+=`<label class="item"><input type="checkbox" onchange="onCb(this)"><span class="it">${esc(it)}</span></label>`);
+  });
+  b+=`<span class="nl">Observações</span><textarea class="nt" data-n="${def.id}" oninput="autoS()">${esc(sv.nota||'')}</textarea>`;
+  return bloco(def.id,def.n,def.t,def.s,b);
+}
+
+function renderBExames(c){
+  const sv=c.blocos['b9']||{};
+  const rows=EXAMES.map((e,i)=>`<tr><td><input type="checkbox" data-ex="${i}" onchange="onCb(this)"></td><td>${esc(e[0])}</td><td><span class="tg">${esc(e[1])}</span></td></tr>`).join('');
+  const b=`<table class="et"><thead><tr><th style="width:34px">Pedir</th><th>Exame</th><th>Categoria</th></tr></thead><tbody>${rows}</tbody></table>
+    <span class="nl">Observações dos exames</span><textarea class="nt" data-n="b9" oninput="autoS()">${esc(sv.nota||'')}</textarea>`;
+  return bloco('b9',9,'Exames','Solicitar ou revisar — marque os pedidos',b);
+}
+
+function renderBPlano(c){
+  const sv=c.blocos['b10']||{};
+  let b='';
+  PLANO.forEach(g=>{b+=`<div class="st">${g.s}</div>`;g.is.forEach(it=>b+=`<label class="item"><input type="checkbox" onchange="onCb(this)"><span class="it">${esc(it)}</span></label>`);});
+  b+=`<div class="st">Medicamento Prescrito</div><div class="mg">`;
+  MEDS.forEach((m,i)=>b+=`<label class="mc" id="mc${i}"><input type="checkbox" data-med="${i}" onchange="onMed(this)"><div><div class="mn">${esc(m.n)}</div><div class="md">${esc(m.d)}</div></div></label>`);
+  b+=`</div><span class="nl">Resumo do plano terapêutico</span><textarea class="nt" data-n="b10" oninput="autoS()">${esc(sv.nota||'')}</textarea>`;
+  return bloco('b10',10,'Plano Terapêutico','Nutrição, suplementação, medicamento, exercício',b);
+}
+
+function renderBFinal(c){
+  const b=`
+    <div class="st">Entrega de Documentos</div>
+    <label class="item"><input type="checkbox" onchange="onCb(this)"><span class="it">Receita médica gerada e entregue?</span></label>
+    <label class="item"><input type="checkbox" onchange="onCb(this)"><span class="it">Pedido de exames gerado e entregue?</span></label>
+    <label class="item"><input type="checkbox" onchange="onCb(this)"><span class="it">Orientações alimentares enviadas?</span></label>
+    <label class="item"><input type="checkbox" onchange="onCb(this)"><span class="it">Suplementação listada e enviada?</span></label>
+    <div class="st">Retorno & Metas</div>
+    <div class="fr" style="margin:8px 0">
+      <div><label class="fl">Data do retorno</label><input class="fi" type="date" id="iret" value="${esc(c.retorno||'')}" oninput="autoS()"></div>
+      <div><label class="fl">Meta curto prazo</label><input class="fi" id="imc2" placeholder="Ex: -3 kg em 30 dias" value="${esc(c.metaC||'')}" oninput="autoS()"></div>
+    </div>
+    <div class="fg"><label class="fl">Meta longo prazo</label><input class="fi" id="iml" placeholder="Ex: -12 kg em 6 meses" value="${esc(c.metaL||'')}" oninput="autoS()"></div>
+    <div class="st">✅ Checklist Obrigatório</div>
+    <div class="cg">${CHECKLIST.map((x,i)=>`<label class="ci" id="cf${i}"><input type="checkbox" onchange="onCI(this)">${esc(x)}</label>`).join('')}</div>
+    <button class="btn bp bf bl" style="margin-top:14px" onclick="encerrar()">Encerrar Consulta</button>`;
+  return bloco('b12',12,'Encerramento & Checklist Final','Documentos, retorno, despedida',b);
+}
+
+function bloco(id,n,t,s,body){
+  return`<div class="bloco" data-id="${id}" id="${id}">
+    <div class="bh" onclick="tgBloco('${id}')">
+      <div class="bn">${n}</div>
+      <div class="bi"><div class="bt">${t}</div><div class="bst">${s}</div></div>
+      <span class="bc" id="bc${id}">0/0</span>
+      <svg class="chv" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="bb">${body}</div>
+  </div>`;
+}
+
+// ── CONSULTA HELPERS ──────────────────────────────────────────────────────────
+function tgBloco(id){document.getElementById(id)?.classList.toggle('open')}
+function onCb(cb){cb.closest('.item')?.classList.toggle('ck',cb.checked);updProg();autoS()}
+function onMed(cb){cb.closest('.mc')?.classList.toggle('sel',cb.checked);updProg();autoS()}
+function onCI(cb){cb.closest('.ci')?.classList.toggle('ok',cb.checked);updProg();autoS()}
+function uptImc(){
+  const p=parseFloat(document.getElementById('ipeso')?.value),h=parseFloat(document.getElementById('ialt')?.value);
+  const r=imc(p,h);const el=document.getElementById('imcb');
+  if(el){el.textContent=r.l;el.className='imc '+r.c}autoS();
+}
+function updProg(){
+  const all=document.querySelectorAll('.bb input[type=checkbox]');
+  const tot=all.length,ck=Array.from(all).filter(c=>c.checked).length;
+  const pct=tot>0?Math.round(ck/tot*100):0;
+  const pb=document.getElementById('pbar'),pt=document.getElementById('ptxt');
+  if(pb)pb.style.width=pct+'%';if(pt)pt.textContent=`${ck} / ${tot} itens · ${pct}%`;
+  document.querySelectorAll('.bloco[data-id]').forEach(el=>{
+    const cbs=el.querySelectorAll('.bb input[type=checkbox]');
+    const t=cbs.length,c=Array.from(cbs).filter(x=>x.checked).length;
+    const bc=document.getElementById('bc'+el.dataset.id);
+    if(bc)bc.textContent=c===t&&t>0?'✓ Completo':`${c}/${t}`;
+    el.classList.toggle('done',c===t&&t>0);
+  });
+}
+
+function restoreState(c){
+  // Blocos padrão
+  BDEFS.forEach(def=>{
+    const sv=c.blocos[def.id]||{};if(!sv.cks)return;
+    const cbs=document.querySelectorAll(`#${def.id} .bb input[type=checkbox]`);
+    sv.cks.forEach((v,i)=>{if(cbs[i]){cbs[i].checked=v;cbs[i].closest('.item')?.classList.toggle('ck',v)}});
+  });
+  // b9 exames
+  const s9=c.blocos['b9']||{};
+  document.querySelectorAll('[data-ex]').forEach(cb=>{const v=(s9.cks||[])[+cb.dataset.ex];if(v){cb.checked=true}});
+  // b10
+  const s10=c.blocos['b10']||{};
+  const b10cbs=document.querySelectorAll('#b10 .bb input[type=checkbox]');
+  (s10.cks||[]).forEach((v,i)=>{if(b10cbs[i]){b10cbs[i].checked=v;b10cbs[i].closest('.item')?.classList.toggle('ck',v)}});
+  // medicamentos
+  (c.meds||[]).forEach(nm=>{
+    const i=MEDS.findIndex(m=>m.n===nm);
+    if(i>=0){const cb=document.querySelector(`[data-med="${i}"]`);if(cb){cb.checked=true;cb.closest('.mc')?.classList.add('sel')}}
+  });
+  // b12
+  const s12=c.blocos['b12']||{};
+  const b12cbs=document.querySelectorAll('#b12 .bb input[type=checkbox]');
+  (s12.cks||[]).forEach((v,i)=>{
+    if(b12cbs[i]){b12cbs[i].checked=v;
+      b12cbs[i].closest('.item')?.classList.toggle('ck',v);
+      b12cbs[i].closest('.ci')?.classList.toggle('ok',v);}
+  });
+}
+
+function lerState(){
+  const r={blocos:{},meds:[]};
+  r.peso=document.getElementById('ipeso')?.value||'';
+  r.alt=document.getElementById('ialt')?.value||'';
+  r.retorno=document.getElementById('iret')?.value||'';
+  r.metaC=document.getElementById('imc2')?.value||'';
+  r.metaL=document.getElementById('iml')?.value||'';
+  r.notaPlano=document.querySelector('[data-n="b10"]')?.value||'';
+  BDEFS.forEach(def=>{
+    const cbs=document.querySelectorAll(`#${def.id} .bb input[type=checkbox]`);
+    const nota=document.querySelector(`[data-n="${def.id}"]`)?.value||'';
+    r.blocos[def.id]={cks:Array.from(cbs).map(c=>c.checked),nota};
+  });
+  // b9
+  const ex9=new Array(EXAMES.length).fill(false);
+  document.querySelectorAll('[data-ex]').forEach(cb=>{ex9[+cb.dataset.ex]=cb.checked});
+  r.blocos['b9']={cks:ex9,nota:document.querySelector('[data-n="b9"]')?.value||''};
+  // b10
+  const b10cbs=document.querySelectorAll('#b10 .bb input[type=checkbox]');
+  r.blocos['b10']={cks:Array.from(b10cbs).map(c=>c.checked),nota:r.notaPlano};
+  // meds
+  document.querySelectorAll('[data-med]').forEach(cb=>{if(cb.checked)r.meds.push(MEDS[+cb.dataset.med]?.n)});
+  // b12
+  const b12cbs=document.querySelectorAll('#b12 .bb input[type=checkbox]');
+  r.blocos['b12']={cks:Array.from(b12cbs).map(c=>c.checked)};
+  return r;
+}
+
+let _ast=null;
+function autoS(){clearTimeout(_ast);_ast=setTimeout(()=>salvarC(false),900)}
+
+function salvarC(fb=true){
+  const st=lerState(),d=db(),i=d.c.findIndex(x=>x.id===S.cid);
+  if(i<0)return;Object.assign(d.c[i],st);sdb(d);
+  if(fb){const b=document.getElementById('btnSalvar');if(b){b.textContent='✓ Salvo!';setTimeout(()=>b.textContent='Salvar',1500)}}
+}
+function salvarEVoltar(){salvarC(false);nav('pac',{pid:S.pid})}
+function encerrar(){
+  salvarC(false);const d=db(),i=d.c.findIndex(x=>x.id===S.cid);
+  if(i>=0){d.c[i].enc=true;sdb(d)}
+  if(confirm('Consulta encerrada! Gerar PDF agora?'))gerarPdf();else nav('pac',{pid:S.pid});
+}
+
+// ── PDF ───────────────────────────────────────────────────────────────────────
+function gerarPdf(){
+  salvarC(false);
+  const d=db(),c=d.c.find(x=>x.id===S.cid),p=d.p.find(x=>x.id===S.pid);if(!c||!p)return;
+  const im=imc(c.peso,c.alt);
+  const exSel=EXAMES.filter((_,i)=>(c.blocos['b9']?.cks||[])[i]);
+  const ms=(c.meds||[]).filter(Boolean);
+  const notas=BDEFS.filter(def=>c.blocos[def.id]?.nota).map(def=>`<div class="pds"><h3>${def.t}</h3><p>${esc(c.blocos[def.id].nota)}</p></div>`).join('');
+
+  document.getElementById('pdf').innerHTML=`
+    <div class="pdh"><h1>REMMED Telemedicina</h1><p>Nutrologia · Emagrecimento & Bem-Estar</p></div>
+    <div class="pdb">
+      <div><label>Paciente</label><span>${esc(p.nome)}</span></div>
+      ${p.nasc?`<div><label>Idade</label><span>${idade(p.nasc)}</span></div>`:''}
+      <div><label>Data</label><span>${fdt(c.dt)}</span></div>
+      ${c.peso?`<div><label>Peso</label><span>${c.peso} kg</span></div>`:''}
+      ${c.alt?`<div><label>Altura</label><span>${c.alt} cm</span></div>`:''}
+      ${im.c?`<div><label>IMC</label><span>${im.l}</span></div>`:''}
+    </div>
+    ${ms.length?`<div class="pds"><h3>Medicamentos Prescritos</h3><div class="ptags">${ms.map(m=>`<span class="ptag">${esc(m)}</span>`).join('')}</div></div>`:''}
+    ${exSel.length?`<div class="pds"><h3>Exames Solicitados</h3><div class="ptags">${exSel.map(e=>`<span class="ptag ptag2">${esc(e[0])}</span>`).join('')}</div></div>`:''}
+    ${c.notaPlano?`<div class="pds"><h3>Plano Terapêutico</h3><p>${esc(c.notaPlano)}</p></div>`:''}
+    ${c.metaC||c.metaL?`<div class="pds"><h3>Metas</h3>${c.metaC?`<p><strong>Curto prazo:</strong> ${esc(c.metaC)}</p>`:''}${c.metaL?`<p><strong>Longo prazo:</strong> ${esc(c.metaL)}</p>`:''}</div>`:''}
+    ${notas}
+    ${c.retorno?`<div class="pds"><h3>Retorno Agendado</h3><p>${fdt(c.retorno)}</p></div>`:''}
+    <div class="pf">REMMED Telemedicina · Gerado em ${new Date().toLocaleDateString('pt-BR')} · Uso exclusivo médico</div>`;
+  window.print();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  switch(S.view){
+    case'home':vHome();break;case'form':vForm();break;
+    case'pac':vPac();break;case'consulta':vConsulta();break;
+  }
+}
+render();
+</script>
+</body>
+</html>
