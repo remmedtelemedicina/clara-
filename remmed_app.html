@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REMMED Nutrologia</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #2c3e50; }
+
+/* HEADER */
+.header { background: linear-gradient(135deg, #1a6b4a, #2ecc71); color: white; padding: 14px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+.header-title { flex: 1; }
+.header-title h1 { font-size: 18px; font-weight: 700; }
+.header-title p { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+.btn-back { background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 14px; }
+.btn-back:hover { background: rgba(255,255,255,0.35); }
+
+/* PROGRESS BAR NO HEADER */
+.header-prog { font-size: 12px; opacity: 0.9; text-align: right; }
+.header-bar { height: 4px; background: rgba(255,255,255,0.3); border-radius: 99px; margin-top: 4px; width: 120px; }
+.header-bar-fill { height: 100%; background: white; border-radius: 99px; transition: width 0.4s; }
+
+/* LAYOUT */
+.page { max-width: 700px; margin: 0 auto; padding: 20px 16px 100px; }
+
+/* CARDS */
+.card { background: white; border-radius: 14px; border: 1px solid #dde1e7; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.card-body { padding: 16px; }
+
+/* STATS GRID */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat-card { background: white; border-radius: 12px; padding: 14px; text-align: center; border: 1px solid #dde1e7; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.stat-num { font-size: 28px; font-weight: 800; color: #2ecc71; line-height: 1; }
+.stat-label { font-size: 11px; color: #7f8c8d; margin-top: 4px; }
+
+/* LISTA PACIENTES */
+.patient-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid #f0f4f8; transition: background 0.15s; }
+.patient-row:last-child { border-bottom: none; }
+.patient-row:hover { background: #f8fffe; }
+.avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #1a6b4a, #2ecc71); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; flex-shrink: 0; }
+.patient-info { flex: 1; min-width: 0; }
+.patient-name { font-weight: 600; font-size: 15px; }
+.patient-meta { font-size: 12px; color: #7f8c8d; margin-top: 3px; }
+.arrow-icon { opacity: 0.3; }
+
+/* IMC BADGES */
+.badge { display: inline-block; padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.badge-normal { background: #d5f5e3; color: #1a6b4a; }
+.badge-sobre { background: #fef9e7; color: #d68910; }
+.badge-ob1 { background: #fdebd0; color: #a04000; }
+.badge-ob2 { background: #fadbd8; color: #922b21; }
+.badge-ob3 { background: #e8daef; color: #6c3483; }
+
+/* BUTTONS */
+.btn { border: none; border-radius: 10px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+.btn-green { background: #2ecc71; color: white; }
+.btn-green:hover { background: #1a6b4a; }
+.btn-gray { background: #f0f4f8; color: #2c3e50; border: 1px solid #dde1e7; }
+.btn-gray:hover { border-color: #2ecc71; }
+.btn-red { background: #fee; color: #c0392b; border: 1px solid #f5b7b1; }
+.btn-red:hover { background: #fadbd8; }
+.btn-full { width: 100%; justify-content: center; }
+.btn-lg { padding: 14px 24px; font-size: 16px; }
+
+/* FAB */
+.fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1a6b4a, #2ecc71); color: white; border: none; font-size: 28px; cursor: pointer; box-shadow: 0 4px 18px rgba(46,204,113,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; transition: transform 0.2s; }
+.fab:hover { transform: scale(1.1); }
+
+/* SEARCH */
+.search-wrap { position: relative; margin-bottom: 14px; }
+.search-input { width: 100%; padding: 10px 14px 10px 38px; border: 1px solid #dde1e7; border-radius: 12px; font-size: 14px; background: white; outline: none; transition: border 0.2s; }
+.search-input:focus { border-color: #2ecc71; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.4; }
+
+/* FORMULÁRIO */
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #7f8c8d; margin-bottom: 5px; }
+.form-input { width: 100%; padding: 10px 13px; border: 1px solid #dde1e7; border-radius: 10px; font-size: 14px; font-family: inherit; background: #f0f4f8; outline: none; transition: all 0.2s; }
+.form-input:focus { border-color: #2ecc71; background: white; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-textarea { width: 100%; border: 1px solid #dde1e7; border-radius: 10px; padding: 10px 13px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px; background: #f0f4f8; outline: none; transition: all 0.2s; }
+.form-textarea:focus { border-color: #2ecc71; background: white; }
+
+/* CONSULTA — BLOCOS */
+.bloco { background: white; border-radius: 13px; border: 1px solid #dde1e7; margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 5px rgba(0,0,0,0.05); }
+.bloco.bloco-done { border-left: 4px solid #2ecc71; }
+.bloco-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer; user-select: none; transition: background 0.15s; }
+.bloco-header:hover { background: #f8fffe; }
+.bloco-num { width: 30px; height: 30px; border-radius: 50%; background: #f0f4f8; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; transition: all 0.3s; }
+.bloco-done .bloco-num { background: #2ecc71; color: white; }
+.bloco-text { flex: 1; }
+.bloco-title { font-weight: 600; font-size: 14px; }
+.bloco-sub { font-size: 11px; color: #7f8c8d; margin-top: 2px; }
+.bloco-count { font-size: 11px; color: #7f8c8d; }
+.bloco-done .bloco-count { color: #2ecc71; font-weight: 700; }
+.bloco-chevron { transition: transform 0.3s; opacity: 0.35; flex-shrink: 0; }
+.bloco-open .bloco-chevron { transform: rotate(180deg); }
+.bloco-body { display: none; padding: 0 16px 14px; border-top: 1px solid #f0f4f8; }
+.bloco-open .bloco-body { display: block; }
+
+/* ITEMS */
+.section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #7f8c8d; margin: 13px 0 6px; }
+.item-row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; }
+.item-row:hover { background: #f8fffe; }
+.item-row.item-checked { background: #f0fbf4; }
+.item-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: #2ecc71; flex-shrink: 0; margin-top: 1px; cursor: pointer; }
+.item-label { font-size: 13px; line-height: 1.4; }
+.item-row.item-checked .item-label { color: #7f8c8d; text-decoration: line-through; text-decoration-color: #bbb; }
+
+/* ALERTAS */
+.alert { display: flex; gap: 8px; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin: 10px 0 4px; }
+.alert-yellow { background: #fef9e7; border: 1px solid #f9c74f; color: #7d5a00; }
+.alert-red { background: #fdf2f2; border: 1px solid #f5b7b1; color: #7b241c; }
+.alert-blue { background: #eaf4fe; border: 1px solid #aed6f1; color: #1a5276; }
+
+/* TEXTAREA NOTA */
+.nota-label { font-size: 11px; color: #7f8c8d; margin-top: 10px; display: block; }
+.nota-input { width: 100%; border: 1px solid #dde1e7; border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 58px; background: #f0f4f8; outline: none; margin-top: 6px; transition: all 0.2s; }
+.nota-input:focus { border-color: #2ecc71; background: white; }
+
+/* TABELA EXAMES */
+.exam-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+.exam-table th { background: #f0f4f8; padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+.exam-table td { padding: 7px 10px; border-bottom: 1px solid #f0f4f8; vertical-align: middle; }
+.exam-table tr:last-child td { border-bottom: none; }
+.exam-table input[type="checkbox"] { accent-color: #2ecc71; width: 15px; height: 15px; cursor: pointer; }
+.exam-tag { font-size: 10px; background: #eaf4fe; color: #1a5276; border-radius: 4px; padding: 2px 6px; font-weight: 700; }
+
+/* MEDICAMENTOS */
+.med-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-top: 8px; }
+.med-card { border: 1px solid #dde1e7; border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: all 0.2s; display: flex; gap: 8px; align-items: flex-start; }
+.med-card:hover { border-color: #2ecc71; }
+.med-card.med-selected { border-color: #2ecc71; background: #d5f5e3; }
+.med-card input[type="checkbox"] { accent-color: #2ecc71; width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+.med-name { font-weight: 600; font-size: 13px; }
+.med-desc { font-size: 11px; color: #7f8c8d; margin-top: 2px; }
+
+/* CHECKLIST FINAL */
+.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.check-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #dde1e7; border-radius: 8px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+.check-item:hover { border-color: #2ecc71; }
+.check-item.check-done { border-color: #2ecc71; background: #d5f5e3; color: #1a6b4a; font-weight: 700; }
+.check-item input[type="checkbox"] { accent-color: #2ecc71; width: 15px; height: 15px; cursor: pointer; }
+
+/* TOP BAR DA CONSULTA */
+.consult-bar { background: white; border-bottom: 1px solid #dde1e7; padding: 10px 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* PROGRESS BAR VERDE */
+.progress-outer { height: 6px; background: #f0f4f8; border-radius: 99px; overflow: hidden; flex: 1; min-width: 100px; }
+.progress-inner { height: 100%; background: #2ecc71; border-radius: 99px; transition: width 0.4s; }
+
+/* FOOTER FIXO */
+.footer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #dde1e7; padding: 12px 16px; display: flex; gap: 10px; z-index: 200; }
+.footer-bar .btn { flex: 1; }
+
+/* CHARTS */
+canvas.chart { width: 100%; height: 160px; display: block; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 48px 20px; color: #7f8c8d; }
+.empty-state .empty-icon { font-size: 52px; margin-bottom: 12px; }
+.empty-state h3 { font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 6px; }
+
+/* DIVIDER */
+.divider { height: 1px; background: #f0f4f8; margin: 12px 0; }
+
+/* CONSULTA CARD NA LISTA */
+.consult-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f0f4f8; transition: background 0.15s; }
+.consult-row:last-child { border-bottom: none; }
+.consult-row:hover { background: #f8fffe; }
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .form-row, .check-grid { grid-template-columns: 1fr; }
+  .med-grid { grid-template-columns: 1fr 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* PRINT / PDF */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body > * { display: none !important; }
+  #pdf-area { display: block !important; font-family: 'Segoe UI', sans-serif; color: #2c3e50; padding: 28px; }
+  .pdf-header { display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 3px solid #2ecc71; padding-bottom: 14px; margin-bottom: 20px; }
+  .pdf-logo { font-size: 24px; font-weight: 800; color: #1a6b4a; }
+  .pdf-logo span { display: block; font-size: 12px; color: #7f8c8d; font-weight: 400; margin-top: 3px; }
+  .pdf-data { font-size: 12px; color: #7f8c8d; text-align: right; }
+  .pdf-patient-box { background: #f0f4f8; border-radius: 8px; padding: 14px; margin-bottom: 20px; display: flex; gap: 28px; flex-wrap: wrap; }
+  .pdf-field label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #7f8c8d; display: block; }
+  .pdf-field span { font-size: 15px; font-weight: 700; }
+  .pdf-section { margin-bottom: 16px; }
+  .pdf-section h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: #7f8c8d; border-bottom: 1px solid #dde1e7; padding-bottom: 5px; margin-bottom: 8px; }
+  .pdf-section p { font-size: 13px; line-height: 1.6; white-space: pre-wrap; }
+  .pdf-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pdf-tag { font-size: 12px; background: #d5f5e3; color: #1a6b4a; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
+  .pdf-tag-blue { background: #eaf4fe; color: #1a5276; }
+  .pdf-assinatura { margin-top: 48px; display: flex; justify-content: flex-end; }
+  .pdf-assinatura-box { width: 240px; text-align: center; }
+  .pdf-assinatura-linha { border-top: 1px solid #2c3e50; padding-top: 8px; font-size: 13px; }
+  .pdf-footer { margin-top: 32px; font-size: 11px; color: #7f8c8d; border-top: 1px solid #dde1e7; padding-top: 10px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="pdf-area" style="display:none"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DADOS ESTÁTICOS
+// ═══════════════════════════════════════════════════════════
+
+var EXAMES = [
+  ['Glicemia de jejum', 'Diabetes'],
+  ['Hemoglobina glicada (HbA1c)', 'Diabetes'],
+  ['Insulina de jejum + HOMA-IR', 'Resistência insulínica'],
+  ['TSH + T4 livre', 'Tireoide'],
+  ['Colesterol total, LDL, HDL, Triglicérides', 'Lipídeos'],
+  ['TGO, TGP, GGT', 'Fígado'],
+  ['Ácido úrico', 'Metabólico'],
+  ['Vitamina D', 'Deficiência'],
+  ['Vitamina B12', 'Deficiência'],
+  ['Hemograma completo', 'Anemia'],
+  ['PCR ultrassensível', 'Inflamação'],
+  ['Ferritina + Ferro sérico', 'Anemia ferropriva'],
+  ['Testosterona livre', 'SOP'],
+  ['Cortisol basal', 'Cushing']
+];
+
+var MEDICAMENTOS = [
+  { nome: 'Ozempic / Wegovy', desc: 'Semaglutida · IMC ≥ 30' },
+  { nome: 'Saxenda', desc: 'Liraglutida · IMC ≥ 30' },
+  { nome: 'Mounjaro', desc: 'Tirzepatida · alta eficácia' },
+  { nome: 'Metformina', desc: 'Resistência insulínica / SOP' },
+  { nome: 'Topiramato', desc: 'Compulsão alimentar' },
+  { nome: 'Bupropiona + Naltrexona', desc: 'Compulsão + emocional' },
+  { nome: 'Sibutramina', desc: 'Apetite · atentar PA e FC' },
+  { nome: 'Nenhum por ora', desc: 'Tratamento não farmacológico' }
+];
+
+var CHECKLIST_FINAL = [
+  'Peso, altura e IMC coletados',
+  'Gatilho do ganho investigado',
+  'Compulsão alimentar rastreada',
+  'Exames pedidos ou revisados',
+  'Prescrição com indicação correta',
+  'Sono e estresse abordados',
+  'Meta realista acordada',
+  'Retorno agendado',
+  'Todos os documentos entregues'
+];
+
+var BLOCOS = [
+  {
+    id: 'b1', num: 1,
+    titulo: 'Queixa Principal & Expectativa',
+    sub: 'Motivação, meta, tentativas anteriores',
+    secoes: [
+      { titulo: 'Motivo da consulta', itens: ['O que te trouxe à consulta hoje?', 'Faz quanto tempo você está com essa preocupação?'] },
+      { titulo: 'Objetivo & Expectativa', itens: ['Qual é a sua meta de peso?', 'Tem data ou evento importante em mente?', 'Além do peso: energia, sono, disposição, aparência?'] },
+      { titulo: 'Tentativas Anteriores', itens: ['Já tentou emagrecer antes? O que funcionou / não funcionou?', 'Já usou dieta, medicamento ou acompanhou com profissional?'] }
+    ]
+  },
+  {
+    id: 'b2', num: 2,
+    titulo: 'Histórico de Peso',
+    sub: 'IMC, evolução, gatilhos do ganho',
+    secoes: [
+      { titulo: 'Dados Antropométricos', itens: ['Peso atual confirmado + IMC calculado', 'Maior peso da vida: quando? contexto?', 'Menor peso adulto: quando? contexto?'] },
+      { titulo: 'Gatilho do Ganho', itens: ['Quando começou a ganhar peso?', 'Gatilho: gravidez / menopausa / medicamento / estresse?', 'Ganho gradual ou rápido?'] }
+    ]
+  },
+  {
+    id: 'b3', num: 3,
+    titulo: 'Hábitos Alimentares',
+    sub: 'Rotina, comportamentos críticos, líquidos',
+    secoes: [
+      { titulo: 'Rotina Alimentar', itens: ['Quantas refeições por dia? Tem horários fixos?', 'Pula refeições? Qual com mais frequência?', 'Café da manhã: o que costuma comer?', 'Almoço/jantar: em casa, fora ou delivery?', 'Lanches: o que come entre refeições?'] },
+      { titulo: 'Comportamentos Críticos', itens: ['Come rápido ou devagar?', 'Come na frente de tela (TV, celular)?', 'Episódios de compulsão? Comer sem fome?', 'Beliscada fora das refeições?', 'Come à noite / depois do jantar?', 'Alto prazer em doces, ultraprocessados ou frituras?'] },
+      { titulo: 'Líquidos & Restrições', itens: ['Litros de água por dia?', 'Refrigerante, suco caixinha, álcool: frequência?', 'Café: quantas xícaras? Com açúcar?', 'Intolerâncias, alergias ou restrições alimentares?'] }
+    ]
+  },
+  {
+    id: 'b4', num: 4,
+    titulo: 'Atividade Física',
+    sub: 'Prática atual, limitações, sedentarismo',
+    secoes: [
+      { titulo: null, itens: ['Pratica atividade física atualmente? Qual? Frequência?', 'Já praticou no passado? O que fez parar?', 'Sedentarismo no trabalho (fica sentada o dia todo)?', 'Limitações físicas: joelho, coluna, dor?', 'Como se sente ao se exercitar: disposição, fôlego?'] }
+    ]
+  },
+  {
+    id: 'b5', num: 5,
+    titulo: 'Sono & Descanso',
+    sub: 'Qualidade, apneia, cortisol',
+    alerta: { tipo: 'yellow', texto: 'Sono ruim → cortisol elevado → resistência ao emagrecimento. Explorar bem.' },
+    secoes: [
+      { titulo: null, itens: ['Quantas horas dorme por noite?', 'Dificuldade para dormir ou acordar à noite?', 'Acorda cansada mesmo após dormir?', 'Ressona? Apneia diagnosticada?', 'Usa algo para dormir?'] }
+    ]
+  },
+  {
+    id: 'b6', num: 6,
+    titulo: 'Saúde Emocional & Mental',
+    sub: 'Estresse, ansiedade, comer emocional, TCAP',
+    alerta: { tipo: 'red', texto: 'Rastrear compulsão alimentar (TCAP). Se identificada, encaminhar para psicólogo.' },
+    secoes: [
+      { titulo: null, itens: ['Nível de estresse no dia a dia (1–10)?', 'Ansiedade ou depressão diagnosticada? Faz acompanhamento?', 'Usa a comida como conforto emocional?', 'Como está a autoestima em relação ao corpo?', 'Tem apoio da família/parceiro nessa jornada?'] }
+    ]
+  },
+  {
+    id: 'b7', num: 7,
+    titulo: 'Histórico Médico',
+    sub: 'Comorbidades, ginecologia, medicamentos que engordam',
+    alerta: { tipo: 'yellow', texto: 'Atentar: corticoides, antidepressivos, antipsicóticos e anticonvulsivantes causam ganho de peso.' },
+    secoes: [
+      { titulo: 'Doenças Diagnosticadas', itens: ['Diabetes tipo 2 ou pré-diabetes?', 'Hipertensão arterial?', 'Hipotireoidismo / Hashimoto?', 'SOP (síndrome do ovário policístico)?', 'Esteatose hepática?', 'Colesterol/triglicérides alterados?', 'Outras doenças crônicas relevantes?'] },
+      { titulo: 'Histórico Ginecológico', itens: ['Ciclo menstrual: regular ou irregular?', 'Menopausa ou perimenopausa?', 'Anticoncepcional? Qual?', 'Gestações: ganhou peso? Perdeu depois?'] },
+      { titulo: 'Histórico Familiar', itens: ['Diabetes, obesidade ou doenças cardiovasculares na família?', 'Cirurgias anteriores (incluindo bariátrica)?'] }
+    ]
+  },
+  {
+    id: 'b8', num: 8,
+    titulo: 'Medicamentos & Suplementos',
+    sub: 'Uso contínuo, suplementos, emagrecedores anteriores',
+    secoes: [
+      { titulo: null, itens: ['Medicamentos de uso contínuo listados?', 'Suplementos em uso (whey, termogênico, vitaminas)?', 'Já usou medicamento para emagrecer? Qual? Resultado?'] }
+    ]
+  },
+  {
+    id: 'b11', num: 11,
+    titulo: 'Metas & Expectativas Realistas',
+    sub: '0,5 a 1 kg/semana · foco em bem-estar',
+    alerta: { tipo: 'blue', texto: 'Nunca prometer acima de 1 kg/semana. Variações de retenção hídrica e ciclo são normais.' },
+    secoes: [
+      { titulo: null, itens: ['Meta de curto prazo definida (1 mês)?', 'Meta de longo prazo definida (3–6 meses)?', 'Explicou variação por retenção hídrica e ciclo menstrual?', 'Foco em medidas e bem-estar, não só na balança?'] }
+    ]
+  }
+];
+
+var PLANO_SECOES = [
+  { titulo: 'Condutas Nutricionais', itens: ['Déficit calórico definido (sem dieta extrema)', 'Distribuição de macros orientada (proteína como âncora)', 'Padrão alimentar recomendado (low carb / mediterrâneo / proteico)', 'Orientações práticas: o que tirar, incluir e moderar'] },
+  { titulo: 'Suplementação', itens: ['Proteína (whey / vegetal)', 'Vitamina D3 + K2', 'Ômega-3', 'Magnésio (se insônia ou ansiedade)', 'Outros conforme exames'] },
+  { titulo: 'Outras Condutas', itens: ['Atividade física: mín. 150 min/sem aeróbico + musculação', 'Higiene do sono orientada', 'Encaminhamento para psicólogo (se compulsão identificada)', 'Encaminhamento para pneumologista (se apneia suspeita)', 'Encaminhamento para educador físico (se necessário)'] }
+];
+
+// ═══════════════════════════════════════════════════════════
+// BANCO DE DADOS (localStorage)
+// ═══════════════════════════════════════════════════════════
+
+var DB_KEY = 'remmed_app_v2';
+
+function getDB() {
+  try {
+    var raw = localStorage.getItem(DB_KEY);
+    return raw ? JSON.parse(raw) : { pacientes: [], consultas: [], config: { dra: '', crm: '' } };
+  } catch(e) {
+    return { pacientes: [], consultas: [], config: { dra: '', crm: '' } };
+  }
+}
+
+function saveDB(data) {
+  localStorage.setItem(DB_KEY, JSON.stringify(data));
+}
+
+function gerarId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════════
+
+var ESTADO = {
+  tela: 'home',
+  pacienteId: null,
+  consultaId: null,
+  busca: ''
+};
+
+function navegar(tela, params) {
+  ESTADO.tela = tela;
+  if (params) {
+    if (params.pacienteId !== undefined) ESTADO.pacienteId = params.pacienteId;
+    if (params.consultaId !== undefined) ESTADO.consultaId = params.consultaId;
+  }
+  renderizar();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+
+function calcIMC(peso, altura) {
+  if (!peso || !altura) return { label: '—', classe: '' };
+  var h = altura / 100;
+  var v = peso / (h * h);
+  var s = v.toFixed(1);
+  if (v < 18.5) return { label: 'IMC ' + s + ' · Baixo peso', classe: 'badge-normal', imc: v };
+  if (v < 25)   return { label: 'IMC ' + s + ' · Normal',     classe: 'badge-normal', imc: v };
+  if (v < 30)   return { label: 'IMC ' + s + ' · Sobrepeso',  classe: 'badge-sobre',  imc: v };
+  if (v < 35)   return { label: 'IMC ' + s + ' · Ob. I',      classe: 'badge-ob1',    imc: v };
+  if (v < 40)   return { label: 'IMC ' + s + ' · Ob. II',     classe: 'badge-ob2',    imc: v };
+  return           { label: 'IMC ' + s + ' · Ob. III',         classe: 'badge-ob3',    imc: v };
+}
+
+function calcIdade(nasc) {
+  if (!nasc) return '';
+  var hoje = new Date(), n = new Date(nasc);
+  var a = hoje.getFullYear() - n.getFullYear();
+  if (hoje.getMonth() < n.getMonth() || (hoje.getMonth() === n.getMonth() && hoje.getDate() < n.getDate())) a--;
+  return a + ' anos';
+}
+
+function formatarData(iso) {
+  if (!iso) return '';
+  var p = iso.split('-');
+  return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function iniciais(nome) {
+  return nome.split(' ').slice(0, 2).map(function(p) { return p[0]; }).join('').toUpperCase();
+}
+
+function escaparHTML(str) {
+  return (str || '').toString()
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TELA: HOME (DASHBOARD)
+// ═══════════════════════════════════════════════════════════
+
+function telaHome() {
+  var db = getDB();
+  var pacientes = db.pacientes;
+  var consultas = db.consultas;
+  var q = ESTADO.busca.toLowerCase();
+  var filtrados = q ? pacientes.filter(function(p) { return p.nome.toLowerCase().indexOf(q) >= 0; }) : pacientes;
+  filtrados.sort(function(a, b) { return a.nome.localeCompare(b.nome); });
+
+  // Stats
+  var hoje = new Date();
+  var mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
+  var consultasMes = consultas.filter(function(c) { return c.data && c.data.indexOf(mesAtual) === 0; }).length;
+
+  var statsHTML = '<div class="stats-grid">' +
+    '<div class="stat-card"><div class="stat-num">' + pacientes.length + '</div><div class="stat-label">Pacientes</div></div>' +
+    '<div class="stat-card"><div class="stat-num">' + consultas.length + '</div><div class="stat-label">Consultas total</div></div>' +
+    '<div class="stat-card"><div class="stat-num" style="color:#3498db">' + consultasMes + '</div><div class="stat-label">Este mês</div></div>' +
+    '</div>';
+
+  var listaHTML;
+  if (filtrados.length === 0) {
+    listaHTML = '<div class="card"><div class="empty-state"><div class="empty-icon">' + (q ? '🔍' : '👩‍⚕️') + '</div><h3>' + (q ? 'Nenhuma paciente encontrada' : 'Nenhuma paciente cadastrada') + '</h3><p>' + (q ? 'Tente outro nome' : 'Toque em + para cadastrar') + '</p></div></div>';
+  } else {
+    listaHTML = '<div class="card" style="padding:0">';
+    filtrados.forEach(function(p) {
+      var cs = consultas.filter(function(c) { return c.pacienteId === p.id; }).sort(function(a, b) { return b.data.localeCompare(a.data); });
+      var ult = cs[0];
+      var im = ult ? calcIMC(parseFloat(ult.peso), parseFloat(ult.altura)) : { label: '', classe: '' };
+      listaHTML += '<div class="patient-row" onclick="navegar(\'perfil\', {pacienteId:\'' + p.id + '\'})">' +
+        '<div class="avatar">' + iniciais(p.nome) + '</div>' +
+        '<div class="patient-info">' +
+          '<div class="patient-name">' + escaparHTML(p.nome) + '</div>' +
+          '<div class="patient-meta">' + (p.nascimento ? calcIdade(p.nascimento) + ' · ' : '') + (ult ? 'Última: ' + formatarData(ult.data) : 'Sem consultas') + '</div>' +
+        '</div>' +
+        (im.classe ? '<span class="badge ' + im.classe + '">' + im.label.split('·')[0].trim() + '</span>' : '') +
+        '<svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>' +
+        '</div>';
+    });
+    listaHTML += '</div>';
+  }
+
+  document.getElementById('app').innerHTML =
+    '<div class="header">' +
+      '<div class="header-title"><h1>REMMED Nutrologia</h1><p>Emagrecimento & Bem-Estar</p></div>' +
+      '<button class="btn-back" onclick="navegar(\'config\')" title="Configurações">⚙️</button>' +
+    '</div>' +
+    '<div class="page">' +
+      statsHTML +
+      '<div class="search-wrap">' +
+        '<svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>' +
+        '<input class="search-input" placeholder="Buscar paciente..." value="' + escaparHTML(ESTADO.busca) + '" oninput="ESTADO.busca=this.value;telaHome()">' +
+      '</div>' +
+      '<div style="font-size:12px;color:#7f8c8d;margin-bottom:10px">' + filtrados.length + ' paciente' + (filtrados.length !== 1 ? 's' : '') + '</div>' +
+      listaHTML +
+    '</div>' +
+    '<button class="fab" onclick="navegar(\'form-paciente\')" title="Nova paciente">+</button>';
+}
+
+// ═══════════════════════════════════════════════════════════
+// TELA: FORMULÁRIO PACIENTE
+// ═══════════════════════════════════════════════════════════
+
+function telaFormPaciente() {
+  var db = getDB();
+  var editId = ESTADO.pacienteId;
+  var p = editId ? db.pacientes.find(function(x) { return x.id === editId; }) : null;
+  var voltarTela = p ? 'perfil' : 'home';
+  var voltarParams = p ? '{pacienteId:"' + p.id + '"}' : 'null';
+
+  document.getElementById('app').innerHTML =
+    '<div class="header">' +
+      '<button class="btn-back" onclick="navegar(\'' + voltarTela + '\', ' + voltarParams + ')">← Voltar</button>' +
+      '<div class="header-title"><h1>' + (p ? 'Editar Paciente' : 'Nova Paciente') + '</h1></div>' +
+    '</div>' +
+    '<div class="page">' +
+      '<div class="card card-body">' +
+        '<div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="fp-nome" placeholder="Nome da paciente" value="' + escaparHTML(p ? p.nome : '') + '"></div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label">Data de nascimento</label><input class="form-input" id="fp-nasc" type="date" value="' + (p ? p.nascimento || '' : '') + '"></div>' +
+          '<div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="fp-tel" placeholder="(00) 00000-0000" value="' + escaparHTML(p ? p.telefone || '' : '') + '"></div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="fp-email" type="email" placeholder="email@exemplo.com" value="' + escaparHTML(p ? p.email || '' : '') + '"></div>' +
+        '<div class="form-group"><label class="form-label">Observações gerais</label><textarea class="form-textarea" id="fp-obs">' + escaparHTML(p ? p.obs || '' : '') + '</textarea></div>' +
+      '</div>' +
+      (p ? '<div style="margin-top:10px"><button class="btn btn-red btn-full" onclick="excluirPaciente(\'' + p.id + '\')">Excluir paciente e todas as consultas</button></div>' : '') +
+    '</div>' +
+    '<div class="footer-bar">' +
+      '<button class="btn btn-gray" onclick="navegar(\'' + voltarTela + '\', ' + voltarParams + ')">Cancelar</button>' +
+      '<button class="btn btn-green" onclick="salvarPaciente(\'' + (p ? p.id : '') + '\')">Salvar</button>' +
+    '</div>';
+}
+
+function salvarPaciente(editId) {
+  var nome = document.getElementById('fp-nome').value.trim();
+  if (!nome) { alert('Digite o nome da paciente.'); return; }
+  var db = getDB();
+  var id = editId || gerarId();
+  var paciente = {
+    id: id,
+    nome: nome,
+    nascimento: document.getElementById('fp-nasc').value,
+    telefone: document.getElementById('fp-tel').value,
+    email: document.getElementById('fp-email').value,
+    obs: document.getElementById('fp-obs').value
+  };
+  if (editId) {
+    var idx = db.pacientes.findIndex(function(p) { return p.id === editId; });
+    if (idx >= 0) db.pacientes[idx] = paciente;
+  } else {
+    db.pacientes.push(paciente);
+  }
+  saveDB(db);
+  ESTADO.pacienteId = id;
+  navegar('perfil', { pacienteId: id });
+}
+
+function excluirPaciente(id) {
+  if (!confirm('Excluir esta paciente e todas as consultas? Esta ação não pode ser desfeita.')) return;
+  var db = getDB();
+  db.pacientes = db.pacientes.filter(function(p) { return p.id !== id; });
+  db.consultas = db.consultas.filter(function(c) { return c.pacienteId !== id; });
+  saveDB(db);
+  navegar('home');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TELA: PERFIL DA PACIENTE
+// ═══════════════════════════════════════════════════════════
+
+function telaPerfil() {
+  var db = getDB();
+  var p = db.pacientes.find(function(x) { return x.id === ESTADO.pacienteId; });
+  if (!p) { navegar('home'); return; }
+
+  var consultas = db.consultas.filter(function(c) { return c.pacienteId === p.id; }).sort(function(a, b) { return b.data.localeCompare(a.data); });
+  var ultima = consultas[0];
+  var im = ultima ? calcIMC(parseFloat(ultima.peso), parseFloat(ultima.altura)) : { label: '—', classe: '' };
+
+  // Gráfico de peso
+  var temDados = consultas.filter(function(c) { return parseFloat(c.peso) > 0; }).length >= 2;
+  var graficoHTML = temDados
+    ? '<div class="card card-body"><div class="form-label" style="margin-bottom:8px">Evolução do Peso</div><canvas id="grafico-peso" class="chart" height="160"></canvas></div>'
+    : '';
+
+  // Histórico
+  var historicoHTML;
+  if (consultas.length === 0) {
+    historicoHTML = '<div class="empty-state" style="padding:32px"><div class="empty-icon" style="font-size:38px">📋</div><h3>Nenhuma consulta ainda</h3><p>Toque em Nova Consulta para começar</p></div>';
+  } else {
+    historicoHTML = consultas.map(function(c) {
+      var ic = calcIMC(parseFloat(c.peso), parseFloat(c.altura));
+      var meds = (c.medicamentos || []).filter(Boolean);
+      return '<div class="consult-row" onclick="navegar(\'consulta\', {pacienteId:\'' + p.id + '\', consultaId:\'' + c.id + '\'})">' +
+        '<div style="flex:1">' +
+          '<div style="font-weight:600;font-size:14px">' + formatarData(c.data) + '</div>' +
+          '<div style="font-size:12px;color:#7f8c8d">' + (c.peso ? c.peso + ' kg' : '') + (meds.length ? ' · ' + meds.join(', ') : '') + '</div>' +
+        '</div>' +
+        (ic.classe ? '<span class="badge ' + ic.classe + '">' + ic.label.split('·')[0].trim() + '</span>' : '') +
+        '<svg style="opacity:.3" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>' +
+        '</div>';
+    }).join('');
+  }
+
+  document.getElementById('app').innerHTML =
+    '<div class="header">' +
+      '<button class="btn-back" onclick="navegar(\'home\')">← Voltar</button>' +
+      '<div class="header-title"><h1>' + escaparHTML(p.nome) + '</h1><p>' + (p.nascimento ? calcIdade(p.nascimento) : '') + (p.telefone ? ' · ' + p.telefone : '') + '</p></div>' +
+      '<button class="btn-back" onclick="navegar(\'form-paciente\', {pacienteId:\'' + p.id + '\'})">✏️</button>' +
+    '</div>' +
+    '<div class="page">' +
+      (ultima ? '<div class="card card-body" style="margin-bottom:12px">' +
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#7f8c8d;margin-bottom:10px">Última consulta · ' + formatarData(ultima.data) + '</div>' +
+        '<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center">' +
+          (ultima.peso ? '<div><div style="font-size:11px;color:#7f8c8d">Peso</div><div style="font-weight:800;font-size:22px">' + ultima.peso + ' kg</div></div>' : '') +
+          (ultima.altura ? '<div><div style="font-size:11px;color:#7f8c8d">Altura</div><div style="font-weight:800;font-size:22px">' + ultima.altura + ' cm</div></div>' : '') +
+          (im.classe ? '<span class="badge ' + im.classe + '" style="font-size:12px;padding:5px 12px">' + im.label + '</span>' : '') +
+        '</div>' +
+        (ultima.notaPlano ? '<div style="margin-top:10px;font-size:13px;color:#7f8c8d;border-top:1px solid #f0f4f8;padding-top:10px">' + escaparHTML(ultima.notaPlano.substring(0, 140)) + (ultima.notaPlano.length > 140 ? '…' : '') + '</div>' : '') +
+      '</div>' : '') +
+      graficoHTML +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+        '<div style="font-size:13px;font-weight:600">Consultas (' + consultas.length + ')</div>' +
+        '<button class="btn btn-green" style="padding:8px 14px;font-size:13px" onclick="novaConsulta(\'' + p.id + '\')">+ Nova Consulta</button>' +
+      '</div>' +
+      '<div class="card" style="padding:0">' + historicoHTML + '</div>' +
+    '</div>';
+
+  // Desenhar gráfico depois do DOM estar pronto
+  if (temDados) {
+    setTimeout(function() { desenharGrafico(consultas); }, 50);
+  }
+}
+
+function novaConsulta(pacienteId) {
+  var db = getDB();
+  var id = gerarId();
+  var hoje = new Date().toISOString().split('T')[0];
+  db.consultas.push({
+    id: id, pacienteId: pacienteId, data: hoje,
+    peso: '', altura: '', blocos: {}, medicamentos: [], exames: [],
+    notaPlano: '', metaCurto: '', metaLongo: '', retorno: ''
+  });
+  saveDB(db);
+  navegar('consulta', { pacienteId: pacienteId, consultaId: id });
+}
+
+// ═══════════════════════════════════════════════════════════
+// GRÁFICO DE PESO
+// ═══════════════════════════════════════════════════════════
+
+function desenharGrafico(consultas) {
+  var canvas = document.getElementById('grafico-peso');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.offsetWidth;
+  var H = 160;
+  canvas.width = W;
+  canvas.height = H;
+
+  var pts = consultas.filter(function(c) { return parseFloat(c.peso) > 0; }).map(function(c) {
+    return { peso: parseFloat(c.peso), data: c.data };
+  }).reverse();
+
+  if (pts.length < 2) return;
+
+  var pesos = pts.map(function(p) { return p.peso; });
+  var minP = Math.min.apply(null, pesos) - 3;
+  var maxP = Math.max.apply(null, pesos) + 3;
+  var pad = { t: 14, r: 16, b: 30, l: 46 };
+  var cw = W - pad.l - pad.r;
+  var ch = H - pad.t - pad.b;
+
+  // Grid horizontal
+  ctx.strokeStyle = '#f0f4f8';
+  ctx.lineWidth = 1;
+  for (var i = 0; i <= 4; i++) {
+    var gy = pad.t + ch * i / 4;
+    ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(W - pad.r, gy); ctx.stroke();
+    var gv = maxP - (maxP - minP) * i / 4;
+    ctx.fillStyle = '#7f8c8d'; ctx.font = '10px system-ui'; ctx.textAlign = 'right';
+    ctx.fillText(gv.toFixed(0) + 'kg', pad.l - 4, gy + 4);
+  }
+
+  // Coordenadas
+  var coords = pts.map(function(p, i) {
+    return {
+      x: pad.l + cw * i / (pts.length - 1),
+      y: pad.t + ch * (1 - (p.peso - minP) / (maxP - minP)),
+      peso: p.peso, data: p.data
+    };
+  });
+
+  // Área preenchida
+  ctx.beginPath();
+  coords.forEach(function(c, i) { i === 0 ? ctx.moveTo(c.x, c.y) : ctx.lineTo(c.x, c.y); });
+  ctx.lineTo(coords[coords.length - 1].x, H - pad.b);
+  ctx.lineTo(coords[0].x, H - pad.b);
+  ctx.closePath();
+  var grad = ctx.createLinearGradient(0, pad.t, 0, H - pad.b);
+  grad.addColorStop(0, 'rgba(46,204,113,0.25)');
+  grad.addColorStop(1, 'rgba(46,204,113,0)');
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Linha
+  ctx.beginPath();
+  coords.forEach(function(c, i) { i === 0 ? ctx.moveTo(c.x, c.y) : ctx.lineTo(c.x, c.y); });
+  ctx.strokeStyle = '#2ecc71'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.stroke();
+
+  // Pontos e labels
+  coords.forEach(function(c) {
+    ctx.beginPath(); ctx.arc(c.x, c.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#2ecc71'; ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(c.peso + 'kg', c.x, c.y - 9);
+    ctx.fillStyle = '#7f8c8d'; ctx.font = '9px system-ui';
+    ctx.fillText(c.data.slice(5).replace('-', '/'), c.x, H - pad.b + 13);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// TELA: CONSULTA
+// ═══════════════════════════════════════════════════════════
+
+function telaConsulta() {
+  var db = getDB();
+  var consulta = db.consultas.find(function(x) { return x.id === ESTADO.consultaId; });
+  var paciente = db.pacientes.find(function(x) { return x.id === ESTADO.pacienteId; });
+  if (!consulta || !paciente) { navegar('home'); return; }
+
+  var im = calcIMC(parseFloat(consulta.peso), parseFloat(consulta.altura));
+  var blocosHTML = '';
+  BLOCOS.forEach(function(def) { blocosHTML += construirBloco(def, consulta); });
+  blocosHTML += construirBlocoExames(consulta);
+  blocosHTML += construirBlocoPlano(consulta);
+  blocosHTML += construirBlocoFinal(consulta);
+
+  document.getElementById('app').innerHTML =
+    '<div class="header">' +
+      '<button class="btn-back" onclick="salvarEVoltar()">← Voltar</button>' +
+      '<div class="header-title"><h1>' + escaparHTML(paciente.nome) + '</h1><p>Consulta · ' + formatarData(consulta.data) + '</p></div>' +
+      '<div class="header-prog"><span id="prog-texto">—</span><div class="header-bar"><div class="header-bar-fill" id="prog-barra" style="width:0%"></div></div></div>' +
+    '</div>' +
+    '<div class="consult-bar">' +
+      '<input class="form-input" style="width:100px" type="number" step="0.1" placeholder="Peso (kg)" id="inp-peso" value="' + (consulta.peso || '') + '" oninput="atualizarIMC()">' +
+      '<input class="form-input" style="width:110px" type="number" placeholder="Altura (cm)" id="inp-altura" value="' + (consulta.altura || '') + '" oninput="atualizarIMC()">' +
+      '<span class="badge ' + im.classe + '" id="imc-badge" style="font-size:12px;padding:5px 10px">' + im.label + '</span>' +
+      '<div class="progress-outer"><div class="progress-inner" id="barra-consulta" style="width:0%"></div></div>' +
+    '</div>' +
+    '<div class="page">' + blocosHTML + '</div>' +
+    '<div class="footer-bar">' +
+      '<button class="btn btn-gray" onclick="gerarPDF()">📄 Gerar PDF</button>' +
+      '<button class="btn btn-green" id="btn-salvar" onclick="salvarConsulta(true)">Salvar</button>' +
+    '</div>';
+
+  restaurarEstado(consulta);
+  atualizarProgresso();
+
+  // Abre primeiro bloco
+  var primeiro = document.querySelector('.bloco');
+  if (primeiro) primeiro.classList.add('bloco-open');
+}
+
+function construirBloco(def, consulta) {
+  var salvo = consulta.blocos[def.id] || {};
+  var html = '';
+
+  if (def.alerta) {
+    var cls = def.alerta.tipo === 'red' ? 'alert-red' : def.alerta.tipo === 'blue' ? 'alert-blue' : 'alert-yellow';
+    html += '<div class="alert ' + cls + '"><span>⚠️</span><span>' + def.alerta.texto + '</span></div>';
+  }
+
+  def.secoes.forEach(function(sec) {
+    if (sec.titulo) html += '<div class="section-title">' + sec.titulo + '</div>';
+    sec.itens.forEach(function(item) {
+      html += '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">' + escaparHTML(item) + '</span></label>';
+    });
+  });
+
+  html += '<span class="nota-label">Observações</span>';
+  html += '<textarea class="nota-input" data-bloco="' + def.id + '" oninput="autoSalvar()">' + escaparHTML(salvo.nota || '') + '</textarea>';
+
+  return '<div class="bloco" id="bloco-' + def.id + '" data-id="' + def.id + '">' +
+    '<div class="bloco-header" onclick="alternarBloco(\'bloco-' + def.id + '\')">' +
+      '<div class="bloco-num">' + def.num + '</div>' +
+      '<div class="bloco-text"><div class="bloco-title">' + def.titulo + '</div><div class="bloco-sub">' + def.sub + '</div></div>' +
+      '<span class="bloco-count" id="cnt-' + def.id + '">0/0</span>' +
+      '<svg class="bloco-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>' +
+    '</div>' +
+    '<div class="bloco-body">' + html + '</div>' +
+    '</div>';
+}
+
+function construirBlocoExames(consulta) {
+  var salvo = consulta.blocos['b9'] || {};
+  var rows = EXAMES.map(function(e, i) {
+    return '<tr><td><input type="checkbox" data-exame="' + i + '" onchange="aoMarcarItem(this)"></td><td>' + escaparHTML(e[0]) + '</td><td><span class="exam-tag">' + escaparHTML(e[1]) + '</span></td></tr>';
+  }).join('');
+
+  var html = '<table class="exam-table"><thead><tr><th style="width:36px">Pedir</th><th>Exame</th><th>Categoria</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  html += '<span class="nota-label">Observações dos exames</span>';
+  html += '<textarea class="nota-input" data-bloco="b9" oninput="autoSalvar()">' + escaparHTML(salvo.nota || '') + '</textarea>';
+
+  return '<div class="bloco" id="bloco-b9" data-id="b9">' +
+    '<div class="bloco-header" onclick="alternarBloco(\'bloco-b9\')">' +
+      '<div class="bloco-num">9</div>' +
+      '<div class="bloco-text"><div class="bloco-title">Exames</div><div class="bloco-sub">Solicitar ou revisar — marque os pedidos</div></div>' +
+      '<span class="bloco-count" id="cnt-b9">0/0</span>' +
+      '<svg class="bloco-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>' +
+    '</div>' +
+    '<div class="bloco-body">' + html + '</div>' +
+    '</div>';
+}
+
+function construirBlocoPlano(consulta) {
+  var salvo = consulta.blocos['b10'] || {};
+  var html = '';
+  PLANO_SECOES.forEach(function(sec) {
+    html += '<div class="section-title">' + sec.titulo + '</div>';
+    sec.itens.forEach(function(item) {
+      html += '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">' + escaparHTML(item) + '</span></label>';
+    });
+  });
+
+  html += '<div class="section-title">Medicamento Prescrito</div><div class="med-grid">';
+  MEDICAMENTOS.forEach(function(m, i) {
+    html += '<label class="med-card" id="med-' + i + '">' +
+      '<input type="checkbox" data-med="' + i + '" onchange="aoMarcarMed(this)">' +
+      '<div><div class="med-name">' + escaparHTML(m.nome) + '</div><div class="med-desc">' + escaparHTML(m.desc) + '</div></div>' +
+      '</label>';
+  });
+  html += '</div>';
+  html += '<span class="nota-label">Resumo do plano terapêutico</span>';
+  html += '<textarea class="nota-input" data-bloco="b10" oninput="autoSalvar()">' + escaparHTML(salvo.nota || '') + '</textarea>';
+
+  return '<div class="bloco" id="bloco-b10" data-id="b10">' +
+    '<div class="bloco-header" onclick="alternarBloco(\'bloco-b10\')">' +
+      '<div class="bloco-num">10</div>' +
+      '<div class="bloco-text"><div class="bloco-title">Plano Terapêutico</div><div class="bloco-sub">Nutrição, suplementação, medicamento, exercício</div></div>' +
+      '<span class="bloco-count" id="cnt-b10">0/0</span>' +
+      '<svg class="bloco-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>' +
+    '</div>' +
+    '<div class="bloco-body">' + html + '</div>' +
+    '</div>';
+}
+
+function construirBlocoFinal(consulta) {
+  var html =
+    '<div class="section-title">Entrega de Documentos</div>' +
+    '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">Receita médica gerada e entregue?</span></label>' +
+    '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">Pedido de exames gerado e entregue?</span></label>' +
+    '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">Orientações alimentares enviadas?</span></label>' +
+    '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">Suplementação listada e enviada?</span></label>' +
+    '<div class="section-title">Retorno & Metas</div>' +
+    '<div class="form-row" style="margin:8px 0">' +
+      '<div><label class="form-label">Data do retorno</label><input class="form-input" type="date" id="inp-retorno" value="' + (consulta.retorno || '') + '" oninput="autoSalvar()"></div>' +
+      '<div><label class="form-label">Meta curto prazo</label><input class="form-input" id="inp-meta-curto" placeholder="Ex: -3 kg em 30 dias" value="' + escaparHTML(consulta.metaCurto || '') + '" oninput="autoSalvar()"></div>' +
+    '</div>' +
+    '<div class="form-group"><label class="form-label">Meta longo prazo</label><input class="form-input" id="inp-meta-longo" placeholder="Ex: -12 kg em 6 meses" value="' + escaparHTML(consulta.metaLongo || '') + '" oninput="autoSalvar()"></div>' +
+    '<div class="section-title">✅ Checklist Obrigatório</div>' +
+    '<div class="check-grid">';
+
+  CHECKLIST_FINAL.forEach(function(item, i) {
+    html += '<label class="check-item" id="cf-' + i + '"><input type="checkbox" onchange="aoMarcarCheck(this)">' + escaparHTML(item) + '</label>';
+  });
+  html += '</div>';
+  html += '<button class="btn btn-green btn-full btn-lg" style="margin-top:16px" onclick="encerrarConsulta()">Encerrar Consulta</button>';
+
+  return '<div class="bloco" id="bloco-b12" data-id="b12">' +
+    '<div class="bloco-header" onclick="alternarBloco(\'bloco-b12\')">' +
+      '<div class="bloco-num">12</div>' +
+      '<div class="bloco-text"><div class="bloco-title">Encerramento & Checklist Final</div><div class="bloco-sub">Documentos, retorno, despedida</div></div>' +
+      '<span class="bloco-count" id="cnt-b12">0/0</span>' +
+      '<svg class="bloco-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>' +
+    '</div>' +
+    '<div class="bloco-body">' + html + '</div>' +
+    '</div>';
+}
+
+// ── Interações da consulta ────────────────────────────────
+
+function alternarBloco(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('bloco-open');
+}
+
+function aoMarcarItem(cb) {
+  var row = cb.closest('.item-row');
+  if (row) row.classList.toggle('item-checked', cb.checked);
+  atualizarProgresso();
+  autoSalvar();
+}
+
+function aoMarcarMed(cb) {
+  var card = document.getElementById('med-' + cb.dataset.med);
+  if (card) card.classList.toggle('med-selected', cb.checked);
+  atualizarProgresso();
+  autoSalvar();
+}
+
+function aoMarcarCheck(cb) {
+  var item = cb.closest('.check-item');
+  if (item) item.classList.toggle('check-done', cb.checked);
+  atualizarProgresso();
+  autoSalvar();
+}
+
+function atualizarIMC() {
+  var peso = parseFloat(document.getElementById('inp-peso').value);
+  var alt  = parseFloat(document.getElementById('inp-altura').value);
+  var im = calcIMC(peso, alt);
+  var badge = document.getElementById('imc-badge');
+  if (badge) { badge.textContent = im.label; badge.className = 'badge ' + im.classe + ' ' + 'font-size:12px'; }
+  autoSalvar();
+}
+
+function atualizarProgresso() {
+  var todos = document.querySelectorAll('.bloco-body input[type="checkbox"]');
+  var total = todos.length;
+  var marcados = 0;
+  todos.forEach(function(cb) { if (cb.checked) marcados++; });
+  var pct = total > 0 ? Math.round(marcados / total * 100) : 0;
+
+  var barra = document.getElementById('barra-consulta');
+  var barraH = document.getElementById('prog-barra');
+  var texto = document.getElementById('prog-texto');
+  if (barra) barra.style.width = pct + '%';
+  if (barraH) barraH.style.width = pct + '%';
+  if (texto) texto.textContent = marcados + '/' + total + ' · ' + pct + '%';
+
+  document.querySelectorAll('.bloco[data-id]').forEach(function(el) {
+    var cbs = el.querySelectorAll('.bloco-body input[type="checkbox"]');
+    var t = cbs.length, c = 0;
+    cbs.forEach(function(cb) { if (cb.checked) c++; });
+    var cnt = document.getElementById('cnt-' + el.dataset.id);
+    if (cnt) cnt.textContent = (c === t && t > 0) ? '✓ Completo' : c + '/' + t;
+    el.classList.toggle('bloco-done', c === t && t > 0);
+  });
+}
+
+function restaurarEstado(consulta) {
+  BLOCOS.forEach(function(def) {
+    var salvo = consulta.blocos[def.id] || {};
+    if (!salvo.checks) return;
+    var cbs = document.querySelectorAll('#bloco-' + def.id + ' .bloco-body input[type="checkbox"]');
+    salvo.checks.forEach(function(v, i) {
+      if (cbs[i]) {
+        cbs[i].checked = v;
+        var row = cbs[i].closest('.item-row');
+        if (row) row.classList.toggle('item-checked', v);
+      }
+    });
+  });
+
+  // b9 exames
+  var s9 = consulta.blocos['b9'] || {};
+  if (s9.checks) {
+    document.querySelectorAll('[data-exame]').forEach(function(cb) {
+      var v = s9.checks[parseInt(cb.dataset.exame)];
+      if (v) cb.checked = true;
+    });
+  }
+
+  // b10 plano
+  var s10 = consulta.blocos['b10'] || {};
+  if (s10.checks) {
+    var cbs10 = document.querySelectorAll('#bloco-b10 .bloco-body input[type="checkbox"]');
+    s10.checks.forEach(function(v, i) {
+      if (cbs10[i]) {
+        cbs10[i].checked = v;
+        var row = cbs10[i].closest('.item-row');
+        if (row) row.classList.toggle('item-checked', v);
+      }
+    });
+  }
+
+  // medicamentos
+  (consulta.medicamentos || []).forEach(function(nome) {
+    var idx = MEDICAMENTOS.findIndex(function(m) { return m.nome === nome; });
+    if (idx >= 0) {
+      var cb = document.querySelector('[data-med="' + idx + '"]');
+      if (cb) {
+        cb.checked = true;
+        var card = document.getElementById('med-' + idx);
+        if (card) card.classList.add('med-selected');
+      }
+    }
+  });
+
+  // b12 encerramento
+  var s12 = consulta.blocos['b12'] || {};
+  if (s12.checks) {
+    var cbs12 = document.querySelectorAll('#bloco-b12 .bloco-body input[type="checkbox"]');
+    s12.checks.forEach(function(v, i) {
+      if (cbs12[i]) {
+        cbs12[i].checked = v;
+        var ci = cbs12[i].closest('.check-item');
+        if (ci) ci.classList.toggle('check-done', v);
+        var row = cbs12[i].closest('.item-row');
+        if (row) row.classList.toggle('item-checked', v);
+      }
+    });
+  }
+}
+
+function lerEstadoAtual() {
+  var estado = { blocos: {}, medicamentos: [] };
+  estado.peso    = (document.getElementById('inp-peso')    || {}).value || '';
+  estado.altura  = (document.getElementById('inp-altura')  || {}).value || '';
+  estado.retorno = (document.getElementById('inp-retorno') || {}).value || '';
+  estado.metaCurto = (document.getElementById('inp-meta-curto') || {}).value || '';
+  estado.metaLongo = (document.getElementById('inp-meta-longo') || {}).value || '';
+  estado.notaPlano = '';
+
+  BLOCOS.forEach(function(def) {
+    var cbs = document.querySelectorAll('#bloco-' + def.id + ' .bloco-body input[type="checkbox"]');
+    var nota = document.querySelector('[data-bloco="' + def.id + '"]');
+    estado.blocos[def.id] = { checks: Array.from(cbs).map(function(c) { return c.checked; }), nota: nota ? nota.value : '' };
+  });
+
+  // b9
+  var exChecks = new Array(EXAMES.length).fill(false);
+  document.querySelectorAll('[data-exame]').forEach(function(cb) { exChecks[parseInt(cb.dataset.exame)] = cb.checked; });
+  var nota9 = document.querySelector('[data-bloco="b9"]');
+  estado.blocos['b9'] = { checks: exChecks, nota: nota9 ? nota9.value : '' };
+
+  // b10
+  var cbs10 = document.querySelectorAll('#bloco-b10 .bloco-body input[type="checkbox"]');
+  var nota10 = document.querySelector('[data-bloco="b10"]');
+  estado.blocos['b10'] = { checks: Array.from(cbs10).map(function(c) { return c.checked; }), nota: nota10 ? nota10.value : '' };
+  estado.notaPlano = nota10 ? nota10.value : '';
+
+  // medicamentos
+  document.querySelectorAll('[data-med]').forEach(function(cb) {
+    if (cb.checked) estado.medicamentos.push(MEDICAMENTOS[parseInt(cb.dataset.med)].nome);
+  });
+
+  // b12
+  var cbs12 = document.querySelectorAll('#bloco-b12 .bloco-body input[type="checkbox"]');
+  estado.blocos['b12'] = { checks: Array.from(cbs12).map(function(c) { return c.checked; }) };
+
+  return estado;
+}
+
+var _timerSalvar = null;
+function autoSalvar() {
+  clearTimeout(_timerSalvar);
+  _timerSalvar = setTimeout(function() { salvarConsulta(false); }, 1000);
+}
+
+function salvarConsulta(feedback) {
+  var estado = lerEstadoAtual();
+  var db = getDB();
+  var idx = db.consultas.findIndex(function(c) { return c.id === ESTADO.consultaId; });
+  if (idx < 0) return;
+  Object.assign(db.consultas[idx], estado);
+  saveDB(db);
+  if (feedback) {
+    var btn = document.getElementById('btn-salvar');
+    if (btn) { btn.textContent = '✓ Salvo!'; setTimeout(function() { btn.textContent = 'Salvar'; }, 1500); }
+  }
+}
+
+function salvarEVoltar() {
+  salvarConsulta(false);
+  navegar('perfil', { pacienteId: ESTADO.pacienteId });
+}
+
+function encerrarConsulta() {
+  salvarConsulta(false);
+  if (confirm('Consulta encerrada! Deseja gerar o PDF agora?')) gerarPDF();
+  else navegar('perfil', { pacienteId: ESTADO.pacienteId });
+}
+
+// ═══════════════════════════════════════════════════════════
+// GERADOR DE PDF
+// ═══════════════════════════════════════════════════════════
+
+function gerarPDF() {
+  salvarConsulta(false);
+  var db = getDB();
+  var c = db.consultas.find(function(x) { return x.id === ESTADO.consultaId; });
+  var p = db.pacientes.find(function(x) { return x.id === ESTADO.pacienteId; });
+  if (!c || !p) return;
+
+  var im = calcIMC(parseFloat(c.peso), parseFloat(c.altura));
+  var dra = db.config ? db.config.dra : '';
+  var crm = db.config ? db.config.crm : '';
+
+  var examesSel = EXAMES.filter(function(_, i) { return (c.blocos['b9'] && c.blocos['b9'].checks && c.blocos['b9'].checks[i]); });
+  var meds = (c.medicamentos || []).filter(Boolean);
+  var notaPlano = c.notaPlano || (c.blocos['b10'] && c.blocos['b10'].nota) || '';
+
+  var notas = BLOCOS.filter(function(def) { return c.blocos[def.id] && c.blocos[def.id].nota; }).map(function(def) {
+    return '<div class="pdf-section"><h3>' + def.titulo + '</h3><p>' + escaparHTML(c.blocos[def.id].nota) + '</p></div>';
+  }).join('');
+
+  document.getElementById('pdf-area').innerHTML =
+    '<div class="pdf-header">' +
+      '<div><div class="pdf-logo">REMMED Telemedicina<span>Nutrologia · Emagrecimento & Bem-Estar</span></div></div>' +
+      '<div class="pdf-data">' + formatarData(c.data) + (c.retorno ? '<br>Retorno: ' + formatarData(c.retorno) : '') + '</div>' +
+    '</div>' +
+    '<div class="pdf-patient-box">' +
+      '<div class="pdf-field"><label>Paciente</label><span>' + escaparHTML(p.nome) + '</span></div>' +
+      (p.nascimento ? '<div class="pdf-field"><label>Idade</label><span>' + calcIdade(p.nascimento) + '</span></div>' : '') +
+      (c.peso ? '<div class="pdf-field"><label>Peso</label><span>' + c.peso + ' kg</span></div>' : '') +
+      (c.altura ? '<div class="pdf-field"><label>Altura</label><span>' + c.altura + ' cm</span></div>' : '') +
+      (im.classe ? '<div class="pdf-field"><label>IMC</label><span>' + im.label + '</span></div>' : '') +
+    '</div>' +
+    (meds.length ? '<div class="pdf-section"><h3>Medicamentos Prescritos</h3><div class="pdf-tags">' + meds.map(function(m) { return '<span class="pdf-tag">' + escaparHTML(m) + '</span>'; }).join('') + '</div></div>' : '') +
+    (examesSel.length ? '<div class="pdf-section"><h3>Exames Solicitados</h3><div class="pdf-tags">' + examesSel.map(function(e) { return '<span class="pdf-tag pdf-tag-blue">' + escaparHTML(e[0]) + '</span>'; }).join('') + '</div></div>' : '') +
+    (notaPlano ? '<div class="pdf-section"><h3>Plano Terapêutico</h3><p>' + escaparHTML(notaPlano) + '</p></div>' : '') +
+    (c.metaCurto || c.metaLongo ? '<div class="pdf-section"><h3>Metas</h3>' + (c.metaCurto ? '<p><strong>Curto prazo:</strong> ' + escaparHTML(c.metaCurto) + '</p>' : '') + (c.metaLongo ? '<p><strong>Longo prazo:</strong> ' + escaparHTML(c.metaLongo) + '</p>' : '') + '</div>' : '') +
+    notas +
+    (dra ? '<div class="pdf-assinatura"><div class="pdf-assinatura-box"><div class="pdf-assinatura-linha">' + escaparHTML(dra) + (crm ? ' · CRM ' + escaparHTML(crm) : '') + '</div></div></div>' : '') +
+    '<div class="pdf-footer">REMMED Telemedicina · Gerado em ' + new Date().toLocaleDateString('pt-BR') + ' · Documento de uso exclusivo médico</div>';
+
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TELA: CONFIGURAÇÕES
+// ═══════════════════════════════════════════════════════════
+
+function telaConfig() {
+  var db = getDB();
+  var cfg = db.config || { dra: '', crm: '' };
+
+  document.getElementById('app').innerHTML =
+    '<div class="header">' +
+      '<button class="btn-back" onclick="navegar(\'home\')">← Voltar</button>' +
+      '<div class="header-title"><h1>Configurações</h1></div>' +
+    '</div>' +
+    '<div class="page">' +
+      '<div class="card card-body">' +
+        '<div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#1a6b4a">Dados para o PDF</div>' +
+        '<div class="form-group"><label class="form-label">Nome da médica</label><input class="form-input" id="cfg-dra" placeholder="Dra. Nome Sobrenome" value="' + escaparHTML(cfg.dra || '') + '"></div>' +
+        '<div class="form-group"><label class="form-label">CRM</label><input class="form-input" id="cfg-crm" placeholder="00000/UF" value="' + escaparHTML(cfg.crm || '') + '"></div>' +
+      '</div>' +
+      '<div class="card card-body" style="margin-top:12px">' +
+        '<div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#1a6b4a">Dados</div>' +
+        '<button class="btn btn-gray btn-full" style="margin-bottom:8px" onclick="exportarDados()">📤 Exportar backup (JSON)</button>' +
+        '<label class="btn btn-gray btn-full" style="cursor:pointer">📥 Importar backup<input type="file" accept=".json" style="display:none" onchange="importarDados(this)"></label>' +
+      '</div>' +
+      '<div class="card card-body" style="margin-top:12px">' +
+        '<div style="font-size:12px;color:#7f8c8d;text-align:center">REMMED Nutrologia · Todos os dados ficam apenas neste dispositivo</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="footer-bar">' +
+      '<button class="btn btn-gray" onclick="navegar(\'home\')">Cancelar</button>' +
+      '<button class="btn btn-green" onclick="salvarConfig()">Salvar</button>' +
+    '</div>';
+}
+
+function salvarConfig() {
+  var db = getDB();
+  db.config = {
+    dra: document.getElementById('cfg-dra').value.trim(),
+    crm: document.getElementById('cfg-crm').value.trim()
+  };
+  saveDB(db);
+  navegar('home');
+}
+
+function exportarDados() {
+  var db = getDB();
+  var blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'remmed-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function importarDados(input) {
+  var file = input.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var dados = JSON.parse(e.target.result);
+      if (!dados.pacientes || !dados.consultas) { alert('Arquivo inválido.'); return; }
+      if (!confirm('Substituir todos os dados atuais pelo backup? Esta ação não pode ser desfeita.')) return;
+      saveDB(dados);
+      alert('Dados importados com sucesso!');
+      navegar('home');
+    } catch(err) { alert('Erro ao ler o arquivo: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ROTEADOR
+// ═══════════════════════════════════════════════════════════
+
+function renderizar() {
+  switch (ESTADO.tela) {
+    case 'home':         telaHome();         break;
+    case 'form-paciente': telaFormPaciente(); break;
+    case 'perfil':       telaPerfil();       break;
+    case 'consulta':     telaConsulta();     break;
+    case 'config':       telaConfig();       break;
+    default:             telaHome();
+  }
+}
+
+// Iniciar
+renderizar();
+</script>
+</body>
+</html>
