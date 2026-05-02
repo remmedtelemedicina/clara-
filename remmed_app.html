@@ -119,6 +119,12 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; colo
 .nota-input { width: 100%; border: 1px solid #dde1e7; border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 58px; background: #f0f4f8; outline: none; margin-top: 6px; transition: all 0.2s; }
 .nota-input:focus { border-color: #2ecc71; background: white; }
 
+/* CAMPO RESPOSTA POR PERGUNTA */
+.item-wrap { margin-bottom: 4px; }
+.resp-input { width: calc(100% - 36px); margin-left: 36px; border: none; border-bottom: 1.5px dashed #dde1e7; padding: 3px 6px 4px; font-size: 12.5px; font-family: inherit; resize: none; height: 28px; background: transparent; outline: none; color: #2c3e50; line-height: 1.4; display: block; overflow: hidden; transition: border-color 0.2s, background 0.2s; }
+.resp-input:focus { border-bottom-color: #2ecc71; background: #f0fbf4; }
+.resp-input::placeholder { color: #c8cdd2; font-style: italic; }
+
 /* TABELA EXAMES */
 .exam-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
 .exam-table th { background: #f0f4f8; padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
@@ -617,7 +623,10 @@ function telaPerfil() {
       graficoHTML +
       '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
         '<div style="font-size:13px;font-weight:600">Consultas (' + consultas.length + ')</div>' +
-        '<button class="btn btn-green" style="padding:8px 14px;font-size:13px" onclick="novaConsulta(\'' + p.id + '\')">+ Nova Consulta</button>' +
+        '<div style="display:flex;gap:8px">' +
+          '<button class="btn btn-gray" style="padding:8px 12px;font-size:12px" onclick="copiarLinkFormulario()" title="Copiar link do formulário para o paciente">🔗 Form. Paciente</button>' +
+          '<button class="btn btn-green" style="padding:8px 14px;font-size:13px" onclick="novaConsulta(\'' + p.id + '\')">+ Nova Consulta</button>' +
+        '</div>' +
       '</div>' +
       '<div class="card" style="padding:0">' + historicoHTML + '</div>' +
     '</div>';
@@ -625,6 +634,15 @@ function telaPerfil() {
   // Desenhar gráfico depois do DOM estar pronto
   if (temDados) {
     setTimeout(function() { desenharGrafico(consultas); }, 50);
+  }
+}
+
+function copiarLinkFormulario() {
+  var link = window.location.href.split('#')[0] + '#paciente';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link).then(function() { alert('Link copiado!\n\nEnvie esse link pelo WhatsApp para a paciente preencher antes da consulta:\n\n' + link); });
+  } else {
+    prompt('Copie esse link e envie para a paciente:', link);
   }
 }
 
@@ -746,7 +764,8 @@ function telaConsulta() {
     '</div>' +
     '<div class="page">' + blocosHTML + '</div>' +
     '<div class="footer-bar">' +
-      '<button class="btn btn-gray" onclick="gerarPDF()">📄 Gerar PDF</button>' +
+      '<button class="btn btn-gray" onclick="gerarPDF()" style="flex:none;padding:10px 12px">📄 PDF</button>' +
+      '<button class="btn btn-gray" onclick="importarFormularioPaciente(\'' + consulta.id + '\')" style="flex:none;padding:10px 12px" title="Importar formulário do paciente">📥 Form.</button>' +
       '<button class="btn btn-green" id="btn-salvar" onclick="salvarConsulta(true)">Salvar</button>' +
     '</div>';
 
@@ -761,6 +780,7 @@ function telaConsulta() {
 function construirBloco(def, consulta) {
   var salvo = consulta.blocos[def.id] || {};
   var html = '';
+  var itemIdx = 0;
 
   if (def.alerta) {
     var cls = def.alerta.tipo === 'red' ? 'alert-red' : def.alerta.tipo === 'blue' ? 'alert-blue' : 'alert-yellow';
@@ -770,11 +790,16 @@ function construirBloco(def, consulta) {
   def.secoes.forEach(function(sec) {
     if (sec.titulo) html += '<div class="section-title">' + sec.titulo + '</div>';
     sec.itens.forEach(function(item) {
-      html += '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">' + escaparHTML(item) + '</span></label>';
+      var respVal = (salvo.respostas && salvo.respostas[itemIdx]) ? escaparHTML(salvo.respostas[itemIdx]) : '';
+      html += '<div class="item-wrap">' +
+        '<label class="item-row"><input type="checkbox" onchange="aoMarcarItem(this)"><span class="item-label">' + escaparHTML(item) + '</span></label>' +
+        '<textarea class="resp-input" data-bloco="' + def.id + '" data-resp-idx="' + itemIdx + '" placeholder="Anotar resposta da paciente..." oninput="autoSalvar();autoResize(this)">' + respVal + '</textarea>' +
+        '</div>';
+      itemIdx++;
     });
   });
 
-  html += '<span class="nota-label">Observações</span>';
+  html += '<span class="nota-label">Observações gerais do bloco</span>';
   html += '<textarea class="nota-input" data-bloco="' + def.id + '" oninput="autoSalvar()">' + escaparHTML(salvo.nota || '') + '</textarea>';
 
   return '<div class="bloco" id="bloco-' + def.id + '" data-id="' + def.id + '">' +
@@ -935,18 +960,30 @@ function atualizarProgresso() {
   });
 }
 
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = (el.scrollHeight) + 'px';
+}
+
 function restaurarEstado(consulta) {
   BLOCOS.forEach(function(def) {
     var salvo = consulta.blocos[def.id] || {};
-    if (!salvo.checks) return;
-    var cbs = document.querySelectorAll('#bloco-' + def.id + ' .bloco-body input[type="checkbox"]');
-    salvo.checks.forEach(function(v, i) {
-      if (cbs[i]) {
-        cbs[i].checked = v;
-        var row = cbs[i].closest('.item-row');
-        if (row) row.classList.toggle('item-checked', v);
-      }
-    });
+    if (salvo.checks) {
+      var cbs = document.querySelectorAll('#bloco-' + def.id + ' .bloco-body input[type="checkbox"]');
+      salvo.checks.forEach(function(v, i) {
+        if (cbs[i]) {
+          cbs[i].checked = v;
+          var row = cbs[i].closest('.item-row');
+          if (row) row.classList.toggle('item-checked', v);
+        }
+      });
+    }
+    if (salvo.respostas) {
+      var respsEls = document.querySelectorAll('#bloco-' + def.id + ' [data-resp-idx]');
+      salvo.respostas.forEach(function(v, i) {
+        if (respsEls[i] && v) { respsEls[i].value = v; autoResize(respsEls[i]); }
+      });
+    }
   });
 
   // b9 exames
@@ -1011,19 +1048,21 @@ function lerEstadoAtual() {
 
   BLOCOS.forEach(function(def) {
     var cbs = document.querySelectorAll('#bloco-' + def.id + ' .bloco-body input[type="checkbox"]');
-    var nota = document.querySelector('[data-bloco="' + def.id + '"]');
-    estado.blocos[def.id] = { checks: Array.from(cbs).map(function(c) { return c.checked; }), nota: nota ? nota.value : '' };
+    var nota = document.querySelector('textarea[data-bloco="' + def.id + '"]:not([data-resp-idx])');
+    var respsEls = document.querySelectorAll('#bloco-' + def.id + ' [data-resp-idx]');
+    var respostas = Array.from(respsEls).map(function(el) { return el.value; });
+    estado.blocos[def.id] = { checks: Array.from(cbs).map(function(c) { return c.checked; }), nota: nota ? nota.value : '', respostas: respostas };
   });
 
   // b9
   var exChecks = new Array(EXAMES.length).fill(false);
   document.querySelectorAll('[data-exame]').forEach(function(cb) { exChecks[parseInt(cb.dataset.exame)] = cb.checked; });
-  var nota9 = document.querySelector('[data-bloco="b9"]');
+  var nota9 = document.querySelector('textarea[data-bloco="b9"]');
   estado.blocos['b9'] = { checks: exChecks, nota: nota9 ? nota9.value : '' };
 
   // b10
   var cbs10 = document.querySelectorAll('#bloco-b10 .bloco-body input[type="checkbox"]');
-  var nota10 = document.querySelector('[data-bloco="b10"]');
+  var nota10 = document.querySelector('textarea[data-bloco="b10"]');
   estado.blocos['b10'] = { checks: Array.from(cbs10).map(function(c) { return c.checked; }), nota: nota10 ? nota10.value : '' };
   estado.notaPlano = nota10 ? nota10.value : '';
 
@@ -1088,8 +1127,21 @@ function gerarPDF() {
   var meds = (c.medicamentos || []).filter(Boolean);
   var notaPlano = c.notaPlano || (c.blocos['b10'] && c.blocos['b10'].nota) || '';
 
-  var notas = BLOCOS.filter(function(def) { return c.blocos[def.id] && c.blocos[def.id].nota; }).map(function(def) {
-    return '<div class="pdf-section"><h3>' + def.titulo + '</h3><p>' + escaparHTML(c.blocos[def.id].nota) + '</p></div>';
+  var notas = BLOCOS.filter(function(def) {
+    var b = c.blocos[def.id];
+    return b && (b.nota || (b.respostas && b.respostas.some(function(r) { return r; })));
+  }).map(function(def) {
+    var b = c.blocos[def.id];
+    var allItems = [];
+    def.secoes.forEach(function(sec) { sec.itens.forEach(function(item) { allItems.push(item); }); });
+    var qaHTML = '';
+    if (b.respostas) {
+      b.respostas.forEach(function(resp, i) {
+        if (resp && allItems[i]) qaHTML += '<p style="margin-bottom:6px"><strong style="color:#555">' + escaparHTML(allItems[i]) + '</strong><br>' + escaparHTML(resp) + '</p>';
+      });
+    }
+    if (b.nota) qaHTML += '<p style="color:#666;font-style:italic">' + escaparHTML(b.nota) + '</p>';
+    return '<div class="pdf-section"><h3>' + def.titulo + '</h3>' + qaHTML + '</div>';
   }).join('');
 
   document.getElementById('pdf-area').innerHTML =
@@ -1199,8 +1251,290 @@ function renderizar() {
   }
 }
 
+// ═══════════════════════════════════════════════════════════
+// MODO PACIENTE — formulário pré-consulta
+// ═══════════════════════════════════════════════════════════
+
+function telaFormPacienteExterno() {
+  document.getElementById('app').innerHTML =
+    '<div class="header" style="background:linear-gradient(135deg,#1a5276,#2980b9)">' +
+      '<div class="header-title"><h1>Formulário Pré-Consulta</h1><p>REMMED Telemedicina · Nutrologia</p></div>' +
+    '</div>' +
+    '<div class="page" style="max-width:600px">' +
+      '<div class="alert alert-blue" style="margin-bottom:16px"><span>📋</span><span>Preencha com calma. Suas respostas ajudam a médica a personalizar seu atendimento.</span></div>' +
+
+      '<div class="card card-body">' +
+        '<div class="section-title">Seus dados</div>' +
+        '<div class="form-group"><label class="form-label">Nome completo *</label><input class="form-input" id="pf-nome" placeholder="Seu nome completo"></div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label">Idade</label><input class="form-input" id="pf-idade" type="number" placeholder="Ex: 34"></div>' +
+          '<div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="pf-wpp" placeholder="(00) 00000-0000"></div>' +
+        '</div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label">Peso atual (kg)</label><input class="form-input" id="pf-peso" type="number" step="0.1" placeholder="Ex: 78"></div>' +
+          '<div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="pf-altura" type="number" placeholder="Ex: 163"></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="card card-body">' +
+        '<div class="section-title">Seu objetivo</div>' +
+        '<div class="form-group"><label class="form-label">O que te trouxe à consulta? Conta um pouco sobre você *</label><textarea class="form-textarea" id="pf-objetivo" placeholder="Ex: Quero emagrecer, me sinto cansada o tempo todo, tentei várias dietas..." style="min-height:80px"></textarea></div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label">Quantos kg quer perder?</label><input class="form-input" id="pf-meta-kg" type="number" placeholder="Ex: 15"></div>' +
+          '<div class="form-group"><label class="form-label">Tem data especial em mente?</label><input class="form-input" id="pf-data-evento" placeholder="Ex: Casamento em junho"></div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">Além do peso, o que mais te incomoda? (marque todos)</label>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px" id="pf-queixas">' +
+            ['Cansaço','Insônia','Ansiedade','Falta de disposição','Inchaço','Queda de cabelo','Pele seca','Baixa autoestima'].map(function(q,i){
+              return '<label style="display:flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #dde1e7;border-radius:8px;cursor:pointer;font-size:13px"><input type="checkbox" value="' + q + '" accent-color="#2980b9" style="accent-color:#2980b9"> ' + q + '</label>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">Já tentou emagrecer antes? O que aconteceu?</label><textarea class="form-textarea" id="pf-tentativas" placeholder="Ex: Fiz low carb por 1 mês, perdi 3kg mas parei... já usei sibutramina em 2022..."></textarea></div>' +
+      '</div>' +
+
+      '<div class="card card-body">' +
+        '<div class="section-title">Seus hábitos alimentares</div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label">Refeições por dia</label><select class="form-input" id="pf-refeicoes"><option value="">Selecione</option><option>1 a 2</option><option>3 a 4</option><option>5 ou mais</option></select></div>' +
+          '<div class="form-group"><label class="form-label">Água por dia</label><select class="form-input" id="pf-agua"><option value="">Selecione</option><option>Menos de 1 litro</option><option>1 a 2 litros</option><option>Mais de 2 litros</option></select></div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">O que você costuma comer no café da manhã?</label><textarea class="form-textarea" id="pf-cafe" placeholder="Ex: pão com queijo e café com leite..."></textarea></div>' +
+        '<div class="form-group"><label class="form-label">Almoço e jantar: come em casa, fora ou delivery?</label><input class="form-input" id="pf-refeicao-local" placeholder="Ex: Almoço em casa, jantar delivery quase todo dia"></div>' +
+        '<div class="form-group"><label class="form-label">Belisca entre as refeições ou come sem fome?</label><select class="form-input" id="pf-belisca"><option value="">Selecione</option><option>Nunca</option><option>Às vezes</option><option>Com frequência</option><option>Todo dia</option></select></div>' +
+        '<div class="form-group"><label class="form-label">Consome bebida alcoólica?</label><select class="form-input" id="pf-alcool"><option value="">Selecione</option><option>Nunca</option><option>Raramente</option><option>Fins de semana</option><option>Toda semana</option><option>Todo dia</option></select></div>' +
+        '<div class="form-group"><label class="form-label">Tem intolerância, alergia ou restrição alimentar?</label><input class="form-input" id="pf-restricao" placeholder="Ex: Intolerante à lactose, sou vegetariana..."></div>' +
+      '</div>' +
+
+      '<div class="card card-body">' +
+        '<div class="section-title">Atividade física</div>' +
+        '<div class="form-group"><label class="form-label">Pratica alguma atividade física?</label><select class="form-input" id="pf-exercicio"><option value="">Selecione</option><option>Não pratico</option><option>Pratico 1-2x por semana</option><option>Pratico 3-4x por semana</option><option>Pratico 5x ou mais</option></select></div>' +
+        '<div class="form-group"><label class="form-label">Qual atividade e como você se sente durante/após?</label><textarea class="form-textarea" id="pf-exercicio-tipo" placeholder="Ex: Caminhada 3x por semana, fico cansada muito rápido..."></textarea></div>' +
+        '<div class="form-group"><label class="form-label">Tem alguma limitação física (joelho, coluna, dor)?</label><input class="form-input" id="pf-limitacao" placeholder="Ex: Dor no joelho esquerdo, hérnia de disco..."></div>' +
+      '</div>' +
+
+      '<div class="card card-body">' +
+        '<div class="section-title">Sono</div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label">Horas de sono por noite</label><select class="form-input" id="pf-sono-horas"><option value="">Selecione</option><option>Menos de 5h</option><option>5 a 6h</option><option>6 a 7h</option><option>7 a 8h</option><option>Mais de 8h</option></select></div>' +
+          '<div class="form-group"><label class="form-label">Ressona ou tem apneia?</label><select class="form-input" id="pf-apneia"><option value="">Selecione</option><option>Não</option><option>Ressono às vezes</option><option>Sim, ressono muito</option><option>Apneia diagnosticada</option></select></div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">Como é a qualidade do seu sono?</label><select class="form-input" id="pf-sono-qual"><option value="">Selecione</option><option>Durmo bem e acordo descansada</option><option>Tenho dificuldade para dormir</option><option>Acordo várias vezes à noite</option><option>Acordo cansada mesmo dormindo</option></select></div>' +
+      '</div>' +
+
+      '<div class="card card-body">' +
+        '<div class="section-title">Saúde & histórico médico</div>' +
+        '<div class="form-group"><label class="form-label">Tem alguma dessas condições diagnosticadas? (marque todos)</label>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">' +
+            ['Diabetes tipo 2','Pré-diabetes','Hipertensão','Hipotireoidismo/Hashimoto','SOP','Esteatose hepática (gordura no fígado)','Colesterol/triglicérides altos','Nenhuma das anteriores'].map(function(d){
+              return '<label style="display:flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #dde1e7;border-radius:8px;cursor:pointer;font-size:13px"><input type="checkbox" value="' + d + '" style="accent-color:#2980b9"> ' + d + '</label>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">Usa algum medicamento contínuo? Quais?</label><textarea class="form-textarea" id="pf-medicamentos" placeholder="Ex: Levotiroxina 50mcg, anticoncepcional, antidepressivo..."></textarea></div>' +
+        '<div class="form-group"><label class="form-label">Histórico ginecológico relevante</label><input class="form-input" id="pf-gineco" placeholder="Ex: Menopausa aos 48, SOP, DIU, anticoncepcional oral..."></div>' +
+      '</div>' +
+
+      '<div class="card card-body">' +
+        '<div class="section-title">Saúde emocional</div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label class="form-label">Seu nível de estresse (1=baixo, 10=alto)</label><select class="form-input" id="pf-estresse"><option value="">Selecione</option>' + [1,2,3,4,5,6,7,8,9,10].map(function(n){return '<option>'+n+'</option>';}).join('') + '</select></div>' +
+          '<div class="form-group"><label class="form-label">Tem ansiedade ou depressão?</label><select class="form-input" id="pf-ansiedade"><option value="">Selecione</option><option>Não</option><option>Sim, diagnosticada, faço tratamento</option><option>Sim, mas não faço tratamento</option><option>Suspeito mas não fui diagnosticada</option></select></div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">Você come quando está estressada, triste ou ansiosa?</label><select class="form-input" id="pf-comer-emocional"><option value="">Selecione</option><option>Nunca</option><option>Às vezes</option><option>Com frequência</option><option>Quase sempre</option></select></div>' +
+        '<div class="form-group"><label class="form-label">Tem apoio da família ou parceiro(a) nessa jornada?</label><select class="form-input" id="pf-apoio"><option value="">Selecione</option><option>Sim, muito apoio</option><option>Apoio parcial</option><option>Pouco apoio</option><option>Sem apoio</option></select></div>' +
+        '<div class="form-group"><label class="form-label">Algo mais que queira contar à médica?</label><textarea class="form-textarea" id="pf-extra" placeholder="Pode contar qualquer coisa que achar importante..." style="min-height:70px"></textarea></div>' +
+      '</div>' +
+
+      '<button class="btn btn-green btn-full btn-lg" style="margin-bottom:80px" onclick="submeterFormPaciente()">Enviar para a médica ✓</button>' +
+    '</div>';
+}
+
+function submeterFormPaciente() {
+  var nome = (document.getElementById('pf-nome') || {}).value || '';
+  if (!nome.trim()) { alert('Por favor, informe seu nome completo.'); return; }
+
+  function v(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function checks(containerSelector) {
+    var arr = [];
+    document.querySelectorAll(containerSelector + ' input[type="checkbox"]:checked').forEach(function(cb) { arr.push(cb.value); });
+    return arr;
+  }
+
+  var queixas = checks('#pf-queixas');
+  var doencas = [];
+  document.querySelectorAll('.card input[type="checkbox"][value]').forEach(function(cb) {
+    if (cb.checked && queixas.indexOf(cb.value) < 0) doencas.push(cb.value);
+  });
+
+  var dados = {
+    nome: v('pf-nome'), idade: v('pf-idade'), wpp: v('pf-wpp'),
+    peso: v('pf-peso'), altura: v('pf-altura'),
+    objetivo: v('pf-objetivo'), metaKg: v('pf-meta-kg'), dataEvento: v('pf-data-evento'),
+    queixas: queixas, tentativas: v('pf-tentativas'),
+    refeicoes: v('pf-refeicoes'), agua: v('pf-agua'),
+    cafe: v('pf-cafe'), refeicaoLocal: v('pf-refeicao-local'),
+    belisca: v('pf-belisca'), alcool: v('pf-alcool'), restricao: v('pf-restricao'),
+    exercicio: v('pf-exercicio'), exercicioTipo: v('pf-exercicio-tipo'), limitacao: v('pf-limitacao'),
+    sonoHoras: v('pf-sono-horas'), sonoQual: v('pf-sono-qual'), apneia: v('pf-apneia'),
+    doencas: doencas, medicamentos: v('pf-medicamentos'), gineco: v('pf-gineco'),
+    estresse: v('pf-estresse'), ansiedade: v('pf-ansiedade'),
+    comerEmocional: v('pf-comer-emocional'), apoio: v('pf-apoio'), extra: v('pf-extra')
+  };
+
+  var linhas = [
+    '*📋 Formulário Pré-Consulta — REMMED Nutrologia*',
+    '',
+    '*Paciente:* ' + dados.nome + (dados.idade ? ' · ' + dados.idade + ' anos' : '') + (dados.wpp ? ' · ' + dados.wpp : ''),
+    (dados.peso || dados.altura ? '*Peso/Altura:* ' + (dados.peso ? dados.peso + ' kg' : '') + (dados.altura ? ' · ' + dados.altura + ' cm' : '') : ''),
+    '',
+    '*Objetivo:*',
+    dados.objetivo,
+    (dados.metaKg ? '→ Meta: perder ' + dados.metaKg + ' kg' : ''),
+    (dados.dataEvento ? '→ Evento: ' + dados.dataEvento : ''),
+    (dados.queixas.length ? '→ Outras queixas: ' + dados.queixas.join(', ') : ''),
+    '',
+    '*Tentativas anteriores:*',
+    dados.tentativas || 'Não informado',
+    '',
+    '*Alimentação:*',
+    (dados.refeicoes ? '→ Refeições/dia: ' + dados.refeicoes : ''),
+    (dados.agua ? '→ Água: ' + dados.agua : ''),
+    (dados.cafe ? '→ Café da manhã: ' + dados.cafe : ''),
+    (dados.refeicaoLocal ? '→ Almoço/jantar: ' + dados.refeicaoLocal : ''),
+    (dados.belisca ? '→ Belisca: ' + dados.belisca : ''),
+    (dados.alcool ? '→ Álcool: ' + dados.alcool : ''),
+    (dados.restricao ? '→ Restrições: ' + dados.restricao : ''),
+    '',
+    '*Atividade física:*',
+    (dados.exercicio ? '→ ' + dados.exercicio : ''),
+    (dados.exercicioTipo ? '→ ' + dados.exercicioTipo : ''),
+    (dados.limitacao ? '→ Limitações: ' + dados.limitacao : ''),
+    '',
+    '*Sono:*',
+    (dados.sonoHoras ? '→ ' + dados.sonoHoras + ' de sono' : ''),
+    (dados.sonoQual ? '→ ' + dados.sonoQual : ''),
+    (dados.apneia && dados.apneia !== 'Não' ? '→ Ronco/apneia: ' + dados.apneia : ''),
+    '',
+    '*Saúde:*',
+    (dados.doencas.length ? '→ Doenças: ' + dados.doencas.join(', ') : '→ Nenhuma doença relatada'),
+    (dados.medicamentos ? '→ Medicamentos: ' + dados.medicamentos : ''),
+    (dados.gineco ? '→ Ginecológico: ' + dados.gineco : ''),
+    '',
+    '*Emocional:*',
+    (dados.estresse ? '→ Estresse: ' + dados.estresse + '/10' : ''),
+    (dados.ansiedade ? '→ Ansiedade/depressão: ' + dados.ansiedade : ''),
+    (dados.comerEmocional ? '→ Come por emoção: ' + dados.comerEmocional : ''),
+    (dados.apoio ? '→ Apoio: ' + dados.apoio : ''),
+    (dados.extra ? '\n*Obs extra:* ' + dados.extra : '')
+  ].filter(function(l) { return l !== '' && l !== undefined; });
+
+  var texto = linhas.join('\n');
+  var codigo = btoa(unescape(encodeURIComponent(JSON.stringify(dados))));
+
+  document.getElementById('app').innerHTML =
+    '<div class="header" style="background:linear-gradient(135deg,#1a5276,#2980b9)">' +
+      '<div class="header-title"><h1>Formulário enviado! ✓</h1><p>Obrigada, ' + escaparHTML(dados.nome.split(' ')[0]) + '!</p></div>' +
+    '</div>' +
+    '<div class="page" style="max-width:600px">' +
+      '<div class="alert" style="background:#d5f5e3;border:1px solid #2ecc71;color:#1a6b4a;margin-bottom:16px"><span>✅</span><span>Suas respostas estão prontas! Copie o texto abaixo e envie pelo WhatsApp para o consultório.</span></div>' +
+      '<div class="card card-body">' +
+        '<div style="font-size:12px;color:#7f8c8d;margin-bottom:8px">Toque no botão para copiar e cole no WhatsApp:</div>' +
+        '<button class="btn btn-green btn-full" style="margin-bottom:12px" onclick="copiarTexto()">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>' +
+          ' Copiar texto para WhatsApp' +
+        '</button>' +
+        '<textarea id="texto-final" style="width:100%;height:260px;font-size:12px;font-family:monospace;padding:10px;border:1px solid #dde1e7;border-radius:8px;resize:none;background:#f8f9fa" readonly>' + texto + '</textarea>' +
+      '</div>' +
+      '<div class="card card-body" style="margin-top:8px">' +
+        '<div style="font-size:11px;color:#7f8c8d;margin-bottom:6px">Código para a médica importar no sistema:</div>' +
+        '<div style="display:flex;gap:8px">' +
+          '<input id="codigo-final" style="flex:1;padding:8px;font-size:11px;font-family:monospace;border:1px solid #dde1e7;border-radius:8px;background:#f0f4f8" readonly value="' + escaparHTML(codigo) + '">' +
+          '<button class="btn btn-gray" onclick="copiarCodigo()">Copiar</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  window._textoFinal = texto;
+  window._codigoFinal = codigo;
+}
+
+function copiarTexto() {
+  var el = document.getElementById('texto-final');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(el.value).then(function() { alert('Texto copiado! Cole no WhatsApp.'); });
+  } else {
+    el.select(); document.execCommand('copy'); alert('Texto copiado! Cole no WhatsApp.');
+  }
+}
+
+function copiarCodigo() {
+  var el = document.getElementById('codigo-final');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(el.value).then(function() { alert('Código copiado!'); });
+  } else {
+    el.select(); document.execCommand('copy'); alert('Código copiado!');
+  }
+}
+
+function importarFormularioPaciente(consultaId) {
+  var codigo = prompt('Cole aqui o código do formulário do paciente:');
+  if (!codigo) return;
+  try {
+    var dados = JSON.parse(decodeURIComponent(escape(atob(codigo.trim()))));
+    var db = getDB();
+    var idx = db.consultas.findIndex(function(c) { return c.id === consultaId; });
+    if (idx < 0) { alert('Consulta não encontrada.'); return; }
+
+    var linhas = [];
+    if (dados.objetivo) linhas.push('OBJETIVO: ' + dados.objetivo);
+    if (dados.tentativas) linhas.push('TENTATIVAS: ' + dados.tentativas);
+    if (dados.queixas && dados.queixas.length) linhas.push('QUEIXAS: ' + dados.queixas.join(', '));
+
+    var b1nota = linhas.join('\n');
+
+    var linhasAlim = [];
+    if (dados.refeicoes) linhasAlim.push('Refeições/dia: ' + dados.refeicoes);
+    if (dados.agua) linhasAlim.push('Água: ' + dados.agua);
+    if (dados.cafe) linhasAlim.push('Café da manhã: ' + dados.cafe);
+    if (dados.refeicaoLocal) linhasAlim.push('Almoço/jantar: ' + dados.refeicaoLocal);
+    if (dados.belisca) linhasAlim.push('Belisca: ' + dados.belisca);
+    if (dados.alcool) linhasAlim.push('Álcool: ' + dados.alcool);
+    if (dados.restricao) linhasAlim.push('Restrições: ' + dados.restricao);
+
+    var b3nota = linhasAlim.join('\n');
+
+    var b4nota = [dados.exercicio, dados.exercicioTipo, dados.limitacao ? 'Limitação: ' + dados.limitacao : ''].filter(Boolean).join('\n');
+    var b5nota = [dados.sonoHoras, dados.sonoQual, dados.apneia].filter(Boolean).join('\n');
+    var b6nota = ['Estresse: ' + (dados.estresse || '?') + '/10', dados.ansiedade, 'Comer emocional: ' + (dados.comerEmocional || '?'), 'Apoio: ' + (dados.apoio || '?')].filter(Boolean).join('\n');
+    var b7nota = [(dados.doencas || []).join(', '), dados.medicamentos ? 'Medicamentos: ' + dados.medicamentos : '', dados.gineco ? 'Gineco: ' + dados.gineco : ''].filter(Boolean).join('\n');
+
+    if (!db.consultas[idx].blocos) db.consultas[idx].blocos = {};
+    db.consultas[idx].blocos['b1'] = { nota: b1nota, checks: [], respostas: [] };
+    db.consultas[idx].blocos['b3'] = { nota: b3nota, checks: [], respostas: [] };
+    db.consultas[idx].blocos['b4'] = { nota: b4nota, checks: [], respostas: [] };
+    db.consultas[idx].blocos['b5'] = { nota: b5nota, checks: [], respostas: [] };
+    db.consultas[idx].blocos['b6'] = { nota: b6nota, checks: [], respostas: [] };
+    db.consultas[idx].blocos['b7'] = { nota: b7nota, checks: [], respostas: [] };
+    if (dados.extra) db.consultas[idx].blocos['b8'] = { nota: dados.extra, checks: [], respostas: [] };
+
+    if (dados.peso) db.consultas[idx].peso = dados.peso;
+    if (dados.altura) db.consultas[idx].altura = dados.altura;
+
+    saveDB(db);
+    alert('Formulário importado com sucesso! Os dados foram preenchidos na consulta.');
+    navegar('consulta', { pacienteId: ESTADO.pacienteId, consultaId: consultaId });
+  } catch(e) {
+    alert('Código inválido. Verifique se copiou corretamente.');
+  }
+}
+
 // Iniciar
-renderizar();
+if (window.location.hash.indexOf('#paciente') === 0) {
+  telaFormPacienteExterno();
+} else {
+  renderizar();
+}
 </script>
 </body>
 </html>
