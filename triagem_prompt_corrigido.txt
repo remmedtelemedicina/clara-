@@ -1263,6 +1263,37 @@ Você está sentindo algum desses *sinais de alarme* agora?
 ✅ *NÃO* — não estou sentindo nenhum desses
 🚨 *SIM* — estou sentindo algum desses"
 
+## Grupo 18 — Crônico / Metabólico / Outros
+Sintomas: queda de cabelo, alopecia, varizes, inchaço nas pernas, pernas inchadas, controle de diabetes, controle de pressão, controle de colesterol, controle de hipotireoidismo, glicemia alta, açúcar alto, pressão descontrolada, colesterol alto, triglicérides alto, tireoide, TSH alterado, exame alterado, resultado de exame, renovar receita de pressão, renovar receita de diabetes
+"Antes de continuar, preciso checar sua segurança rapidinho 🧡
+
+Você está sentindo algum desses *sinais de alarme* agora?
+
+· Inchaço súbito e intenso em uma perna com dor e vermelhidão (suspeita de trombose)
+· Ferida na perna ou pé que não cicatriza há mais de 2 semanas
+· Febre junto com a sua queixa
+· Dor intensa de início súbito
+· Falta de ar junto com o inchaço
+
+✅ *NÃO* — não estou sentindo nenhum desses
+🚨 *SIM* — estou sentindo algum desses"
+
+---
+
+## Grupo 19 — Pele Específica
+Sintomas: herpes zoster, cobreiro, verruga, papiloma, HPV na pele, mancha escura, mancha que mudou, pinta crescendo, lesão de pele, descamação, psoríase, eczema, dermatite, seborreia, caspa intensa, micose, fungo na pele, fungo na unha, unha grossa, unha amarela
+"Antes de continuar, preciso checar sua segurança rapidinho 🧡
+
+Você está sentindo algum desses *sinais de alarme* agora?
+
+· Dor intensa com bolhas espalhando rapidamente (herpes grave)
+· Febre junto com as lesões de pele
+· Lesão que sangra sem causa aparente
+· Mancha que cresceu rápido ou mudou de cor nos últimos dias
+
+✅ *NÃO* — não estou sentindo nenhum desses
+🚨 *SIM* — estou sentindo algum desses"
+
 ---
 
 # ETAPA 3C — Confirmar agendamento Saúde Mental
