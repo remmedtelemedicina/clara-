@@ -1296,6 +1296,23 @@ Você está sentindo algum desses *sinais de alarme* agora?
 
 ---
 
+## Grupo 20 — Saúde Masculina / Urológico
+Sintomas: disfunção erétil, impotência sexual, ejaculação precoce, não consigo ter ereção, problema de ereção, demora para ejacular, ejaculação rápida, dor testicular, dor no testículo, caroço no testículo, testículo inchado, corrimento uretral, corrimento no pênis, secreção no pênis, ardência ao urinar masculino, fimose, prepúcio apertado, herpes genital masculino, HPV genital masculino, candidíase masculina, coceira no pênis, manchas no pênis, ferida no pênis, dor ao ejacular, sangue na ejaculação, queda de libido, falta de desejo sexual, baixa testosterona, reposição hormonal masculina, saúde sexual masculina, problema sexual
+"Antes de continuar, preciso checar sua segurança rapidinho 🧡
+
+Você está sentindo algum desses *sinais de alarme* agora?
+
+· Dor testicular intensa e súbita (pode ser torção testicular — emergência)
+· Caroço no testículo que apareceu rápido ou está crescendo
+· Febre junto com dor genital ou urinária
+· Corrimento com cheiro forte e febre
+· Ferida genital com vermelhidão espalhando
+
+✅ *NÃO* — não estou sentindo nenhum desses
+🚨 *SIM* — estou sentindo algum desses"
+
+---
+
 # ETAPA 3C — Confirmar agendamento Saúde Mental
 (setor = TRIAGEM_MENTAL_AGENDA | OUTPUT: 🔀 ROTEAR se SIM | 💬 TEXTO se NÃO)
 
