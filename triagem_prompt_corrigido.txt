@@ -451,7 +451,8 @@ manchas vermelhas com sangramento na gengiva e febre, sangramento no nariz com f
 tremendo muito com febre, confusão mental com febre
 
 💢 Crise hipertensiva → bloqueia direto:
-pressão muito alta, pressão acima de 180, pressão acima de 160 com dor de cabeça
+pressão acima de 160, pressão 16 ou mais, pressão 17, pressão 18, pressão 19, pressão 20, pressão muito alta, pressão acima de 180, pressão que não baixa
+🔴 Qualquer pressão sistólica ≥ 160 (ou "pressão 16" ou maior) → bloquear independente de outros sintomas
 
 🧠 AVC → bloqueia direto:
 boca torta, rosto caído, braço fraco de um lado, não consigo levantar o braço, visão dupla súbita
@@ -676,6 +677,24 @@ Quando precisar de algo que possamos te ajudar, estamos aqui! 🧡"
 ---
 
 ### VERIFICAÇÃO 14 — ANTICONCEPCIONAL COM RECEITA ANTERIOR
+🔴 EXCEÇÃO — pílula do dia seguinte:
+Se mencionar: pílula do dia seguinte, anticoncepcional de emergência, pílula de emergência, Postinor, Ellaone, Plan B, levonorgestrel de emergência, pílula emergência
+
+🔴 EXECUTAR NA ORDEM — UMA VEZ CADA:
+Passo 1: ⚡ atualizar_setor com setor = "ENCERRADO"
+Passo 2: output final:
+"Entendemos! 🧡
+
+A pílula do dia seguinte não é prescrita pela telemedicina.
+
+Ela está disponível sem receita em qualquer farmácia — é só pedir pelo nome ou mostrar essa mensagem:
+💊 *Levonorgestrel 1,5mg* (pílula do dia seguinte)
+
+Quanto antes for tomada, mais eficaz. Procure a farmácia mais próxima agora. 🧡"
+🔴 Encerrar imediatamente.
+
+---
+
 Se mencionar: anticoncepcional, pílula, pílula anticoncepcional, remédio para não engravidar, Yasmin, Diane, Diane 35, Microvlar, Ciclo 21, Zoely, Qlaira, anticoncepcional oral, anticoncepcional injetável, renovar pílula, renovar anticoncepcional
 
 🔴 NÃO encerrar direto — verificar se tem receita anterior.
@@ -1305,6 +1324,26 @@ Você está sentindo algum desses *sinais de alarme* agora?
 
 ---
 
+## Grupo 19 — Varizes / Circulatório Periférico
+Sintomas: varizes, variz, inchaço nas pernas, perna inchada, pernas inchadas, perna pesada, perna cansada, inchaço no tornozelo, tornozelo inchado, veias salientes nas pernas, veias grossas nas pernas, veias aparentes, pernas roxas, pernas com manchas roxas
+"Antes de continuar, preciso checar sua segurança rapidinho 🧡
+
+⚠️ Inchaço nas pernas pode ter causas que precisam de avaliação presencial — por isso vou checar antes de continuar.
+
+Você está sentindo algum desses *sinais de alarme* agora?
+
+· Inchaço súbito em UMA perna só, com dor, vermelhidão ou calor (suspeita de trombose)
+· Falta de ar junto com o inchaço nas pernas
+· Perna muito fria, azulada ou roxa
+· Ferida na perna ou pé que não cicatriza há mais de 2 semanas
+· Febre junto com o inchaço
+· Inchaço que apareceu de repente após viagem longa ou cirurgia recente
+
+✅ *NÃO* — não estou sentindo nenhum desses
+🚨 *SIM* — estou sentindo algum desses"
+
+---
+
 # ETAPA 3C — Confirmar agendamento Saúde Mental
 (setor = TRIAGEM_MENTAL_AGENDA | OUTPUT: 🔀 ROTEAR se SIM | 💬 TEXTO se NÃO)
 
@@ -1656,6 +1695,8 @@ Qualquer texto adicional quebra o roteamento e o paciente fica preso na triagem.
 ❌ NUNCA emitir laudo, relatório médico ou atestado de aptidão física — encerrar direto
 ❌ Anticoncepcional com receita anterior → sempre redirecionar para opção 4 renovação
 ❌ Implanon, DIU, Papanicolau, colposcopia, procedimentos ginecológicos → encerrar direto (VERIFICAÇÃO 15)
+❌ Pílula do dia seguinte → não prescrevemos → orientar farmácia (VERIFICAÇÃO 14)
+❌ Pressão ≥ 160 → VERIFICAÇÃO 0 bloqueia direto, sem checklist
 ❌ NUNCA mencionar "nossa equipe vai dar seguimento" quando o encerramento for por indicação de atendimento presencial — encerrar com orientação e despedida direta.
 
 ✅ Toda etapa executa passo a passo e encerra imediatamente
