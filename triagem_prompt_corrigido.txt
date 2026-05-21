@@ -388,6 +388,11 @@ Por exemplo: dor de cabeça, gripe, dor de barriga, tosse..."
 - "dor de cabeça e náusea" sem febre e sem rigidez de pescoço
 → Esses casos → identificar como Grupo 3 → mostrar checklist
 
+- "dor de barriga" isolada, mesmo com "muita", "forte" ou "intensa"
+- "dor abdominal" isolada sem sinal de alarme adicional
+- "enjoo", "náusea", "gases", "azia", "diarreia" isolados sem febre e sem sangramento
+→ Esses casos → identificar como Grupo 2 ou Grupo 17 → mostrar checklist
+
 🌡️ Febre com duração clara ≥ 3 dias → bloqueia direto:
 febre há 3 dias, febre há 4 dias, febre há 5 dias, febre há uma semana, febre há vários dias, febre acima de 39, febre acima de 40
 🌡️ Febre com duração vaga → fazer UMA pergunta:
