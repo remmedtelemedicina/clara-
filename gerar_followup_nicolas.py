@@ -36,6 +36,7 @@ BLUE_TEXT    = RGBColor(0x1A, 0x73, 0xE8)
 TEAL_TEXT    = RGBColor(0x00, 0x7B, 0x6E)
 PINK_TEXT    = RGBColor(0xAD, 0x14, 0x57)
 YELLOW_TEXT  = RGBColor(0x7A, 0x5C, 0x00)
+CRON_COLOR   = RGBColor(0x37, 0x47, 0x5A)
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 def set_cell_bg(cell, rgb):
@@ -109,33 +110,52 @@ def resp(doc, cond, act, cbg=LIGHT_GREEN, abg=LIGHT_BLUE):
         p = c.paragraphs[0]; ps(p,4,4)
         run(p, f"  {txt}", size=9, color=DARK_TEXT)
 
-def trig(doc, tid, query, alt=False):
-    bg1 = RGBColor(0x17,0x5D,0xBE) if alt else REMMED_BLUE
-    bg2 = MID_GRAY if alt else LIGHT_GRAY
-    t = doc.add_table(rows=1, cols=2); t.alignment = WD_TABLE_ALIGNMENT.CENTER
-    t.columns[0].width = Cm(4); t.columns[1].width = Cm(13)
-    c0,c1 = t.cell(0,0), t.cell(0,1)
-    set_cell_bg(c0,bg1); set_cell_bg(c1,bg2)
-    p0,p1 = c0.paragraphs[0], c1.paragraphs[0]
-    ps(p0,4,4); ps(p1,4,4)
-    run(p0, f"  {tid}", bold=True, size=9, color=WHITE)
-    run(p1, f"  {query}", size=8, color=DARK_TEXT, mono=True)
+def trig(doc, tid, query, cron, note="", alt=False):
+    bg_id  = RGBColor(0x17,0x5D,0xBE) if alt else REMMED_BLUE
+    bg_row = MID_GRAY if alt else LIGHT_GRAY
+    # 3 columns: ID | SQL | Cron
+    t = doc.add_table(rows=1, cols=3); t.alignment = WD_TABLE_ALIGNMENT.CENTER
+    t.columns[0].width = Cm(4)
+    t.columns[1].width = Cm(10.5)
+    t.columns[2].width = Cm(2.5)
+    c0,c1,c2 = t.cell(0,0), t.cell(0,1), t.cell(0,2)
+    set_cell_bg(c0, bg_id); set_cell_bg(c1, bg_row); set_cell_bg(c2, DARK_BG)
+    p0 = c0.paragraphs[0]; ps(p0,3,1)
+    run(p0, f"  {tid}", bold=True, size=8.5, color=WHITE)
+    if note:
+        pn = c0.add_paragraph(); ps(pn,0,3)
+        run(pn, f"  ⚠️ {note}", size=7, color=RGBColor(0xFF,0xD0,0x54), italic=True)
+    p1 = c1.paragraphs[0]; ps(p1,4,4)
+    run(p1, f"  {query}", size=7.5, color=DARK_TEXT, mono=True)
+    p2 = c2.paragraphs[0]; p2.alignment = WD_ALIGN_PARAGRAPH.CENTER; ps(p2,3,3)
+    run(p2, cron, size=7.5, bold=True, color=WHITE, mono=True)
 
-def db_row(doc, field, tipo, desc, header=False):
+def db_row(doc, field, tipo, desc, note="", header=False):
     bg = DARK_BG if header else LIGHT_GRAY
     tc_color = WHITE if header else DARK_TEXT
     t = doc.add_table(rows=1, cols=3); t.alignment = WD_TABLE_ALIGNMENT.CENTER
-    t.columns[0].width = Cm(5.5); t.columns[1].width = Cm(3); t.columns[2].width = Cm(8.5)
-    for i,(txt,w) in enumerate([(field,5.5),(tipo,3),(desc,8.5)]):
+    t.columns[0].width = Cm(5.5); t.columns[1].width = Cm(2.5); t.columns[2].width = Cm(9)
+    for i,(txt,w) in enumerate([(field,5.5),(tipo,2.5),(desc,9)]):
         c = t.cell(0,i); set_cell_bg(c, bg)
-        p = c.paragraphs[0]; ps(p,4,4)
+        p = c.paragraphs[0]; ps(p,3,1)
         run(p, f"  {txt}", bold=header, size=9, color=tc_color,
             mono=(i==0 and not header))
+        if note and i==2 and not header:
+            pn = c.add_paragraph(); ps(pn,0,3)
+            run(pn, f"  → {note}", size=7.5, color=ORANGE_TEXT, italic=True)
+        elif not note and not header:
+            p.paragraph_format.space_after = Pt(3)
 
 def gatilho_line(doc, text, color):
     p = doc.add_paragraph(); ps(p,2,4)
     run(p, "  ⚡  Gatilho:  ", bold=True, size=9, color=color)
     run(p, text, size=8.5, color=DARK_TEXT, mono=True)
+
+def info_box(doc, text, bg=LIGHT_ORANGE, tc=ORANGE_TEXT):
+    t = doc.add_table(rows=1, cols=1); t.alignment = WD_TABLE_ALIGNMENT.CENTER
+    c = t.cell(0,0); set_cell_bg(c, bg)
+    p = c.paragraphs[0]; ps(p,5,5)
+    run(p, f"  {text}", size=9, color=tc, italic=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CABEÇALHO
@@ -148,8 +168,8 @@ run(p, "Documento técnico para Nicolas  •  Estrutura completa de disparos aut
 
 t = doc.add_table(rows=1, cols=4); t.alignment = WD_TABLE_ALIGNMENT.CENTER
 for i,(lbl,val,bg) in enumerate([
-    ("Versão","2.0",LIGHT_BLUE),("Data","Maio / 2026",WHITE),
-    ("Responsável","REMMED",LIGHT_BLUE),("Status","🟡 Em revisão",WHITE)]):
+    ("Versão","3.0",LIGHT_BLUE),("Data","Maio / 2026",WHITE),
+    ("Responsável","REMMED",LIGHT_BLUE),("Status","🟢 Pronto para implementar",LIGHT_GREEN)]):
     c = t.cell(0,i); set_cell_bg(c,bg)
     p = c.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.CENTER; ps(p,5,5)
     run(p, lbl+"\n", bold=True, size=8, color=BLUE_TEXT)
@@ -206,17 +226,17 @@ cal = [
     ("D+60",           "Manutenção de relacionamento",           "Bloco 1", "Só disparar se sem contato nos 30 dias anteriores"),
     ("D+90",           "Reativação — paciente dormente",         "Bloco 5", "Paciente sem nenhum contato por 90 dias"),
     ("D+120",          "Última tentativa de reativação",         "Bloco 5", "Só se não respondeu D+90 → marcar inativo se sem resposta"),
-    ("A cada 60 dias", "Cuidado permanente (pós D+120)",         "Bloco 6", "Ciclo contínuo enquanto opt_out = false e status = ativo"),
+    ("A cada 60 dias", "Cuidado permanente (pós D+120)",         "Bloco 6", "Ciclo contínuo enquanto opt_out = false"),
     ("Renovação -10",  "Aviso renovação antecipado (60 dias)",   "Bloco 4", "Apenas pacientes com ciclo_renovacao = 60"),
     ("Renovação -7",   "Aviso renovação (30 dias)",              "Bloco 3", "Apenas pacientes com ciclo_renovacao = 30"),
     ("Renovação -5",   "2º aviso renovação (60 dias)",           "Bloco 4", "Se sem resposta ao D-10"),
     ("Renovação -3",   "2º aviso renovação (30 dias)",           "Bloco 3", "Se sem resposta ao D-7"),
     ("Renovação +3",   "Recuperação pós-vencimento (30 dias)",   "Bloco 3", "Receita venceu — oferecer renovação"),
     ("Renovação +5",   "Recuperação pós-vencimento (60 dias)",   "Bloco 4", "Receita venceu — oferecer renovação"),
-    ("1º Jun",         "Sazonal — Inverno / gripes",             "Bloco 7", "Todos os pacientes ativos com opt_out = false"),
-    ("1º Nov",         "Sazonal — Dengue / prevenção",           "Bloco 7", "Todos os pacientes ativos com opt_out = false"),
-    ("1º Jan",         "Sazonal — Novo ano / check-up",          "Bloco 7", "Todos os pacientes ativos com opt_out = false"),
-    ("7 Abr",          "Dia Mundial da Saúde",                   "Bloco 7", "Mensagem de valor puro — sem oferta comercial"),
+    ("1º Jun",         "Sazonal — Inverno / gripes",             "Bloco 7", "Todos os pacientes ativos. Cron: 0 9 1 6 *"),
+    ("1º Nov",         "Sazonal — Dengue / prevenção",           "Bloco 7", "Todos os pacientes ativos. Cron: 0 9 1 11 *"),
+    ("1º Jan",         "Sazonal — Novo ano / check-up",          "Bloco 7", "Todos os pacientes ativos. Cron: 0 9 1 1 *"),
+    ("7 Abr",          "Dia Mundial da Saúde",                   "Bloco 7", "Mensagem de valor puro — sem oferta. Cron: 0 9 7 4 *"),
     ("Aniversário",    "Mensagem de aniversário do paciente",    "Bloco 8", "Gatilho: data_nascimento = DIA+MÊS de hoje"),
     ("1 ano REMMED",   "Marco: 1 ano como paciente",             "Bloco 8", "Gatilho: data_cadastro = hoje - 365 dias"),
 ]
@@ -288,7 +308,13 @@ spacer(doc,10)
 
 # ── BLOCO 2 ──────────────────────────────────────────────────────────────────
 block_title(doc,"🔴","BLOCO 2 — Carrinho abandonado (agendou mas não pagou)",LIGHT_RED,RED_TEXT)
-spacer(doc,6)
+spacer(doc,4)
+
+info_box(doc,
+    "⏱️  T4a (30min): Schedule node rodando a cada 30 min — não usar Schedule diário.\n"
+    "  T4b (D+1): Schedule diário 09h00 — disparar se ainda sem pagamento na manhã seguinte.",
+    LIGHT_ORANGE, ORANGE_TEXT)
+spacer(doc,4)
 
 bubble(doc,"📅  D+0  (30 min após agendamento sem pagamento)",RED_TEXT,
     "Oi! 😊 Vi que você iniciou seu agendamento mas ainda não finalizou.\n\n"
@@ -307,6 +333,11 @@ spacer(doc,10)
 # ── BLOCO 3 ──────────────────────────────────────────────────────────────────
 block_title(doc,"🟢","BLOCO 3 — Renovação de receita  |  Ciclo 30 dias",LIGHT_GREEN,GREEN_TEXT)
 spacer(doc,4)
+info_box(doc,
+    "📋  Pré-requisito: campos medicamento_renovacao e ciclo_renovacao devem estar preenchidos.\n"
+    "  Quem preenche: agente Clara (Renovação) via supabase_update_cliente após paciente confirmar renovação.",
+    LIGHT_GREEN, GREEN_TEXT)
+spacer(doc,4)
 gatilho_line(doc,"proxima_renovacao = HOJE + 7  AND  ciclo_renovacao = 30  AND  opt_out = false",GREEN_TEXT)
 
 bubble(doc,"📅  D-7  (7 dias antes do vencimento)",GREEN_TEXT,
@@ -323,11 +354,15 @@ bubble(doc,"📅  D+3  (receita já vencida — recuperação)",GREEN_TEXT,
     "  Sem problema — consigo renovar mesmo assim.\n"
     "  Quer que eu agende agora?",bg=LIGHT_GREEN)
 spacer(doc,3)
-resp(doc,"👉  SIM em qualquer mensagem","📅  Direcionar para fluxo de Renovação de Receita",LIGHT_GREEN,LIGHT_BLUE)
+resp(doc,"👉  SIM em qualquer mensagem","📅  Direcionar para fluxo de Renovação de Receita (fluxo existente no N8N/Clara)",LIGHT_GREEN,LIGHT_BLUE)
 spacer(doc,10)
 
 # ── BLOCO 4 ──────────────────────────────────────────────────────────────────
 block_title(doc,"🟣","BLOCO 4 — Renovação de receita  |  Ciclo 60 dias",LIGHT_PURPLE,PURPLE_TEXT)
+spacer(doc,4)
+info_box(doc,
+    "📋  Mesma lógica do Bloco 3 — diferença apenas no ciclo (60 dias) e janelas de aviso.",
+    LIGHT_PURPLE, PURPLE_TEXT)
 spacer(doc,4)
 gatilho_line(doc,"proxima_renovacao = HOJE + 10  AND  ciclo_renovacao = 60  AND  opt_out = false",PURPLE_TEXT)
 
@@ -345,26 +380,34 @@ bubble(doc,"📅  D+5  (receita já vencida — recuperação)",PURPLE_TEXT,
     "  Consigo renovar agora mesmo se quiser.\n"
     "  Só me responder que eu organizo!",bg=LIGHT_PURPLE)
 spacer(doc,3)
-resp(doc,"👉  SIM em qualquer mensagem","📅  Direcionar para fluxo de Renovação de Receita",LIGHT_GREEN,LIGHT_BLUE)
+resp(doc,"👉  SIM em qualquer mensagem","📅  Direcionar para fluxo de Renovação de Receita (fluxo existente no N8N/Clara)",LIGHT_GREEN,LIGHT_BLUE)
 spacer(doc,10)
 
 # ── BLOCO 5 ──────────────────────────────────────────────────────────────────
 block_title(doc,"🟠","BLOCO 5 — Reativação de pacientes dormentes",LIGHT_ORANGE,ORANGE_TEXT)
 spacer(doc,4)
-gatilho_line(doc,"data_ultima_consulta = HOJE - 90  AND  opt_out = false  AND  ultimo_followup < HOJE - 30",ORANGE_TEXT)
+info_box(doc,
+    "🔑  Lógica de dois estágios:\n"
+    "  D+90: disparo inicial → N8N aguarda resposta → se paciente responde, setar respondeu_reativacao = true\n"
+    "  D+120: só dispara se respondeu_reativacao = false (paciente ignorou D+90)\n"
+    "  Após D+120 sem resposta → setar status_paciente = 'inativo'. Bloco 6 continua ativo.",
+    LIGHT_ORANGE, ORANGE_TEXT)
+spacer(doc,4)
+gatilho_line(doc,"data_ultima_consulta = HOJE - 90  AND  opt_out = false  AND  status_paciente = 'ativo'",ORANGE_TEXT)
 
 bubble(doc,"📅  D+90  (90 dias sem contato)",ORANGE_TEXT,
     "Oi, [NOME]! 🧡 Faz um tempo que não nos falamos.\n\n"
     "  Como está sua saúde? Se precisar de qualquer coisa — consulta, renovação ou só\n"
     "  tirar uma dúvida — estamos aqui pra te ajudar 😊",bg=LIGHT_ORANGE)
 spacer(doc,4)
-bubble(doc,"📅  D+120  (última tentativa — sem resposta ao D+90)",ORANGE_TEXT,
+bubble(doc,"📅  D+120  (última tentativa — apenas se não respondeu D+90)",ORANGE_TEXT,
     "Oi, [NOME]! Notamos que faz um tempo desde sua última consulta. 🧡\n\n"
     "  Quando quiser retomar seu acompanhamento, estamos aqui pra te atender\n"
     "  da melhor forma 😊",bg=LIGHT_ORANGE)
 spacer(doc,3)
 resp(doc,"👉  Sem resposta após D+120",
-         "⚠️  Setar status_paciente = 'inativo' — parar envios do Bloco 5\n  ✅  Bloco 6 (Cuidado Permanente) continua ativo",
+         "⚠️  Setar status_paciente = 'inativo' — parar envios do Bloco 5\n"
+         "  ✅  Bloco 6 (Cuidado Permanente) continua ativo indefinidamente",
      LIGHT_RED,LIGHT_ORANGE)
 spacer(doc,10)
 
@@ -372,38 +415,51 @@ spacer(doc,10)
 block_title(doc,"💙","BLOCO 6 — Cuidado Permanente (a cada 60 dias — sem fim)",LIGHT_TEAL,TEAL_TEXT)
 spacer(doc,4)
 
-p = doc.add_paragraph(); ps(p,0,6)
-run(p,"  💡  Filosofia: ", bold=True, size=9, color=TEAL_TEXT)
-run(p,"70% valor para o paciente  +  30% oferta suave. Nunca começa com \"quer marcar consulta?\"",
-    size=9, color=DARK_TEXT)
+info_box(doc,
+    "💡  Filosofia: 70% valor para o paciente  +  30% oferta suave. Nunca começa com 'quer marcar consulta?'\n\n"
+    "🔀  Alternância de mensagem: usar campo contagem_bloco6 (int).\n"
+    "     Se contagem_bloco6 for ÍMPAR → enviar Mensagem A  |  Se for PAR → enviar Mensagem B\n"
+    "     Após cada envio: incrementar contagem_bloco6 em +1 via supabase_update_cliente.\n"
+    "     Isso evita que o paciente receba sempre a mesma mensagem.",
+    LIGHT_TEAL, TEAL_TEXT)
+spacer(doc,4)
 
-gatilho_line(doc,"ultimo_followup <= HOJE - 60  AND  opt_out = false  (sem limite de data)",TEAL_TEXT)
+gatilho_line(doc,
+    "(ultimo_followup IS NULL OR ultimo_followup <= CURRENT_DATE - 60)\n"
+    "  AND opt_out = false  AND  status_paciente != 'removido'",
+    TEAL_TEXT)
+spacer(doc,2)
 
-bubble(doc,"🔄  Mensagem padrão — Cuidado 60 dias",TEAL_TEXT,
+bubble(doc,"🔄  Mensagem A — Cuidado (envios 1, 3, 5...)",TEAL_TEXT,
     "Oi, [NOME]! 🧡 Passando pra saber como você está.\n\n"
     "  Se precisar de qualquer coisa — uma dúvida, renovação de receita ou nova consulta —\n"
     "  estou aqui. É sempre rápido por aqui! 😊",bg=LIGHT_TEAL)
 spacer(doc,4)
 
-bubble(doc,"🔄  Mensagem alternada — 120 dias (variação para não repetir)",TEAL_TEXT,
+bubble(doc,"🔄  Mensagem B — Variação (envios 2, 4, 6...)",TEAL_TEXT,
     "Oi, [NOME]! 🌿 Só passando pra lembrar que estamos aqui sempre que precisar.\n\n"
     "  Consulta, renovação de receita, dúvida rápida — tudo pelo celular, sem sair de casa 😊",bg=LIGHT_TEAL)
 spacer(doc,4)
 
-p = doc.add_paragraph(); ps(p,2,2)
+p = doc.add_paragraph(); ps(p,2,4)
 run(p,"  ⚠️  Regra anti-spam: ", bold=True, size=9, color=TEAL_TEXT)
-run(p,"Nunca disparar se já houve contato (qualquer tipo) nos últimos 30 dias. "
-       "Verificar campo ultimo_followup antes de cada envio.", size=9, color=DARK_TEXT)
+run(p,"O campo ultimo_followup garante o intervalo de 60 dias. "
+       "Nunca disparar se já houve contato (qualquer bloco) nos últimos 60 dias.",
+    size=9, color=DARK_TEXT)
 spacer(doc,10)
 
 # ── BLOCO 7 ──────────────────────────────────────────────────────────────────
 block_title(doc,"🌦️","BLOCO 7 — Sazonais (calendário fixo — todos os anos)",LIGHT_YELLOW,YELLOW_TEXT)
 spacer(doc,4)
 
-p = doc.add_paragraph(); ps(p,0,6)
-run(p,"  💡  Esses disparos não dependem da data da consulta — rodam em datas fixas do calendário\n"
-       "  para TODOS os pacientes ativos (opt_out = false). Máximo 1 disparo por campanha por paciente.",
-    size=9, color=DARK_TEXT, italic=True)
+info_box(doc,
+    "⚙️  Configuração N8N: criar 4 nós Schedule com Cron Expression (não usar Schedule diário).\n"
+    "     Inverno (1 Jun): 0 9 1 6 *   |   Dengue (1 Nov): 0 9 1 11 *\n"
+    "     Ano Novo (1 Jan): 0 9 1 1 *  |   Dia Saúde (7 Abr): 0 9 7 4 *\n\n"
+    "  O N8N executa automaticamente 1x por ano na data certa — zero intervenção manual.\n"
+    "  SQL: SELECT * FROM clientes WHERE opt_out = false AND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 30)",
+    LIGHT_YELLOW, YELLOW_TEXT)
+spacer(doc,4)
 
 bubble(doc,"❄️  1º de Junho — Inverno / gripes e resfriados",YELLOW_TEXT,
     "Oi, [NOME]! ❄️ O inverno chegou e com ele as gripes e resfriados aparecem mais.\n\n"
@@ -420,7 +476,7 @@ spacer(doc,4)
 
 bubble(doc,"🎊  1º de Janeiro — Novo ano / check-up",YELLOW_TEXT,
     "Oi, [NOME]! 🎊 Feliz Ano Novo!\n\n"
-    "  Que tal começar 2026 cuidando da saúde? Um check-up no início do ano ajuda a\n"
+    "  Que tal começar o ano cuidando da saúde? Um check-up no início do ano ajuda a\n"
     "  identificar o que precisa de atenção antes de virar problema.\n\n"
     "  Se quiser agendar, estou aqui! 😊🧡",bg=LIGHT_YELLOW)
 spacer(doc,4)
@@ -489,95 +545,266 @@ run(p,"  Tabela: clientes  |  Adicionar todos os campos abaixo que ainda não ex
     size=9, color=DARK_TEXT, italic=True)
 
 db_row(doc,"Campo","Tipo","Descrição",header=True)
+
 campos = [
-    ("data_ultima_consulta",  "date",    "Base para todos os cálculos D+N — atualizar após cada consulta"),
-    ("data_cadastro",         "date",    "Data que o paciente se cadastrou — base para '1 ano REMMED' (Bloco 8)"),
-    ("data_nascimento",       "date",    "Para disparo do aniversário (Bloco 8) — já pode existir"),
-    ("ciclo_renovacao",       "int",     "30 ou 60 — preencher quando paciente fizer renovação de receita"),
-    ("proxima_renovacao",     "date",    "Calculado: data_ultima_consulta + ciclo_renovacao — atualizar após renovação"),
-    ("medicamento_renovacao", "text",    "Nome do medicamento — personaliza mensagem dos Blocos 3 e 4"),
-    ("opt_out",               "boolean", "false por padrão — setar true quando paciente pedir para parar"),
-    ("ultimo_followup",       "date",    "Atualizar após CADA disparo — evita duplicidade e spam"),
-    ("status_paciente",       "text",    "'ativo' por padrão — setar 'inativo' após D+120 sem resposta (Bloco 5)"),
+    ("nome",                   "text",     "Nome do paciente — personaliza [NOME] nas mensagens. Provavelmente já existe — confirmar.",
+     ""),
+    ("data_ultima_consulta",   "date",     "Base para cálculos D+N — atualizar após cada consulta confirmada.",
+     ""),
+    ("data_cadastro",          "date",     "Data de primeiro cadastro — base para Bloco 8 '1 ano REMMED'.",
+     "DEFAULT NOW() ao criar registro"),
+    ("data_nascimento",        "date",     "Aniversário do paciente — Bloco 8. Nullable (nem todo paciente informa).",
+     ""),
+    ("ciclo_renovacao",        "int",      "30 ou 60 — preencher quando paciente fizer renovação de receita.",
+     "Preenchido pelo agente Clara (Renovação) via supabase_update_cliente"),
+    ("proxima_renovacao",      "date",     "Calculado: data_ultima_consulta + ciclo_renovacao — atualizar após cada renovação.",
+     "Calculado e salvo pelo agente Clara após confirmar renovação"),
+    ("medicamento_renovacao",  "text",     "Nome do medicamento — personaliza [MEDICAMENTO] nos Blocos 3 e 4.",
+     "Preenchido pelo agente Clara (Renovação) via supabase_update_cliente"),
+    ("opt_out",                "boolean",  "false por padrão — setar true quando paciente pedir para parar. Bloqueia todos os disparos.",
+     "DEFAULT false"),
+    ("ultimo_followup",        "date",     "Atualizar após CADA disparo (qualquer bloco) — controle anti-spam e intervalo Bloco 6.",
+     "Atualizar sempre após envio via Evolution API"),
+    ("status_paciente",        "text",     "'ativo' por padrão — setar 'inativo' após D+120 sem resposta (Bloco 5).",
+     "DEFAULT 'ativo'  |  Valores: 'ativo', 'inativo', 'removido'"),
+    ("respondeu_reativacao",   "boolean",  "Setar true quando paciente responder ao D+90 — impede disparo D+120 desnecessário.",
+     "DEFAULT false  |  Resetar para false quando data_ultima_consulta for atualizada"),
+    ("contagem_bloco6",        "int",      "Contador de envios do Bloco 6 — alterna mensagem A (ímpar) / B (par). Começa em 0.",
+     "DEFAULT 0  |  Incrementar +1 via supabase_update_cliente após cada envio"),
 ]
-for f,t,d in campos:
-    db_row(doc, f, t, d)
+
+for f,t,d,n in campos:
+    db_row(doc, f, t, d, note=n)
+    spacer(doc,1)
 
 spacer(doc,14)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SEÇÃO 5 — TRIGGERS N8N
 # ══════════════════════════════════════════════════════════════════════════════
-heading(doc, "⚡  N8N — TODOS OS TRIGGERS  (Schedule diário — 09h00)")
+heading(doc, "⚡  N8N — TODOS OS TRIGGERS")
 
-p = doc.add_paragraph(); ps(p,0,8)
-run(p,"  Cada trigger = 1 nó Schedule no N8N. Roda 1x por dia.\n"
-       "  Para cada linha retornada → enviar mensagem WhatsApp via Evolution API → atualizar ultimo_followup.",
-    size=9, color=DARK_TEXT, italic=True)
+# Legenda do cabeçalho dos triggers
+t_header = doc.add_table(rows=1, cols=3); t_header.alignment = WD_TABLE_ALIGNMENT.CENTER
+t_header.columns[0].width = Cm(4)
+t_header.columns[1].width = Cm(10.5)
+t_header.columns[2].width = Cm(2.5)
+for i,h in enumerate(["Trigger ID","SQL Query (Supabase)","Cron N8N"]):
+    c = t_header.cell(0,i); set_cell_bg(c, DARK_BG)
+    p = c.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.CENTER; ps(p,4,4)
+    run(p, h, bold=True, size=9, color=WHITE)
+spacer(doc,2)
 
 triggers = [
+    # tid, sql, cron, note, alt
     ("T1 — Bloco 1  D+7",
-     "SELECT * FROM clientes WHERE data_ultima_consulta = CURRENT_DATE - 7 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE data_ultima_consulta = CURRENT_DATE - 7\nAND opt_out = false",
+     "0 9 * * *", "", False),
+
     ("T2 — Bloco 1  D+30",
-     "SELECT * FROM clientes WHERE data_ultima_consulta = CURRENT_DATE - 30 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE data_ultima_consulta = CURRENT_DATE - 30\nAND opt_out = false\nAND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 20)",
+     "0 9 * * *", "", True),
+
     ("T3 — Bloco 1  D+60",
-     "SELECT * FROM clientes WHERE data_ultima_consulta = CURRENT_DATE - 60 AND opt_out = false AND ultimo_followup < CURRENT_DATE - 30"),
-    ("T4 — Bloco 2  30min",
-     "SELECT * FROM agendamentos WHERE criado_em <= NOW() - INTERVAL '30 min' AND pagamento_confirmado = false AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE data_ultima_consulta = CURRENT_DATE - 60\nAND opt_out = false\nAND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 30)",
+     "0 9 * * *", "", False),
+
+    ("T4a — Bloco 2  30min",
+     "SELECT a.*, c.nome FROM agendamentos a\nJOIN clientes c ON c.id = a.cliente_id\nWHERE a.criado_em <= NOW() - INTERVAL '30 min'\nAND a.pagamento_confirmado = false\nAND c.opt_out = false",
+     "*/30 * * * *", "Schedule: cada 30min (não diário!)", True),
+
+    ("T4b — Bloco 2  D+1",
+     "SELECT a.*, c.nome FROM agendamentos a\nJOIN clientes c ON c.id = a.cliente_id\nWHERE DATE(a.criado_em) = CURRENT_DATE - 1\nAND a.pagamento_confirmado = false\nAND c.opt_out = false",
+     "0 9 * * *", "", False),
+
     ("T5 — Bloco 3  D-7",
-     "SELECT * FROM clientes WHERE proxima_renovacao = CURRENT_DATE + 7 AND ciclo_renovacao = 30 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE proxima_renovacao = CURRENT_DATE + 7\nAND ciclo_renovacao = 30\nAND opt_out = false",
+     "0 9 * * *", "", True),
+
     ("T6 — Bloco 3  D-3",
-     "SELECT * FROM clientes WHERE proxima_renovacao = CURRENT_DATE + 3 AND ciclo_renovacao = 30 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE proxima_renovacao = CURRENT_DATE + 3\nAND ciclo_renovacao = 30\nAND opt_out = false",
+     "0 9 * * *", "", False),
+
     ("T7 — Bloco 3  D+3",
-     "SELECT * FROM clientes WHERE proxima_renovacao = CURRENT_DATE - 3 AND ciclo_renovacao = 30 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE proxima_renovacao = CURRENT_DATE - 3\nAND ciclo_renovacao = 30\nAND opt_out = false",
+     "0 9 * * *", "", True),
+
     ("T8 — Bloco 4  D-10",
-     "SELECT * FROM clientes WHERE proxima_renovacao = CURRENT_DATE + 10 AND ciclo_renovacao = 60 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE proxima_renovacao = CURRENT_DATE + 10\nAND ciclo_renovacao = 60\nAND opt_out = false",
+     "0 9 * * *", "", False),
+
     ("T9 — Bloco 4  D-5",
-     "SELECT * FROM clientes WHERE proxima_renovacao = CURRENT_DATE + 5 AND ciclo_renovacao = 60 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE proxima_renovacao = CURRENT_DATE + 5\nAND ciclo_renovacao = 60\nAND opt_out = false",
+     "0 9 * * *", "", True),
+
     ("T10 — Bloco 4  D+5",
-     "SELECT * FROM clientes WHERE proxima_renovacao = CURRENT_DATE - 5 AND ciclo_renovacao = 60 AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE proxima_renovacao = CURRENT_DATE - 5\nAND ciclo_renovacao = 60\nAND opt_out = false",
+     "0 9 * * *", "", False),
+
     ("T11 — Bloco 5  D+90",
-     "SELECT * FROM clientes WHERE data_ultima_consulta = CURRENT_DATE - 90 AND opt_out = false AND status_paciente = 'ativo'"),
+     "SELECT * FROM clientes\nWHERE data_ultima_consulta = CURRENT_DATE - 90\nAND opt_out = false\nAND status_paciente = 'ativo'\nAND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 30)",
+     "0 9 * * *", "", True),
+
     ("T12 — Bloco 5  D+120",
-     "SELECT * FROM clientes WHERE data_ultima_consulta = CURRENT_DATE - 120 AND opt_out = false AND status_paciente = 'ativo'"),
-    ("T13 — Bloco 6  Cuidado 60d",
-     "SELECT * FROM clientes WHERE ultimo_followup <= CURRENT_DATE - 60 AND opt_out = false AND status_paciente != 'removido'"),
+     "SELECT * FROM clientes\nWHERE data_ultima_consulta = CURRENT_DATE - 120\nAND opt_out = false\nAND status_paciente = 'ativo'\nAND respondeu_reativacao = false",
+     "0 9 * * *", "Após envio: setar status_paciente='inativo' se sem resposta", False),
+
+    ("T13 — Bloco 6  60d",
+     "SELECT * FROM clientes\nWHERE (ultimo_followup IS NULL OR ultimo_followup <= CURRENT_DATE - 60)\nAND opt_out = false\nAND status_paciente != 'removido'",
+     "0 9 * * *", "Após envio: +1 em contagem_bloco6", True),
+
     ("T14 — Bloco 7  Inverno",
-     "SELECT * FROM clientes WHERE opt_out = false  -- Rodar manualmente em 01/06 todo ano"),
+     "SELECT * FROM clientes\nWHERE opt_out = false\nAND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 30)",
+     "0 9 1 6 *", "1º de Junho — automático", False),
+
     ("T15 — Bloco 7  Dengue",
-     "SELECT * FROM clientes WHERE opt_out = false  -- Rodar manualmente em 01/11 todo ano"),
+     "SELECT * FROM clientes\nWHERE opt_out = false\nAND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 30)",
+     "0 9 1 11 *", "1º de Novembro — automático", True),
+
     ("T16 — Bloco 7  Ano Novo",
-     "SELECT * FROM clientes WHERE opt_out = false  -- Rodar manualmente em 01/01 todo ano"),
+     "SELECT * FROM clientes\nWHERE opt_out = false\nAND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 30)",
+     "0 9 1 1 *", "1º de Janeiro — automático", False),
+
     ("T17 — Bloco 7  Dia Saúde",
-     "SELECT * FROM clientes WHERE opt_out = false  -- Rodar manualmente em 07/04 todo ano"),
+     "SELECT * FROM clientes\nWHERE opt_out = false\nAND (ultimo_followup IS NULL OR ultimo_followup < CURRENT_DATE - 30)",
+     "0 9 7 4 *", "7 de Abril — automático", True),
+
     ("T18 — Bloco 8  Aniversário",
-     "SELECT * FROM clientes WHERE EXTRACT(MONTH FROM data_nascimento) = EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(DAY FROM data_nascimento) = EXTRACT(DAY FROM CURRENT_DATE) AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE EXTRACT(MONTH FROM data_nascimento) = EXTRACT(MONTH FROM CURRENT_DATE)\nAND EXTRACT(DAY FROM data_nascimento) = EXTRACT(DAY FROM CURRENT_DATE)\nAND opt_out = false\nAND data_nascimento IS NOT NULL",
+     "0 9 * * *", "", False),
+
     ("T19 — Bloco 8  1 ano REMMED",
-     "SELECT * FROM clientes WHERE data_cadastro = CURRENT_DATE - INTERVAL '1 year' AND opt_out = false"),
+     "SELECT * FROM clientes\nWHERE data_cadastro = CURRENT_DATE - INTERVAL '1 year'\nAND opt_out = false",
+     "0 9 * * *", "", True),
 ]
 
-for i,(tid,query) in enumerate(triggers):
-    trig(doc, tid, query, alt=(i%2==1))
+for tid, query, cron, note, alt in triggers:
+    trig(doc, tid, query, cron, note=note, alt=alt)
     spacer(doc,2)
 
 spacer(doc,14)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SEÇÃO 6 — PRIORIDADES
+# SEÇÃO 6 — CONFIGURAÇÃO N8N PASSO A PASSO
+# ══════════════════════════════════════════════════════════════════════════════
+heading(doc, "⚙️  CONFIGURAÇÃO N8N — FLUXO PADRÃO POR TRIGGER")
+
+info_box(doc,
+    "Cada trigger (T1-T19) segue o mesmo padrão de nós no N8N. Criar um subworkflow padrão e reutilizar.",
+    LIGHT_BLUE, BLUE_TEXT)
+spacer(doc,6)
+
+steps = [
+    ("1", "Schedule Trigger",
+     "Cron conforme tabela acima. Para T4a: cada 30min. Para sazonais (T14-T17): cron específico."),
+    ("2", "Supabase Node (SELECT)",
+     "Executar SQL do trigger. Retorna lista de pacientes. Se retorno vazio → parar workflow."),
+    ("3", "Loop Over Items (SplitInBatches)",
+     "Para cada paciente retornado, executar os passos 4-6."),
+    ("4", "Evolution API (HTTP Request)",
+     "POST para enviar mensagem WhatsApp. Substituir [NOME] e [MEDICAMENTO] com dados do item.\n"
+     "  URL: {{$env.EVOLUTION_API_URL}}/message/sendText/{{$env.INSTANCE}}\n"
+     "  Body: { \"number\": \"{{item.telefone}}\", \"text\": \"{{mensagem}}\" }"),
+    ("5", "Supabase Node (UPDATE)",
+     "Atualizar ultimo_followup = CURRENT_DATE para o paciente atual.\n"
+     "  Para T12: também setar respondeu_reativacao = false, agendar checar resposta.\n"
+     "  Para T13: também incrementar contagem_bloco6 = contagem_bloco6 + 1.\n"
+     "  Para T12 após D+120 sem resposta: setar status_paciente = 'inativo'."),
+    ("6", "Wait / Error Handler",
+     "Adicionar nó de tratamento de erro para falhas de envio. Log erros em tabela followup_erros."),
+]
+
+t = doc.add_table(rows=1, cols=3); t.alignment = WD_TABLE_ALIGNMENT.CENTER
+t.columns[0].width = Cm(0.8); t.columns[1].width = Cm(4); t.columns[2].width = Cm(13.2)
+for i,h in enumerate(["#","Nó N8N","O que fazer"]):
+    c = t.cell(0,i); set_cell_bg(c,DARK_BG)
+    p = c.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.CENTER; ps(p,4,4)
+    run(p, h, bold=True, size=9, color=WHITE)
+
+for step, node, action in steps:
+    row = t.add_row()
+    bgs = [REMMED_BLUE, LIGHT_BLUE, LIGHT_GRAY]
+    txts = [WHITE, BLUE_TEXT, DARK_TEXT]
+    for i,(txt,bg,tc) in enumerate(zip([step,node,action],bgs,txts)):
+        c = row.cells[i]; set_cell_bg(c,bg)
+        p = c.paragraphs[0]; ps(p,4,4)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER if i==0 else WD_ALIGN_PARAGRAPH.LEFT
+        run(p, txt, bold=(i<2), size=9 if i>0 else 10, color=tc)
+
+spacer(doc,8)
+
+# Cron reference
+info_box(doc,
+    "📖  Referência Cron (N8N usa formato padrão Unix):  minuto  hora  dia  mês  dia_semana\n"
+    "  0 9 * * *    = Todo dia às 09h00\n"
+    "  */30 * * * * = A cada 30 minutos\n"
+    "  0 9 1 6 *    = 1º de Junho às 09h\n"
+    "  0 9 1 11 *   = 1º de Novembro às 09h\n"
+    "  0 9 1 1 *    = 1º de Janeiro às 09h\n"
+    "  0 9 7 4 *    = 7 de Abril às 09h",
+    DARK_BG, RGBColor(0xA0,0xCC,0xFF))
+spacer(doc,14)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SEÇÃO 7 — SQL DE CRIAÇÃO DOS CAMPOS
+# ══════════════════════════════════════════════════════════════════════════════
+heading(doc, "🛠️  SQL — MIGRATION PARA CRIAR CAMPOS NO SUPABASE")
+
+sql_migration = (
+    "-- Executar no SQL Editor do Supabase (uma vez)\n"
+    "-- Adicionar colunas na tabela clientes que ainda não existem\n\n"
+    "ALTER TABLE clientes\n"
+    "  ADD COLUMN IF NOT EXISTS data_ultima_consulta   date,\n"
+    "  ADD COLUMN IF NOT EXISTS data_cadastro          date DEFAULT CURRENT_DATE,\n"
+    "  ADD COLUMN IF NOT EXISTS data_nascimento        date,\n"
+    "  ADD COLUMN IF NOT EXISTS ciclo_renovacao        int,\n"
+    "  ADD COLUMN IF NOT EXISTS proxima_renovacao      date,\n"
+    "  ADD COLUMN IF NOT EXISTS medicamento_renovacao  text,\n"
+    "  ADD COLUMN IF NOT EXISTS opt_out               boolean DEFAULT false NOT NULL,\n"
+    "  ADD COLUMN IF NOT EXISTS ultimo_followup        date,\n"
+    "  ADD COLUMN IF NOT EXISTS status_paciente        text    DEFAULT 'ativo' NOT NULL,\n"
+    "  ADD COLUMN IF NOT EXISTS respondeu_reativacao   boolean DEFAULT false NOT NULL,\n"
+    "  ADD COLUMN IF NOT EXISTS contagem_bloco6        int     DEFAULT 0 NOT NULL;\n\n"
+    "-- Índices para performance (triggers rodam diariamente)\n"
+    "CREATE INDEX IF NOT EXISTS idx_clientes_ultimo_followup    ON clientes(ultimo_followup);\n"
+    "CREATE INDEX IF NOT EXISTS idx_clientes_data_consulta      ON clientes(data_ultima_consulta);\n"
+    "CREATE INDEX IF NOT EXISTS idx_clientes_proxima_renovacao  ON clientes(proxima_renovacao);\n"
+    "CREATE INDEX IF NOT EXISTS idx_clientes_opt_out            ON clientes(opt_out);\n"
+    "CREATE INDEX IF NOT EXISTS idx_clientes_status             ON clientes(status_paciente);\n\n"
+    "-- Tabela de log de erros de envio\n"
+    "CREATE TABLE IF NOT EXISTS followup_erros (\n"
+    "  id          bigserial PRIMARY KEY,\n"
+    "  cliente_id  bigint REFERENCES clientes(id),\n"
+    "  trigger_id  text,\n"
+    "  erro        text,\n"
+    "  criado_em   timestamptz DEFAULT NOW()\n"
+    ");"
+)
+
+t = doc.add_table(rows=1, cols=1); t.alignment = WD_TABLE_ALIGNMENT.CENTER
+c = t.cell(0,0); set_cell_bg(c, DARK_BG)
+p = c.paragraphs[0]; ps(p,8,8)
+run(p, sql_migration, size=8, color=RGBColor(0xA8,0xD8,0xA8), mono=True)
+
+spacer(doc,14)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SEÇÃO 8 — PRIORIDADES
 # ══════════════════════════════════════════════════════════════════════════════
 heading(doc, "🎯  PRIORIDADE DE IMPLEMENTAÇÃO")
 
 prios = [
-    ("1ª","Alta",   "Opt-out global (LGPD)",           "Obrigatório antes de qualquer disparo em produção"),
-    ("2ª","Alta",   "Bloco 2 — Carrinho abandonado",    "ROI imediato — recupera pacientes que não pagaram"),
-    ("3ª","Alta",   "Bloco 3 — Renovação 30 dias",      "Maior volume — receita recorrente garantida"),
-    ("4ª","Alta",   "Bloco 8 — Aniversário",            "Mais fácil de implementar — impacto emocional enorme"),
-    ("5ª","Média",  "Bloco 1 — Pós-consulta (ajustar)", "Melhorar mensagens existentes"),
-    ("6ª","Média",  "Bloco 4 — Renovação 60 dias",      "Mesma lógica do Bloco 3, ciclo diferente"),
-    ("7ª","Média",  "Bloco 6 — Cuidado Permanente",     "Retenção de longo prazo — diferencial REMMED"),
-    ("8ª","Média",  "Bloco 7 — Sazonais",               "Fácil de implementar — alto engajamento"),
-    ("9ª","Baixa",  "Bloco 5 — Reativação dormentes",   "Impacto de longo prazo"),
-    ("10ª","Baixa", "Bloco 8 — 1 ano REMMED",           "Marco de relacionamento — implementar por último"),
+    ("1ª","Alta",   "Migration SQL (criar campos)",     "Rodar no Supabase antes de qualquer outra coisa"),
+    ("2ª","Alta",   "Opt-out global (LGPD)",             "Obrigatório antes de qualquer disparo em produção"),
+    ("3ª","Alta",   "Bloco 2 — Carrinho abandonado",     "ROI imediato — recupera pacientes que não pagaram"),
+    ("4ª","Alta",   "Bloco 3 — Renovação 30 dias",       "Maior volume — receita recorrente garantida"),
+    ("5ª","Alta",   "Bloco 8 — Aniversário",             "Mais fácil de implementar — impacto emocional enorme"),
+    ("6ª","Média",  "Bloco 1 — Pós-consulta (ajustar)",  "Melhorar mensagens existentes"),
+    ("7ª","Média",  "Bloco 4 — Renovação 60 dias",       "Mesma lógica do Bloco 3, ciclo diferente"),
+    ("8ª","Média",  "Bloco 6 — Cuidado Permanente",      "Retenção de longo prazo — diferencial REMMED"),
+    ("9ª","Média",  "Bloco 7 — Sazonais",                "Fácil de implementar — alto engajamento"),
+    ("10ª","Baixa", "Bloco 5 — Reativação dormentes",    "Impacto de longo prazo"),
+    ("11ª","Baixa", "Bloco 8 — 1 ano REMMED",            "Marco de relacionamento — implementar por último"),
 ]
 
 t = doc.add_table(rows=1, cols=4); t.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -604,9 +831,9 @@ spacer(doc,14)
 t = doc.add_table(rows=1, cols=1); t.alignment = WD_TABLE_ALIGNMENT.CENTER
 c = t.cell(0,0); set_cell_bg(c, DARK_BG)
 p = c.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.CENTER; ps(p,8,8)
-run(p, "REMMED Telemedicina  •  Sistema Clara  •  Follow-up Automático v2.0  •  Maio 2026",
+run(p, "REMMED Telemedicina  •  Sistema Clara  •  Follow-up Automático v3.0  •  Maio 2026",
     size=8, color=RGBColor(0xA0,0xAE,0xBE))
 
-out = "/home/user/clara-/FollowUp_Nicolas_v2.docx"
+out = "/home/user/clara-/FollowUp_Nicolas_v3.docx"
 doc.save(out)
 print(f"Saved: {out}")
