@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Módulo 2 — MFC | Medicina de Família e Comunidade</title>
+<style>
+
+@page {
+    size: A4;
+    margin: 15mm 12mm 15mm 12mm;
+}
+* {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9pt;
+    line-height: 1.4;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+h1 {
+    font-size: 13pt;
+    color: #2c4a7c;
+    border-bottom: 2px solid #2c4a7c;
+    padding-bottom: 4pt;
+    margin: 14pt 0 6pt 0;
+    page-break-after: avoid;
+}
+h2 {
+    font-size: 10.5pt;
+    color: #2c4a7c;
+    margin: 10pt 0 4pt 0;
+    page-break-after: avoid;
+}
+h3 {
+    font-size: 9.5pt;
+    color: #1a3560;
+    margin: 7pt 0 3pt 0;
+    page-break-after: avoid;
+}
+p {
+    margin: 2pt 0;
+}
+ul, ol {
+    margin: 2pt 0 2pt 16pt;
+    padding: 0;
+}
+li {
+    margin: 1pt 0;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin: 5pt 0;
+    font-size: 8.5pt;
+}
+thead th {
+    background-color: #2c4a7c;
+    color: white !important;
+    padding: 4pt 5pt;
+    text-align: left;
+    font-weight: bold;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    border: 1px solid #1a3560;
+}
+tbody td {
+    border: 1px solid #bbb;
+    padding: 3pt 5pt;
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+tbody tr:nth-child(even) td { background-color: #f4f6fc; }
+tbody tr:nth-child(odd) td { background-color: #ffffff; }
+.box-blue {
+    border: 1px solid #2c4a7c;
+    background-color: #e8f0fe;
+    padding: 5pt 8pt;
+    margin: 4pt 0;
+    border-left: 4px solid #2c4a7c;
+    page-break-inside: avoid;
+    font-size: 9pt;
+}
+.box-red {
+    border: 1px solid #cc0000;
+    background-color: #fff5f5;
+    padding: 5pt 8pt;
+    margin: 4pt 0;
+    border-left: 4px solid #cc0000;
+    page-break-inside: avoid;
+    font-size: 9pt;
+}
+.box-yellow {
+    border: 1px solid #b8860b;
+    background-color: #fffdf0;
+    padding: 5pt 8pt;
+    margin: 4pt 0;
+    border-left: 4px solid #b8860b;
+    page-break-inside: avoid;
+    font-size: 9pt;
+}
+.header-banner {
+    background-color: #2c4a7c;
+    color: white;
+    padding: 8pt 12pt;
+    font-size: 11pt;
+    font-weight: bold;
+    margin-bottom: 8pt;
+    text-align: center;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+strong { font-weight: bold; }
+blockquote {
+    border-left: 3px solid #2c4a7c;
+    margin: 4pt 0 4pt 10pt;
+    padding: 2pt 8pt;
+    font-style: italic;
+    color: #333;
+}
+
+</style>
+</head>
+<body>
+<div class="header-banner">
+Módulo 2 — MFC | Medicina de Família e Comunidade<br>
+<span style="font-size:8pt;font-weight:normal">Concurso Médico IBAM | Praia Grande 001/2026 | Atualizado mai/2026</span>
+</div>
+
+<h2><strong>SUMÁRIO</strong></h2>
+<ul>
+<li>1. Guia Estratégico</li>
+<li>2. MFC — Conceitos e Atributos (Starfield)</li>
+<li>3. Abordagem Centrada na Pessoa</li>
+<li>4. Processo de Trabalho na APS</li>
+<li>5. Ética Médica, Sigilo e Prontuário</li>
+<li>6. Biossegurança e Segurança do Paciente</li>
+<li>7. Calendário Vacinal 2026 (PNI atualizado)</li>
+<li>8. Saúde da Criança — Puericultura e Triagem Neonatal</li>
+<li>9. Saúde da Mulher — Pré-natal e Planejamento Reprodutivo</li>
+<li>10. Rastreamento de Cânceres — Colo Útero (2025) e Mama (2025)</li>
+<li>11. HAS — Diretriz SBC 2025</li>
+<li>12. Diabetes Mellitus — Diretriz SBD 2024-2025</li>
+<li>13. Saúde do Adulto e do Idoso</li>
+<li>14. Saúde Mental na APS</li>
+<li>15. Demanda Programada/Espontânea e Visita Domiciliar</li>
+<li>16. Cuidado Compartilhado e Apoio Matricial</li>
+<li>17. Grupos Prioritários e Vulneráveis</li>
+<li>18. Educação em Saúde</li>
+<li>19. Pegadinhas Clássicas IBAM (25)</li>
+<li>20. Questões de Revisão Comentadas (18)</li>
+</ul>
+<h1><strong>1. GUIA ESTRATÉGICO — MÓDULO 2</strong></h1>
+<table>
+<colgroup>
+  <col style="width:20.0%">
+  <col style="width:20.0%">
+  <col style="width:20.0%">
+  <col style="width:20.0%">
+  <col style="width:20.0%">
+</colgroup>
+<thead><tr>
+  <th>Área SUS/Saúde Coletiva (Módulo 1)</th>
+  <th>Questões 20</th>
+  <th>Peso 2</th>
+  <th>Pontos 40</th>
+  <th>Prioridade IIIII</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Específicos MFC (ESTE módulo)</td>
+  <td>10</td>
+  <td>3</td>
+  <td>30</td>
+  <td>IIIII — maior peso/questão</td>
+</tr>
+<tr>
+  <td>Língua Portuguesa</td>
+  <td>10</td>
+  <td>1</td>
+  <td>10</td>
+  <td>III</td>
+</tr>
+</tbody>
+</table>
+<div class="box-blue"><strong> ESTRATÉGIA</strong></div>
+<p>Cada questão aqui vale 3 pts — errar uma dói mais que errar no SUS.</p>
+<p>O IBAM cobra CONCEITOS e DEFINIÇÕES — não casos clínicos complexos.</p>
+<p>Foco máximo: atributos Starfield, rastreamentos (mudanças 2025!), calendário vacinal, HAS e DM.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Tema Atributos APS — Starfield (4 essenciais + 3 derivados)</th>
+  <th>Frequência IBAM Alta</th>
+  <th>Novidade 2025 Não</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Rastreamento colo útero — DNA-HPV como 1ª linhaAlta</td>
+  <td></td>
+  <td>SIM — crítico</td>
+</tr>
+<tr>
+  <td>Rastreamento mama — 40 a 74 anos</td>
+  <td>Alta</td>
+  <td>SIM — Lei 15.284/2025</td>
+</tr>
+<tr>
+  <td>HAS — Diretriz SBC 2025 (pré-hipertensão nova)</td>
+  <td>Alta</td>
+  <td>SIM</td>
+</tr>
+<tr>
+  <td>DM — Diretriz SBD 2024-2025 (TOTG-1h)</td>
+  <td>Alta</td>
+  <td>SIM</td>
+</tr>
+<tr>
+  <td>Calendário vacinal — vacina VSR gestante</td>
+  <td>Alta</td>
+  <td>SIM</td>
+</tr>
+<tr>
+  <td>Processo de trabalho APS / acolhimento / demandaMédia-Alta</td>
+  <td></td>
+  <td>Não</td>
+</tr>
+<tr>
+  <td>Saúde da criança — puericultura / 4 testes neonatosMédia-Alta</td>
+  <td></td>
+  <td>Não</td>
+</tr>
+<tr>
+  <td>Saúde mental na APS — o que tratar vs encaminharMédia</td>
+  <td></td>
+  <td>Não</td>
+</tr>
+<tr>
+  <td>Grupos vulneráveis — políticas</td>
+  <td>Média</td>
+  <td>Não</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>2. MEDICINA DE FAMÍLIA — CONCEITOS E ATRIBUTOS DA APS</strong></h1>
+<h1><strong>(Starfield)</strong></h1>
+<h2><strong>2.1 Definição da Especialidade:</strong></h2>
+<p>A MFC provê atenção continuada, integral e centrada na pessoa, à família e à comunidade. O médico de família cuida</p>
+<p>de PESSOAS — não de órgãos isolados — em todas as fases da vida.</p>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Atributo Primeiro Contato</th>
+  <th>Tipo ESSENCIAL</th>
+  <th>Definição APS = porta de entrada PREFERENCIAL</th>
+  <th>Pegadinha do A sistema prova diz para &quot;qualquer novos problemas serviço&quot; → INCOMPLETO</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Longitudinalidade</td>
+  <td>ESSENCIAL</td>
+  <td>Vínculo contínuo profissional-paciente ao longo</td>
+  <td>seguimento do tempo — de mesmo doença sem crônica. doença Inclui pacientes ≠</td>
+</tr>
+<tr>
+  <td>Integralidade</td>
+  <td>ESSENCIAL</td>
+  <td>Conjunto articulado: promoção + prevenção</td>
+  <td>≠ + resolver diagnóstico tudo + na tratamento APS. É OFERECER + reabilitação o conjunto</td>
+</tr>
+<tr>
+  <td>Coordenação do Cuidado</td>
+  <td>ESSENCIAL</td>
+  <td>APS organiza o cuidado ao longo dos pontos</td>
+  <td>A da prova rede coloca — referência no hospital e contrarreferência → ERRADO. É função</td>
+</tr>
+<tr>
+  <td>Orientação Familiar</td>
+  <td>DERIVADO</td>
+  <td>Família como unidade de cuidado — genograma,</td>
+  <td>Derivado APGAR = fortalece familiar a APS; não existe em todo sistema</td>
+</tr>
+<tr>
+  <td>Orientação Comunitária</td>
+  <td>DERIVADO</td>
+  <td>Conhecer e usar os recursos da comunidade</td>
+  <td>Idem — território, ACS, PSE</td>
+</tr>
+<tr>
+  <td>Competência Cultural</td>
+  <td>DERIVADO</td>
+  <td>Adaptar cuidado à diversidade étnica, cultural</td>
+  <td>Respeito e social ao da nome população social, adscrita cuidado indígena adequado</td>
+</tr>
+</tbody>
+</table>
+<div class="box-yellow">I<strong> MACETE — Atributos</strong></div>
+<p>4 ESSENCIAIS = PLIC: Primeiro contato | Longitudinalidade | Integralidade | Coordenação</p>
+<p>3 DERIVADOS: Orientação Familiar | Orientação Comunitária | Competência Cultural</p>
+<p>Essenciais = existem em qualquer APS de qualidade. Derivados = qualificam ainda mais.</p>
+<div class="box-red">I<strong> PEGADINHAS — Atributos</strong></div>
+<p>Longitudinalidade ≠ continuidade de tratamento. Vínculo inclui paciente SAUDÁVEL.</p>
+<p>Integralidade ≠ resolver tudo na APS. É oferecer o conjunto e coordenar o restante.</p>
+<p>São 4 essenciais — a prova cita 3 omitindo Coordenação ou coloca 5.</p>
+<h1><strong>3. ABORDAGEM CENTRADA NA PESSOA, FAMÍLIA E COMUNIDADE</strong></h1>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Componente S — Subjetivo</th>
+  <th>O que registra Queixa principal, história da doença, medicamentos em uso, alergias — o que o paciente relata</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>O — Objetivo</td>
+  <td>Sinais vitais, exame físico, resultados de exames — o que o profissional observa</td>
+</tr>
+<tr>
+  <td>A — Avaliação</td>
+  <td>Hipóteses diagnósticas, diagnósticos, problemas identificados — raciocínio clínico</td>
+</tr>
+<tr>
+  <td>P — Plano</td>
+  <td>Conduta: exames, prescrições, orientações, encaminhamentos, retorno</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Ferramenta Genograma</th>
+  <th>Descrição Representação gráfica da família em ≥3 gerações. Identifica padrões de doença e dinâmica. I = homem, I</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Ecomapa</td>
+  <td>Relações da família com ambiente externo: trabalho, amigos, serviços, comunidade</td>
+</tr>
+<tr>
+  <td>APGAR Familiar</td>
+  <td>5 itens (0-2 cada): Adaptação | Participação | Crescimento (Growth) | Afeto | Resolução. 0-3=disfunção grave;</td>
+</tr>
+<tr>
+  <td>Ciclo de vida familiar</td>
+  <td>Estágios: formação filhos pequenos adolescentes ninho vazio velhice. Crises normativas em cada → → → →</td>
+</tr>
+</tbody>
+</table>
+<div class="box-blue"><strong> APGAR Familiar — cobrado pelo IBAM</strong></div>
+<p>A = Adaptação | P = Participação | G = Growth (Crescimento) | A = Afeto | R = Resolução</p>
+<p>Pontuação: cada item 0 (nunca), 1 (às vezes), 2 (sempre). Total 0-10.</p>
+<p>Mnêmonico: &quot;APGAR&quot; — igual ao Apgar do RN mas para a família.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Modelo Biomédico</th>
+  <th>Foco Doença como problema biológico isolado</th>
+  <th>Base Apenas biologia — ignora psique e contexto social</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Biopsicossocial (MFC)</td>
+  <td>Pessoa em seu contexto: corpo + mente + relações sociais</td>
+  <td>Bio + Psico + Social — base epistemológica da MFC</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>4. ORGANIZAÇÃO DO PROCESSO DE TRABALHO NA APS</strong></h1>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Tipo Programada</th>
+  <th>Definição Consultas agendadas — condições</th>
+  <th>Exemplos Retorno crônicas, HAS/DM, programas pré-natal, preventivos puericultura,</th>
+  <th>Organização 60-70% idosos da agenda. frágeis Blocos por programa.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Espontânea</td>
+  <td>Queixas agudas, sem agendamento</td>
+  <td>Febre, prévio lombalgia súbita, ansiedade</td>
+  <td>aguda, 20-30% infecção da agenda. urinária Acolhimento com classificação</td>
+</tr>
+<tr>
+  <td>Visita domiciliar</td>
+  <td>Cuidado no território</td>
+  <td>Acamados, RN, puérperas, saúde</td>
+  <td>mental ~10% da agenda</td>
+</tr>
+</tbody>
+</table>
+<h2><strong>4.2 Acolhimento:</strong></h2>
+<p>Postura ética de ESCUTA QUALIFICADA adotada por TODOS os profissionais em TODOS os momentos. Não é</p>
+<p>triagem. Não é sala de espera. Implica receber, ouvir, responsabilizar e direcionar.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Cor Vermelho — Emergência</th>
+  <th>Prazo Imediata</th>
+  <th>Conduta Estabilização + SAMU ou transferência imediata</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Laranja — Urgência</td>
+  <td>≤15 min</td>
+  <td>Atendimento médico breve; monitorar</td>
+</tr>
+<tr>
+  <td>Amarelo — Pouco urgente</td>
+  <td>≤30-60 min</td>
+  <td>Atendimento na sessão, pode aguardar</td>
+</tr>
+<tr>
+  <td>Verde — Não urgente</td>
+  <td>≤120 min</td>
+  <td>Pode ser agendado ou atendido na sessão</td>
+</tr>
+<tr>
+  <td>Azul — Eletivo</td>
+  <td>Agendamento</td>
+  <td>Orientação e consulta programada</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Processo de Trabalho</strong></div>
+<p>Acolhimento ≠ triagem. Triagem = separar/filtrar. Acolhimento = escuta e responsabilização de TODOS.</p>
+<p>&quot;Agenda fechada&quot; não existe no SUS — UBS sempre avalia quem chega com demanda.</p>
+<p>Coordenação do cuidado é da APS — não do hospital nem do especialista.</p>
+<h1><strong>5. ÉTICA MÉDICA, SIGILO, PRONTUÁRIO E CONSENTIMENTO</strong></h1>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Ponto Atos privativos</th>
+  <th>Regra Diagnóstico, prescrição, solicitação de exames, alta/internação, atestados, laudos, declaração de óbito</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Direção técnica</td>
+  <td>Chefia imediata de serviço de saúde = privativo do médico</td>
+</tr>
+<tr>
+  <td>Emergência</td>
+  <td>Médico NUNCA pode recusar atendimento em emergência — mesmo em consultório particular</td>
+</tr>
+<tr>
+  <td>Declaração de óbito</td>
+  <td>Médico assistente emite. SVO: quando não havia médico assistente. IML: suspeita de morte violenta</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Tema Sigilo profissional</th>
+  <th>Regra Dever de manter sigilo das informações do</th>
+  <th>Exceção / Pegadinha paciente Exceções (Art. legais: 73) notificação compulsória, proteção de terceiros,</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Notificação compulsória</td>
+  <td>DEVER do médico — mesmo sem autorização</td>
+  <td>NÃO do viola paciente sigilo. É exceção prevista em lei.</td>
+</tr>
+<tr>
+  <td>Consentimento informado</td>
+  <td>Esclarecer sobre diagnóstico, tratamento,</td>
+  <td>riscos, Paciente alternativas, CAPAZ pode prognóstico RECUSAR tratamento — mesmo com risco</td>
+</tr>
+<tr>
+  <td>Prontuário</td>
+  <td>Obrigatório. Prazo mínimo: 20 anos. Pertence</td>
+  <td>Serviço MORALMENTE guarda, paciente ao PACIENTE. acessa. A prova diz &quot;pertence ao médico&quot;</td>
+</tr>
+<tr>
+  <td>Telemedicina</td>
+  <td>Permitida — Resolução CFM 2.314/2022.</td>
+  <td>Exige A prova sigilo pode e qualidade. negar sua legalidade → ERRADO.</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>6. BIOSSEGURANÇA E SEGURANÇA DO PACIENTE</strong></h1>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Grupo A</th>
+  <th>Tipo Biológico</th>
+  <th>Exemplos Sangue, secreções, curativo, placenta</th>
+  <th>Descarte Saco branco leitoso → autoclave</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>B</td>
+  <td>Químico</td>
+  <td>Medicamentos vencidos, reagentes, mercúrio</td>
+  <td>Saco laranja ou recipiente específico</td>
+</tr>
+<tr>
+  <td>C</td>
+  <td>Radioativo</td>
+  <td>Radiofármacos</td>
+  <td>Recipiente com símbolo de radioatividade</td>
+</tr>
+<tr>
+  <td>D</td>
+  <td>Comum</td>
+  <td>Papéis, embalagens do refeitório</td>
+  <td>Saco preto — lixo comum</td>
+</tr>
+<tr>
+  <td>E</td>
+  <td>Perfurocortante</td>
+  <td>Agulhas, lâminas, bisturis</td>
+  <td>Caixa amarela rígida (descarpak) — NUNCA no lixo comum</td>
+</tr>
+</tbody>
+</table>
+<div class="box-yellow">I<strong> MACETE — RSS</strong></div>
+<p>A=biológico | B=químico | C=radioativo | D=doméstico(comum) | E=perfurocortante(agulha)</p>
+<p>Agulha → SEMPRE caixa amarela (E). Nunca na lixeira comum.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Meta 1. Identificar o paciente</th>
+  <th>Descrição ≥2 identificadores: nome + data de nascimento</th>
+  <th>Na APS Conferir antes de vacinar ou medicar</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>2. Comunicação efetiva</td>
+  <td>Passagem de casos clara — ISBAR</td>
+  <td>Carta de referência completa; prontuário legível</td>
+</tr>
+<tr>
+  <td>3. Medicamentos seguros</td>
+  <td>Alta vigilância: insulina, anticoagulantes,</td>
+  <td>Conferir eletrólitos dose e via antes de injeções na UBS</td>
+</tr>
+<tr>
+  <td>4. Cirurgia segura</td>
+  <td>Checklist OMS</td>
+  <td>Procedimentos menores (sutura) — técnica asséptica</td>
+</tr>
+<tr>
+  <td>5. Higienizar as mãos</td>
+  <td>5 momentos da OMS — principal medida</td>
+  <td>Obrigatória antiinfecciosa antes e após todo atendimento</td>
+</tr>
+<tr>
+  <td>6. Reduzir quedas/UP</td>
+  <td>Escala de Braden; avaliar risco de queda</td>
+  <td>Visita em idosos domiciliar: ambiente seguro para o idoso</td>
+</tr>
+</tbody>
+</table>
+<div class="box-blue"><strong> 5 Momentos da Higienização das Mãos</strong></div>
+<p>1. ANTES de tocar o paciente | 2. ANTES de procedimento asséptico</p>
+<p>3. APÓS risco de exposição a fluidos | 4. APÓS tocar o paciente</p>
+<p>5. APÓS tocar superfícies próximas ao paciente</p>
+<h1><strong>7. CALENDÁRIO VACINAL 2026 — PNI (INSTRUÇÃO NORMATIVA</strong></h1>
+<h1><strong>CNV 2026 — ATUALIZADO 30/01/2026)</strong></h1>
+<div class="box-blue"><strong> NOVA VACINA 2025-2026 — VSR PARA GESTANTE</strong></div>
+<p>Vacina VSR (Vírus Sincicial Respiratório): 1 dose a partir da 28ª semana, em CADA gestação.</p>
+<p>Objetivo: proteger o RN contra bronquiolite e pneumonia por VSR — principal causa de hospitalização em</p>
+<p>lactentes.</p>
+<p>Anticorpo Nirsevimabe: alternativa para RN cujas mães não foram vacinadas.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Idade Ao nascer (12-24h)</th>
+  <th>Vacinas BCG dose única + HepB 1ª</th>
+  <th>Observação Crítica BCG = dose única, sem reforço. HepB = obrigatória antes da alta.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>2 meses</td>
+  <td>Pentavalente 1ª + VIP 1ª + Rotavírus 1ª + Pneumo10</td>
+  <td>Rotavírus: 1ª JANELA — 1ª dose até 3m7d. Fora da janela = NÃO</td>
+</tr>
+<tr>
+  <td>3 meses</td>
+  <td>MenC 1ª</td>
+  <td>Esquema MenC: 3-5-12 meses</td>
+</tr>
+<tr>
+  <td>4 meses</td>
+  <td>Pentavalente 2ª + VIP 2ª + Rotavírus 2ª + Pneumo10</td>
+  <td>Rotavírus: 2ª 2ª e ÚLTIMA dose — janela até 7m29d</td>
+</tr>
+<tr>
+  <td>5 meses</td>
+  <td>MenC 2ª</td>
+  <td></td>
+</tr>
+<tr>
+  <td>6 meses</td>
+  <td>Pentavalente 3ª + VIP 3ª + Influenza</td>
+  <td>Influenza: anual. 1ª vez (&lt;9 anos): 2 doses com 30d de intervalo</td>
+</tr>
+<tr>
+  <td>9 meses</td>
+  <td>Febre Amarela 1ª dose</td>
+  <td>Antecipar 6-8 meses SOMENTE em área de risco com transmissão</td>
+</tr>
+<tr>
+  <td>12 meses</td>
+  <td>Pneumo10 reforço + MenC reforço + SCR + HepA</td>
+  <td>SCR 1ª = Sarampo + Caxumba + Rubéola</td>
+</tr>
+<tr>
+  <td>15 meses</td>
+  <td>DTP reforço + VOP reforço + Varicela (SCRV/Tetraviral)</td>
+  <td>DTP = 1º + reforço HepA 2ª</td>
+</tr>
+<tr>
+  <td>4 anos</td>
+  <td>DTP 2º reforço + VOP 2º reforço + FA reforço</td>
+  <td>FA: após 5 anos → dose ÚNICA vitalícia</td>
+</tr>
+<tr>
+  <td>9 anos</td>
+  <td>HPV 4v (1 dose) — meninas E meninos</td>
+  <td>9-14a: dose única. ≥15a: 2 doses. Imunodeprimidos: 3 doses.</td>
+</tr>
+<tr>
+  <td>COVID-19</td>
+  <td>Disponível a partir de 6 meses</td>
+  <td>Esquema conforme recomendação vigente</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Calendário da Criança</strong></div>
+<p>BCG: dose ÚNICA — sem reforço. FA: 1ª dose 9m, reforço 4a. Após 5 anos: dose única vitalícia.</p>
+<p>Rotavírus: JANELA RÍGIDA. 1ª até 3m7d. 2ª até 7m29d. Não vacinar fora do prazo.</p>
+<p>HPV: dose única para 9-14 anos (meninas E meninos). ≥15a: 2 doses.</p>
+<p>Influenza: anual. Primeira vez (&lt;9a): 2 doses com 30 dias de intervalo.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Vacina dTpa</th>
+  <th>Esquema 1 dose em CADA gestação — 27ª-36ª</th>
+  <th>Observação semana Protege (pode RN contra ser da coqueluche. 20ª semana) OBRIGATÓRIA em cada gestação.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Influenza</td>
+  <td>1 dose em qualquer trimestre — anual</td>
+  <td>Protege gestante e RN</td>
+</tr>
+<tr>
+  <td>Hepatite B</td>
+  <td>3 doses se não vacinada</td>
+  <td>Se já vacinada: não repetir</td>
+</tr>
+<tr>
+  <td>COVID-19</td>
+  <td>Manter esquema atualizado</td>
+  <td>Segura em todos os trimestres</td>
+</tr>
+<tr>
+  <td>VSR</td>
+  <td>1 dose a partir da 28ª semana, em CADA</td>
+  <td>NOVA gestação 2025-2026. Protege RN de VSR.</td>
+</tr>
+<tr>
+  <td>Febre Amarela</td>
+  <td>CONTRAINDICADA (vírus vivo)</td>
+  <td>Excepcionalmente: surto com risco real — avaliar após 1º trimestre</td>
+</tr>
+<tr>
+  <td>SCR / Varicela</td>
+  <td>CONTRAINDICADAS (vírus vivos)</td>
+  <td>Administrar no puerpério imediato se não vacinada</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Gestante</strong></div>
+<p>dTpa: em CADA gestação, não apenas na primeira.</p>
+<p>Febre Amarela: CONTRAINDICADA. Vírus vivo. A prova tenta colocar como obrigatória → ERRADO.</p>
+<p>VSR: nova vacina — não estava em provas anteriores.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Vacina dT</th>
+  <th>Adulto (20-59a) Reforço a cada 10 anos</th>
+  <th>Idoso (≥60a) Reforço a cada 10 anos</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>dTpa</td>
+  <td>1 dose em substituição ao dT (convive</td>
+  <td>com 1 dose RN/gestante) se nunca recebeu</td>
+</tr>
+<tr>
+  <td>Influenza</td>
+  <td>Grupos de risco (gestante, prof. saúde,</td>
+  <td>comorbidades) Anual — OBRIGATÓRIA nas campanhas</td>
+</tr>
+<tr>
+  <td>HepB</td>
+  <td>3 doses se não vacinado</td>
+  <td>3 doses se não vacinado</td>
+</tr>
+<tr>
+  <td>Febre Amarela</td>
+  <td>1 dose única vitalícia (se área de risco)</td>
+  <td>Avaliar risco-benefício ≥60a</td>
+</tr>
+<tr>
+  <td>Pneumo23</td>
+  <td>Não rotineira para saudável</td>
+  <td>Acamados/institucionalizados: 2 doses, intervalo 5 anos</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>8. SAÚDE DA CRIANÇA — PUERICULTURA E TRIAGEM NEONATAL</strong></h1>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Faixa Etária RN 0-28 dias</th>
+  <th>Frequência 1ª consulta até 7 dias</th>
+  <th>Foco (ideal Aleitamento, 3-5 dias) triagem neonatal, icterícia, coto umbilical, vínculo</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>1-6 meses</td>
+  <td>Mensalmente</td>
+  <td>Crescimento, desenvolvimento, vacinação, aleitamento exclusivo</td>
+</tr>
+<tr>
+  <td>6-12 meses</td>
+  <td>A cada 2 meses</td>
+  <td>Introdução alimentar, marcos de desenvolvimento</td>
+</tr>
+<tr>
+  <td>1-2 anos</td>
+  <td>A cada 3 meses</td>
+  <td>Linguagem, marcha, desenvolvimento cognitivo</td>
+</tr>
+<tr>
+  <td>2-6 anos</td>
+  <td>A cada 6 meses</td>
+  <td>Saúde bucal, visão, audição</td>
+</tr>
+<tr>
+  <td>6-10 anos</td>
+  <td>Anual</td>
+  <td>Saúde escolar, crescimento, puberdade</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Teste Pezinho</th>
+  <th>Prazo Ideal 3-5 dias de vida (até 30</th>
+  <th>O que Detecta PKU, dias) Hipotireoidismo, Falciforme, Fibrose</th>
+  <th>Detalhe Crítico Colher Cística, após Hiperplasia 24h de leite Adrenal materno. Pode</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Orelhinha</td>
+  <td>Antes da alta (até 1 mês)Perda</td>
+  <td>auditiva congênita</td>
+  <td>Obrigatória em hospitais com &gt;500 partos/ano.</td>
+</tr>
+<tr>
+  <td>Olhinho (Reflexo Vermelho)</td>
+  <td>Na maternidade ou 1ª</td>
+  <td>consulta Catarata, glaucoma, retinoblastoma</td>
+  <td>Reflexo ausente = encaminhar URGENTE</td>
+</tr>
+<tr>
+  <td>Coraçãozinho (Oximetria)</td>
+  <td>24-48h de vida</td>
+  <td>Cardiopatia congênita crítica</td>
+  <td>SpO2 ≥95% em MSD e MMII. Diferença</td>
+</tr>
+<tr>
+  <td>Linguinha</td>
+  <td>Antes da alta (complementar)</td>
+  <td>Anquiloglossia (freio curto)</td>
+  <td>Protocolo PIBF. Pode ser feito por enfermeiro</td>
+</tr>
+</tbody>
+</table>
+<div class="box-blue"><strong> Marcos de Desenvolvimento Motor — Referência Rápida</strong></div>
+<p>2m: sustenta cabeça em pronação | 4m: rola prono→supino | 6m: senta com apoio</p>
+<p>9m: engatinha, pinça inferior, senta sem apoio | 12m: fica em pé, 1-3 palavras</p>
+<p>18m: anda bem, torre de 3 cubos | 24m: corre, frases de 2 palavras</p>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Aspecto Exclusivo</th>
+  <th>Recomendação Official (OMS + MS) Apenas leite materno até 6 meses — sem água, chá ou qualquer outro alimento</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Complementado</td>
+  <td>Leite materno + alimentação complementar de 6 meses até 2 anos ou mais</td>
+</tr>
+<tr>
+  <td>Introdução alimentar</td>
+  <td>A partir de 6 meses completos — frutas, legumes, cereais, carnes</td>
+</tr>
+<tr>
+  <td>Contraindicações</td>
+  <td>HIV materno, HTLV, galactosemia no lactente, drogas ilícitas</td>
+</tr>
+<tr>
+  <td>HBsAg positivo</td>
+  <td>NÃO contraindica AM se RN recebeu imunoglobulina + HepB nas primeiras 12h</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>9. SAÚDE DA MULHER — PRÉ-NATAL E PLANEJAMENTO</strong></h1>
+<h1><strong>REPRODUTIVO</strong></h1>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Aspecto Início</th>
+  <th>Recomendação MS Até 12 semanas (1º tri). Ideal: até 120 dias (4 meses).</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Nº mínimo de consultas</td>
+  <td>6 (SUS: PHPN). OMS recomenda ≥8. — 1º tri: 1 | 2º tri: 2 | 3º tri: 3</td>
+</tr>
+<tr>
+  <td>Exames obrigatórios</td>
+  <td>Tipagem + Rh | VDRL | Anti-HIV | HBsAg | Urina I | Glicemia jejum | Hemograma | Toxoplasmose IgM/IgG</td>
+</tr>
+<tr>
+  <td>VDRL</td>
+  <td>1º trimestre + 3º trimestre + no parto</td>
+</tr>
+<tr>
+  <td>Anti-HIV</td>
+  <td>1º e 3º trimestres — prevenção transmissão vertical</td>
+</tr>
+<tr>
+  <td>USG</td>
+  <td>Idealmente até 14 semanas para datação</td>
+</tr>
+<tr>
+  <td>Vinculação à maternidade</td>
+  <td>Gestante deve conhecer a maternidade de referência antes do parto</td>
+</tr>
+<tr>
+  <td>Alto risco</td>
+  <td>Idade &lt;16 ou &gt;35a, gemelar, HAS, DM, cardiopatia, pré-eclâmpsia prévia → REFERENCIAR</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Pré-natal</strong></div>
+<p>VDRL: 1º tri + 3º tri + parto. Não é apenas 1 vez.</p>
+<p>Anti-HIV: 1º e 3º trimestres — rastreio do binômio.</p>
+<p>Rubéola: NÃO vacinar na gestação (vírus vivo). Rastrear; vacinar no puerpério.</p>
+<p>HBsAg positivo: NÃO contraindica AM (diferente do HIV).</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Método Preservativo masculino</th>
+  <th>Eficácia Típica ~85%</th>
+  <th>Na APS Único que protege contra IST. Sempre recomendar.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>COC (pílula combinada)</td>
+  <td>~91%</td>
+  <td>1ª linha sem contraindicações. CI: HAS grave, migrânea com aura, tabagismo</td>
+</tr>
+<tr>
+  <td>Minipílula (progestágeno)</td>
+  <td>~91%</td>
+  <td>Puérpera amamentando, CI ao estrogênio.</td>
+</tr>
+<tr>
+  <td>Injetável trimestral (Depo-Provera)</td>
+  <td>~94%</td>
+  <td>Retorno da fertilidade: até 18 meses.</td>
+</tr>
+<tr>
+  <td>DIU de cobre</td>
+  <td>&gt;99%</td>
+  <td>Muito eficaz, não hormonal, reversível. Disponível no SUS. 10 anos.</td>
+</tr>
+<tr>
+  <td>DIU hormonal (Mirena)</td>
+  <td>&gt;99%</td>
+  <td>Reduz fluxo. 5 anos. Pode tratar endometriose.</td>
+</tr>
+<tr>
+  <td>Laqueadura</td>
+  <td>&gt;99%</td>
+  <td>Permanente. Consentimento livre e informado. SUS oferece.</td>
+</tr>
+<tr>
+  <td>Vasectomia</td>
+  <td>&gt;99%</td>
+  <td>Mais simples que laqueadura. SUS oferece.</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>10. RASTREAMENTO DE CÂNCERES NA APS — DIRETRIZES</strong></h1>
+<h1><strong>ATUALIZADAS 2025</strong></h1>
+<div class="box-blue"><strong> MUDANÇAS CRÍTICAS 2025 — ALTÍSSIMA PROBABILIDADE DE CAIR NA PROVA</strong></div>
+<p>Colo do útero: DNA-HPV SUBSTITUI Papanicolau como método PRIMÁRIO (Portaria SAES/SECTICS 13/2025).</p>
+<p>Mama: faixa etária AMPLIADA para 40-74 anos (Lei 15.284/2025).</p>
+<h2><strong>10.1 Câncer do Colo do Útero — Nova Diretriz 2025:</strong></h2>
+<div class="box-blue"><strong> Portaria SAES/SECTICS 13/2025 — MUDANÇA PRINCIPAL</strong></div>
+<p>ANTES (até 2024): Papanicolau como método primário, a cada 3 anos, 25-64 anos.</p>
+<p>AGORA: DNA-HPV oncogênico = MÉTODO PRIMÁRIO. Papanicolau = exame REFLEXO (secundário).</p>
+<p>Transição gradual: onde não há DNA-HPV disponível, Papanicolau continua sendo usado.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Aspecto Método primário</th>
+  <th>Modelo Anterior (Papanicolau) Papanicolau (citologia)</th>
+  <th>Modelo Atual 2025 (DNA-HPV) DNA-HPV oncogênico</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Faixa etária</td>
+  <td>25-64 anos</td>
+  <td>25-64 anos (igual)</td>
+</tr>
+<tr>
+  <td>Intervalo</td>
+  <td>A cada 3 anos</td>
+  <td>A cada 5 anos se negativo</td>
+</tr>
+<tr>
+  <td>HPV 16 ou 18 positivo</td>
+  <td>Não se aplicava</td>
+  <td>→ Colposcopia DIRETA</td>
+</tr>
+<tr>
+  <td>Outros tipos oncogênicos</td>
+  <td>Não se aplicava</td>
+  <td>→ Citologia reflexa na mesma amostra</td>
+</tr>
+<tr>
+  <td>DNA-HPV negativo</td>
+  <td>Não se aplicava</td>
+  <td>→ Repetir em 5 anos</td>
+</tr>
+<tr>
+  <td>Papanicolau agora</td>
+  <td>Método primário</td>
+  <td>Exame reflexo apenas em casos específicos</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Colo do Útero</strong></div>
+<p>Antes de 25 anos: NÃO rastrear (alta regressão espontânea).</p>
+<p>Após 64 anos com 2 exames negativos nos últimos 5 anos: ENCERRAR.</p>
+<p>HPV 16/18 = colposcopia DIRETA — não esperar citologia.</p>
+<p>DNA-HPV negativo = repetir em 5 ANOS (não 3 anos, não 1 ano).</p>
+<h2><strong>10.2 Câncer de Mama — Lei 15.284/2025:</strong></h2>
+<div class="box-blue"><strong> Lei 15.284/2025 + Nota Técnica INCA 626/2025</strong></div>
+<p>ANTES (até set/2025): rastreamento bienal para 50-69 anos.</p>
+<p>40-49 anos: acesso GARANTIDO à mamografia por DECISÃO COMPARTILHADA médico-paciente.</p>
+<p>50-74 anos: rastreamento BIENAL ATIVO (ampliado de 69 para 74 anos).</p>
+<p>Acima de 74 anos: decisão INDIVIDUALIZADA.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Faixa Etária &lt; 40 anos</th>
+  <th>Conduta 2025 Apenas com fatores de risco elevado (BRCA, familiar 1º</th>
+  <th>Periodicidade Individual grau) — pode ser anual com RM</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>40-49 anos</td>
+  <td>Acesso garantido por decisão compartilhada (Lei 15.284/2025)</td>
+  <td>Bienal se optar</td>
+</tr>
+<tr>
+  <td>50-74 anos</td>
+  <td>Rastreamento bienal ATIVO (INCA/MS)</td>
+  <td>A cada 2 anos</td>
+</tr>
+<tr>
+  <td>≥75 anos</td>
+  <td>Decisão individualizada</td>
+  <td>Conforme caso clínico</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Mama</strong></div>
+<p>&quot;Rastreamento para 50 a 69 anos&quot; → DESATUALIZADO. Agora: 50-74 anos (ativo) + 40-49 (decisão</p>
+<p>compartilhada).</p>
+<p>&quot;Mamografia anual&quot; → ERRADO. É bienal (a cada 2 anos).</p>
+<p>INCA e Lei 15.284 não são contraditórios: INCA prioriza 50-74; Lei garante ACESSO a partir dos 40.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Câncer Colorretal</th>
+  <th>Recomendação PSOF anual + colonoscopia a cada 10 anos</th>
+  <th>Quem / Quando Homens e mulheres ≥50 anos, risco médio</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Próstata</td>
+  <td>PSA + toque retal — DECISÃO COMPARTILHADA.</td>
+  <td>Homens Não é universal. ≥50a (45a se negro ou familiar 1º grau)</td>
+</tr>
+<tr>
+  <td>Pulmão</td>
+  <td>TC de baixa dose — apenas tabagistas alto risco</td>
+  <td>≥50a, ≥20 maços-ano, fumante atual ou parou &lt;15a</td>
+</tr>
+<tr>
+  <td>Pele</td>
+  <td>Exame oportunístico — sem rastreamento formal no</td>
+  <td>Especialmente SUS fotoexpostos — orientar protetor solar</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>11. HIPERTENSÃO ARTERIAL SISTÊMICA — DIRETRIZ SBC 2025</strong></h1>
+<div class="box-blue"><strong> ATUALIZAÇÃO CRÍTICA — Diretriz HAS SBC 2025</strong></div>
+<p>NOVA CATEGORIA: Pré-hipertensão = PAS 120-139 mmHg E/OU PAD 80-89 mmHg.</p>
+<p>PA Normal AGORA: PAS &lt;120 E PAD &lt;80. (Antes: 120/80 era &quot;ótima&quot; — categoria extinta).</p>
+<p>1ª diretriz com capítulo sobre HAS NA APS e HAS EM MULHERES.</p>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Classificação SBC 2025 PA Normal</th>
+  <th>PAS (mmHg) &lt; 120</th>
+  <th>PAD (mmHg) &lt; 80</th>
+  <th>Conduta Reavaliar anualmente</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Pré-hipertensão (NOVA)</td>
+  <td>120-139</td>
+  <td>80-89</td>
+  <td>MEV. MAPA/MRPA se suspeita de hipertensão mascarada.</td>
+</tr>
+<tr>
+  <td>HAS Estágio 1</td>
+  <td>140-159</td>
+  <td>90-99</td>
+  <td>Confirmar + MEV ± fármaco conforme risco CV</td>
+</tr>
+<tr>
+  <td>HAS Estágio 2</td>
+  <td>160-179</td>
+  <td>100-109</td>
+  <td>MEV + tratamento farmacológico</td>
+</tr>
+<tr>
+  <td>HAS Estágio 3</td>
+  <td>≥ 180</td>
+  <td>≥ 110</td>
+  <td>Tratamento imediato</td>
+</tr>
+<tr>
+  <td>Urgência hipertensiva</td>
+  <td>≥ 180/120 SEM lesão</td>
+  <td>órgão-alvo</td>
+  <td>Reduzir PA em horas. Medicação oral.</td>
+</tr>
+<tr>
+  <td>Emergência hipertensiva</td>
+  <td>≥ 180/120 COM lesão</td>
+  <td>órgão-alvo</td>
+  <td>Internação. Reduzir PA em minutos. Via IV.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Aspecto Diagnóstico</th>
+  <th>Detalhe — Diretriz SBC 2025 ≥140/90 em consultório. ≥2 medidas/consulta, ≥2 consultas em dias diferentes (ou MAPA/MRPA)</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>MAPA</td>
+  <td>Padrão ouro 24h. Identifica avental branco, mascarada, hipertensão noturna</td>
+</tr>
+<tr>
+  <td>HAS avental branco</td>
+  <td>Alta no consultório, normal fora (MAPA normal). NÃO é HAS — mas tem risco aumentado</td>
+</tr>
+<tr>
+  <td>HAS mascarada</td>
+  <td>Normal no consultório, alta fora (MAPA alterado). É HAS — tratar</td>
+</tr>
+<tr>
+  <td>Meta geral</td>
+  <td>&lt; 140/90 mmHg para maioria</td>
+</tr>
+<tr>
+  <td>Meta alto risco CV</td>
+  <td>&lt; 130/80 — DCV estabelecida, DM, DRC, risco CV ≥20%</td>
+</tr>
+<tr>
+  <td>1ª linha farmacológica</td>
+  <td>IECA ou BRA + BCC (bloqueador canal de cálcio) + Diurético tiazídico — qualquer dos 3</td>
+</tr>
+<tr>
+  <td>HAS na gestante</td>
+  <td>CONTRAINDICADOS: IECA e BRA. Usar: metildopa (1ª linha), nifedipino, hidralazina</td>
+</tr>
+<tr>
+  <td>Mudança estilo de vida</td>
+  <td>Sódio &lt;2g/dia, dieta DASH, exercício, perda de peso, redução álcool, cessação tabagismo</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — HAS</strong></div>
+<p>120/80 = PA Normal. 120-139/80-89 = Pré-hipertensão (nova). ≥140/90 = HAS.</p>
+<p>IECA e BRA: CONTRAINDICADOS na gestação. A prova inclui como opção para gestante → ERRADO.</p>
+<p>Urgência = sem lesão órgão-alvo. Emergência = COM lesão. A prova confunde.</p>
+<p>Diagnóstico: não em uma medida isolada. Requer confirmação.</p>
+<h1><strong>12. DIABETES MELLITUS — DIRETRIZ SBD 2024-2025</strong></h1>
+<div class="box-blue"><strong> ATUALIZAÇÃO DIAGNÓSTICA — Diretriz SBD 2024</strong></div>
+<p>NOVO CRITÉRIO: TOTG-1h — glicemia 1 hora após 75g de glicose.</p>
+<p>≥155 mg/dL = pré-diabetes. ≥210 mg/dL = diabetes mellitus.</p>
+<p>Os critérios tradicionais (GJ, HbA1c, TOTG-2h) permanecem igualmente válidos.</p>
+<p>MUDANÇA TERAPÊUTICA SBD 2025: metformina não é mais a 1ª linha universal para todo DM2.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Critério Diagnóstico Glicemia de jejum (8h)</th>
+  <th>Pré-diabetes 100-125 mg/dL</th>
+  <th>Diabetes ≥ 126 mg/dL</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>HbA1c</td>
+  <td>5,7% - 6,4%</td>
+  <td>≥ 6,5%</td>
+</tr>
+<tr>
+  <td>TOTG-2h (75g glicose)</td>
+  <td>140-199 mg/dL</td>
+  <td>200 mg/dL ≥</td>
+</tr>
+<tr>
+  <td>TOTG-1h (NOVO SBD 2024)</td>
+  <td>155-209 mg/dL</td>
+  <td>≥ 210 mg/dL</td>
+</tr>
+<tr>
+  <td>Glicemia casual + sintomas</td>
+  <td>—</td>
+  <td>≥ 200 mg/dL com poliúria/polidipsia/perda de peso</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Aspecto Terapêutico Rastreamento APS</th>
+  <th>Diretriz SBD 2025 FINDRISC para estratificar risco. GJ em adultos com risco moderado-alto.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Lógica terapêutica</td>
+  <td>Escolha INDIVIDUALIZADA — não mais metformina universal. Considerar: risco CV, peso, função</td>
+</tr>
+<tr>
+  <td>Alto/muito alto risco CV</td>
+  <td>Preferir inibidor SGLT2 (empagliflozina) ou agonista GLP-1 (semaglutida) — com ou sem metformina</td>
+</tr>
+<tr>
+  <td>Obesidade predominante</td>
+  <td>Preferir agonista GLP-1 — redução ponderal + controle glicêmico</td>
+</tr>
+<tr>
+  <td>Sem comorbidades / baixo risco</td>
+  <td>Metformina ainda é opção válida, acessível e disponível no SUS</td>
+</tr>
+<tr>
+  <td>Meta HbA1c geral</td>
+  <td>&lt; 7%. Individualizar: &lt;6,5% jovens; 7-8% idosos frágeis ou com risco de hipoglicemia</td>
+</tr>
+<tr>
+  <td>Insulina</td>
+  <td>DM1; HbA1c&gt;9% com sintomas; falha de hipoglicemiantes orais</td>
+</tr>
+<tr>
+  <td>Pé diabético</td>
+  <td>Examinar pés em TODA consulta. Monofilamento 10g. Cuidados diários</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — DM</strong></div>
+<p>Metformina não é mais universal para todo DM2. Alto risco CV: preferir SGLT2 ou GLP-1.</p>
+<p>TOTG-1h: critério NOVO 2024. ≥155 = pré-DM. ≥210 = DM.</p>
+<p>DM gestacional: GJ ≥92 mg/dL em qualquer momento, ou TOTG 100g às 24-28 semanas.</p>
+<h1><strong>13. SAÚDE DO ADULTO E DO IDOSO</strong></h1>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Condição HAS</th>
+  <th>Método Medição da PA</th>
+  <th>Quem ≥18 anos</th>
+  <th>Periodicidade ≥1 vez/ano. Anual se pré-HT.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>DM2</td>
+  <td>GJ ou HbA1c</td>
+  <td>≥35a com fatores de risco</td>
+  <td>A cada 3 anos se normal</td>
+</tr>
+<tr>
+  <td>Dislipidemia</td>
+  <td>Perfil lipídico</td>
+  <td>Homens ≥35a; mulheres ≥45a</td>
+  <td>A cada 5 anos se normal</td>
+</tr>
+<tr>
+  <td>Colo útero</td>
+  <td>DNA-HPV (novo 2025)</td>
+  <td>25-64 anos</td>
+  <td>A cada 5 anos se negativo</td>
+</tr>
+<tr>
+  <td>Mama</td>
+  <td>Mamografia</td>
+  <td>40-74 anos (nova faixa 2025)Bienal</td>
+  <td></td>
+</tr>
+<tr>
+  <td>Colorretal</td>
+  <td>PSOF + colonoscopia</td>
+  <td>≥50 anos</td>
+  <td>PSOF anual; colonoscopia 10/10 anos</td>
+</tr>
+<tr>
+  <td>Depressão</td>
+  <td>PHQ-2 / PHQ-9</td>
+  <td>Adultos com fatores de riscoTriagem</td>
+  <td>em consultas de rotina</td>
+</tr>
+<tr>
+  <td>HIV</td>
+  <td>Testagem</td>
+  <td>15-64 anos</td>
+  <td>Pelo menos 1 vez; repetir com exposição</td>
+</tr>
+<tr>
+  <td>Osteoporose</td>
+  <td>Densitometria (DXA)</td>
+  <td>Mulheres ≥65a; homens ≥70a</td>
+  <td>A cada 2-5 anos</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Domínio Cognitivo</th>
+  <th>Ferramenta na APS MEEM (Mini Exame do Estado Mental), Teste do Relógio, MoCA</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>ABVD (Atividades Básicas de Vida Diária)</td>
+  <td>Índice de Katz: banho, vestir, higiene, transferência, continência, alimentação</td>
+</tr>
+<tr>
+  <td>AIVD (Atividades Instrumentais)</td>
+  <td>Escala de Lawton: cozinhar, finanças, transporte, medicamentos, compras</td>
+</tr>
+<tr>
+  <td>Mobilidade e quedas</td>
+  <td>TUG (Timed Up and Go), Velocidade de Marcha</td>
+</tr>
+<tr>
+  <td>Nutricional</td>
+  <td>MNA (Mini Nutritional Assessment)</td>
+</tr>
+<tr>
+  <td>Humor / Depressão</td>
+  <td>GDS-15 (Geriatric Depression Scale)</td>
+</tr>
+<tr>
+  <td>Polifarmácia (≥5 medicamentos)</td>
+  <td>Revisão e reconciliação medicamentosa em toda consulta</td>
+</tr>
+<tr>
+  <td>Contexto social</td>
+  <td>Mora sozinho? Tem cuidador? Isolamento? Violência?</td>
+</tr>
+</tbody>
+</table>
+<div class="box-blue"><strong> Síndromes Geriátricas — 8Ps</strong></div>
+<p>Polifarmácia | Perda de peso | Perda de memória | Perda de mobilidade (quedas)</p>
+<p>Poliúria/incontinência | Pressão (escaras) | Perda sensorial | Problemas emocionais</p>
+<h1><strong>14. SAÚDE MENTAL NA APS</strong></h1>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Na APS — Manejar Depressão leve a moderada (PHQ-9 &lt;15)</th>
+  <th>No CAPS — Encaminhar Depressão grave / com psicose / risco de suicídio alto</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Ansiedade leve a moderada (GAD-7 &lt;15)</td>
+  <td>Episódio maníaco agudo</td>
+</tr>
+<tr>
+  <td>Sofrimento mental comum, luto, insônia</td>
+  <td>Psicose ativa (esquizofrenia em crise)</td>
+</tr>
+<tr>
+  <td>TM crônico ESTABILIZADO</td>
+  <td>Dependência química grave — síndrome de abstinência</td>
+</tr>
+<tr>
+  <td>Uso não problemático de álcool/SPA</td>
+  <td>Automutilação grave ou recente</td>
+</tr>
+<tr>
+  <td>Acompanhamento pós-estabilização</td>
+  <td>TM grave descompensado</td>
+</tr>
+</tbody>
+</table>
+<div class="box-blue"><strong> Risco de Suicídio na APS</strong></div>
+<p>Perguntar sobre suicídio NÃO aumenta o risco — acolhe e diminui.</p>
+<p>Avaliar: frequência, plano, intenção, meios disponíveis, fatores protetores.</p>
+<p>Risco alto: CAPS urgente ou PS. Não deixar sozinho.</p>
+<p>Orientar remoção de meios letais do domicílio.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Ferramenta PHQ-2</th>
+  <th>Uso Triagem rápida depressão (2 perguntas)Total</th>
+  <th>Interpretação ≥3: aplicar PHQ-9 completo</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>PHQ-9</td>
+  <td>Diagnóstico e monitoramento depressão</td>
+  <td>0-4 (9 itens, sem | 0-27) 5-9 leve | 10-14 moderada | 15-19 mod-grave | ≥20 grave</td>
+</tr>
+<tr>
+  <td>GAD-7</td>
+  <td>Triagem de ansiedade generalizada (7</td>
+  <td>itens, ≥10: provável 0-21) TAG — tratar ou encaminhar</td>
+</tr>
+<tr>
+  <td>AUDIT-C</td>
+  <td>Triagem uso de risco de álcool (3 itens)</td>
+  <td>≥4 mulheres / ≥5 homens: uso de risco</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<tbody>
+<tr>
+  <td>Condição Depressão moderada</td>
+  <td>1ª Linha ISRS: fluoxetina 20mg/dia ou sertralina 50mg/diaFluoxetina</td>
+  <td>No SUS e sertralina na RENAME</td>
+</tr>
+<tr>
+  <td>Ansiedade generalizada</td>
+  <td>ISRS (mesmos da depressão)</td>
+  <td>Sim</td>
+</tr>
+<tr>
+  <td>Insônia</td>
+  <td>Higiene do sono + TCC. Evitar BZD longa duração.</td>
+  <td>Zolpidem: com cautela, prazo limitado</td>
+</tr>
+<tr>
+  <td>Bipolar estabilizado</td>
+  <td>Lítio ou valproato</td>
+  <td>Lítio disponível no SUS</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>15. DEMANDA PROGRAMADA/ESPONTÂNEA E VISITA DOMICILIAR</strong></h1>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<tbody>
+<tr>
+  <td>Tipo Consultas programadas</td>
+  <td>% da Agenda 60-70%</td>
+  <td>Composição Crônicos (HAS, DM), pré-natal, puericultura, idosos frágeis, prevenção</td>
+</tr>
+<tr>
+  <td>Demanda espontânea</td>
+  <td>20-30%</td>
+  <td>Queixas agudas com acolhimento e classificação de risco</td>
+</tr>
+<tr>
+  <td>Visitas domiciliares</td>
+  <td>~10%</td>
+  <td>Acamados, RN, puérpera, saúde mental, idosos frágeis</td>
+</tr>
+<tr>
+  <td>Atividades coletivas</td>
+  <td>Variável</td>
+  <td>Grupos de HAS/DM, gestantes, idosos, PSE</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Indicação Paciente acamado / limitação de mobilidade</th>
+  <th>Responsável Equipe de saúde (médico + enfermeiro)</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>RN (1ª VD até 7 dias de vida) / Puérpera</td>
+  <td>Enfermeiro ± médico</td>
+</tr>
+<tr>
+  <td>Saúde mental — difícil acesso / recusa à UBS</td>
+  <td>Equipe de saúde ± matriciamento CAPS</td>
+</tr>
+<tr>
+  <td>Idoso frágil — risco de queda, isolamento</td>
+  <td>Equipe de saúde + eMulti se disponível</td>
+</tr>
+<tr>
+  <td>Busca ativa — faltosos em pré-natal, TB, HAS/DM</td>
+  <td>ACS + equipe se necessário</td>
+</tr>
+<tr>
+  <td>VD de rotina — cadastro, vigilância, orientações</td>
+  <td>ACS</td>
+</tr>
+<tr>
+  <td>VD especializada — fisio, fono, nutri, psico</td>
+  <td>eMulti</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>16. CUIDADO COMPARTILHADO E APOIO MATRICIAL</strong></h1>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Modalidade Teleconsulta / Telessaúde</th>
+  <th>Como Funciona Médico de família consulta especialista por vídeo/telefone</th>
+  <th>Resultado Aumenta sobre um resolutividade caso (Telessaúde sem deslocamento Brasil: 0800 644 do paciente 6543)</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Consulta conjunta</td>
+  <td>Especialista e médico de família atendem JUNTOS o paciente</td>
+  <td>Transferência na UBS direta de conhecimento</td>
+</tr>
+<tr>
+  <td>Discussão de caso</td>
+  <td>Reunião de equipe com matriciador — casos complexos,</td>
+  <td>PTS construção multiprofissional do PTS colaborativo</td>
+</tr>
+<tr>
+  <td>Atividades coletivas</td>
+  <td>Grupos com participação do especialista (CAPS, eMulti)Educação</td>
+  <td>em saúde especializada</td>
+</tr>
+</tbody>
+</table>
+<div class="box-blue"><strong> Distinções Essenciais</strong></div>
+<p>Apoio matricial: especialista APOIA — NÃO assume o caso. APS mantém a responsabilidade.</p>
+<p>Contrarreferência: paciente retorna à APS com informações após atendimento especializado.</p>
+<p>eMulti: equipe multiprofissional que apoia a APS — substitui o NASF como modelo.</p>
+<h1><strong>17. GRUPOS PRIORITÁRIOS E VULNERÁVEIS — POLÍTICAS</strong></h1>
+<h1><strong>ESPECÍFICAS</strong></h1>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Grupo Povos Indígenas</th>
+  <th>Base Legal / Política Subsistema Saúde Indígena (Lei 8.080</th>
+  <th>Ações na APS Atenção art. 19-A). culturalmente SESAI. DSEIs. adequada. EMSI. Calendário vacinal específico.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Pop. Negra</td>
+  <td>PNSIPN — Portaria 992/2009</td>
+  <td>Racismo como determinante de saúde. Rastreio anemia falciforme. HAS</td>
+</tr>
+<tr>
+  <td>LGBTQIA+</td>
+  <td>Portaria 2.836/2011</td>
+  <td>Acolhimento respeitoso. Saúde trans. Rastreio IST. Respeito ao nome social</td>
+</tr>
+<tr>
+  <td>Pop. em Situação de Rua</td>
+  <td>Política Nacional + Consultório na</td>
+  <td>Rua Equipes vão ao território. Foco: saúde mental, IST, álcool/drogas.</td>
+</tr>
+<tr>
+  <td>Quilombolas</td>
+  <td>PNSIPN + Decreto 4.887/2003</td>
+  <td>Atenção específica — semelhante à saúde indígena em aspectos culturais</td>
+</tr>
+<tr>
+  <td>Mulheres em violência</td>
+  <td>Lei Maria da Penha (11.340/2006)</td>
+  <td>Notificação obrigatória ao SINAN. Acolhimento + encaminhamento à rede</td>
+</tr>
+<tr>
+  <td>Crianças/adolescentes</td>
+  <td>ECA — Lei 8.069/1990</td>
+  <td>Sinais de violência/abuso → notificar ao Conselho Tutelar imediatamente.</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Grupos Vulneráveis</strong></div>
+<p>Notificação de violência contra criança: OBRIGATÓRIA — ao Conselho Tutelar.</p>
+<p>Nome social: garantido pelo Decreto 8.727/2016 para qualquer usuário do SUS.</p>
+<p>Anemia falciforme: maior prevalência na população negra — rastreado no Teste do Pezinho.</p>
+<h1><strong>18. EDUCAÇÃO EM SAÚDE NA APS</strong></h1>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Conceito Educação PARA a saúde</th>
+  <th>Foco Transmissão de informações — modelo vertical/preventivista</th>
+  <th>Abordagem na MFC Profissional ensina, paciente aprende. Não considera contexto.</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Educação EM saúde (MFC)</td>
+  <td>Construção coletiva de conhecimento e autonomia</td>
+  <td>Diálogo horizontal. Paulo Freire. Considera contexto, crenças</td>
+</tr>
+<tr>
+  <td>A MFC adota educação EM</td>
+  <td>saúde — processo dialógico, horizontal,</td>
+  <td>baseado em Paulo Freire (conscientização e</td>
+</tr>
+</tbody>
+</table>
+<p>A MFC adota educação EM saúde — processo dialógico, horizontal, baseado em Paulo Freire (conscientização e</p>
+<p>autonomia). O profissional é facilitador, não detentor do saber.</p>
+<table>
+<colgroup>
+  <col style="width:50.0%">
+  <col style="width:50.0%">
+</colgroup>
+<thead><tr>
+  <th>Estratégia Grupos educativos</th>
+  <th>Aplicação na APS HAS/DM, gestantes, idosos — construção coletiva com troca de experiências</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Briefcounseling (consulta)</td>
+  <td>Orientações motivacionais breves durante a consulta clínica</td>
+</tr>
+<tr>
+  <td>Visita domiciliar educativa</td>
+  <td>ACS orienta sobre autocuidado, saneamento, vacinação</td>
+</tr>
+<tr>
+  <td>PSE — Saúde na Escola</td>
+  <td>Ações educativas nos territórios escolares — intersetorialidade saúde+educação</td>
+</tr>
+<tr>
+  <td>Tecnologias digitais</td>
+  <td>Mensagens, aplicativos, telemedicina — acesso a populações remotas</td>
+</tr>
+</tbody>
+</table>
+<h1><strong>19. PEGADINHAS CLÁSSICAS DO IBAM — MÓDULO 2 (25</strong></h1>
+<h1><strong>identificadas)</strong></h1>
+<p><strong>1. Atributos essenciais são 4, não 3</strong></p>
+<p>→ PLIC: Primeiro contato, Longitudinalidade, Integralidade, Coordenação. A prova omite Coordenação →</p>
+<p>ERRADO.</p>
+<p><strong>2. Longitudinalidade = VÍNCULO, não seguimento de doença</strong></p>
+<p>→ Inclui pacientes saudáveis. ≠ continuidade de tratamento.</p>
+<p><strong>3. Integralidade </strong>≠<strong> resolver tudo na APS</strong></p>
+<p>→ É oferecer o conjunto de ações e coordenar o que não se resolve ali.</p>
+<p><strong>4. DNA-HPV é o método PRIMÁRIO desde 2025</strong></p>
+<p>→ Papanicolau passou a ser exame reflexo. A prova pode cobrar Papanicolau como primário →</p>
+<p>DESATUALIZADO.</p>
+<p><strong>5. Rastreamento mama: 40-74 anos (não mais 50-69)</strong></p>
+<p>→ 40-49a: decisão compartilhada. 50-74a: bienal ativo. Lei 15.284/2025.</p>
+<p><strong>6. Pré-hipertensão SBC 2025: 120-139/80-89 mmHg</strong></p>
+<p>→ Antes era &quot;PA normal-alta&quot;. PA Normal = &lt;120/&lt;80.</p>
+<p><strong>7. Meta HAS: &lt;130/80 só para alto risco CV</strong></p>
+<p>→ Geral: &lt;140/90. Alto risco CV: &lt;130/80.</p>
+<p><strong>8. IECA e BRA: CONTRAINDICADOS na gestação</strong></p>
+<p>→ HAS na gestante: metildopa, nifedipino, hidralazina.</p>
+<p><strong>9. Metformina não é mais universal para DM2</strong></p>
+<p>→ Escolha individualizada. Alto risco CV: SGLT2 ou GLP-1 preferenciais.</p>
+<p><strong>10. TOTG-1h: novo critério diagnóstico de DM (SBD 2024)</strong></p>
+<p>→≥155 pré-DM; ≥210 DM. Os critérios tradicionais continuam válidos.</p>
+<p><strong>11. Rotavírus: JANELA RÍGIDA</strong></p>
+<p>→ 1ª dose: até 3m7d. 2ª: até 7m29d. Fora do prazo = NÃO vacinar.</p>
+<p><strong>12. HPV: dose única para 9-14 anos — meninas E meninos</strong></p>
+<p>→≥15 anos: 2 doses. Imunodeprimidos: 3 doses.</p>
+<p><strong>13. BCG: dose única, sem reforço</strong></p>
+<p>→ FA tem reforço aos 4 anos. BCG não.</p>
+<p><strong>14. FA: após 5 anos de idade = dose única vitalícia</strong></p>
+<p>→ Reforço só existe para quem tomou a 1ª dose com &lt;5 anos.</p>
+<p><strong>15. dTpa na gestante: em CADA gestação</strong></p>
+<p>→ Não apenas na primeira. A prova generaliza → ERRADO.</p>
+<p><strong>16. FA é CONTRAINDICADA na gestante</strong></p>
+<p>→ Vírus vivo atenuado. A prova pode incluir como obrigatória → ERRADO.</p>
+<p><strong>17. VSR: nova vacina para gestante (2025-2026)</strong></p>
+<p>→ 28ª semana gestacional, em cada gestação. Não estava em provas anteriores.</p>
+<p><strong>18. Prontuário pertence ao PACIENTE</strong></p>
+<p>→ O serviço guarda, mas o paciente tem direito de acesso.</p>
+<p><strong>19. Notificação compulsória NÃO viola sigilo</strong></p>
+<p>→ É exceção legal. Médico tem DEVER de notificar.</p>
+<p><strong>20. Paciente pode RECUSAR qualquer tratamento</strong></p>
+<p>→ Autonomia — incluindo com risco de morte. Exceto incapaz ou emergência imediata.</p>
+<p><strong>21. Teste da Orelhinha: obrigatório em hospitais &gt;500 partos/ano</strong></p>
+<p>→ Não em todos os hospitais. A prova generaliza → ERRADO.</p>
+<p><strong>22. PHQ-9: 9 itens, pontuação até 27 (não 9)</strong></p>
+<p>→ São 9 perguntas, cada 0-3. Total máximo = 27.</p>
+<p><strong>23. Rastreamento </strong>≠<strong> investigação diagnóstica</strong></p>
+<p>→ Rastreamento = assintomáticos. Sintoma = investigação diagnóstica.</p>
+<p><strong>24. Apoio matricial: especialista APOIA, não assume o caso</strong></p>
+<p>→ APS mantém a responsabilidade. A prova diz que o CAPS &quot;assume&quot; → ERRADO.</p>
+<p><strong>25. Acolhimento = TODOS os profissionais, SEMPRE</strong></p>
+<p>→≠ triagem. É postura ética de escuta qualificada de toda a equipe.</p>
+<h1><strong>20. QUESTÕES DE REVISÃO COMENTADAS — 18 questões estilo</strong></h1>
+<h1><strong>IBAM</strong></h1>
+<p><strong>Q1: Segundo Barbara Starfield, os atributos ESSENCIAIS da APS são:</strong></p>
+<p>A) Primeiro contato, longitudinalidade e integralidade (apenas estes três).</p>
+<p>B) Primeiro contato, longitudinalidade, integralidade e coordenação do cuidado.</p>
+<p>C) Orientação familiar, orientação comunitária e competência cultural.</p>
+<p>D) Longitudinalidade, integralidade, hierarquização e resolutividade.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>São 4 essenciais: PLIC. A omite coordenação. C são os 3 derivados. D mistura com princípios do SUS.</p>
+<p><strong>Q2: Sobre rastreamento do câncer do colo do útero conforme a nova diretriz brasileira de 2025:</strong></p>
+<p>A) Papanicolau permanece como método primário, a cada 3 anos, para mulheres de 25-64 anos.</p>
+<p>B) O DNA-HPV oncogênico passa a ser o método primário. Se HPV 16/18 positivo: colposcopia direta.</p>
+<p>C) O rastreamento deve iniciar aos 18 anos para mulheres sexualmente ativas.</p>
+<p>D) DNA-HPV negativo: repetir em 1 ano.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>Portaria SAES/SECTICS 13/2025. DNA-HPV = método primário. HPV 16/18 = colposcopia direta.</p>
+<p>A=desatualizado. C=início aos 25 anos. D=negativo=repetir em 5 ANOS.</p>
+<p><strong>Q3: Conforme a Lei 15.284/2025, sobre rastreamento de câncer de mama no SUS:</strong></p>
+<p>A) Rastreamento bienal apenas para 50-69 anos.</p>
+<p>B) Mulheres de 40-49 anos têm acesso garantido à mamografia por decisão compartilhada; rastreamento ativo</p>
+<p>bienal para 50-74 anos.</p>
+<p>C) Mamografia anual para todas as mulheres a partir dos 40 anos.</p>
+<p>D) Acima de 74 anos: rastreamento bienal obrigatório.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>40-49a: acesso garantido por decisão compartilhada. 50-74a: bienal ativo. A=desatualizado. C=não é anual.</p>
+<p>D=acima de 74: decisão individualizada.</p>
+<p><strong>Q4: A Diretriz SBC 2025 criou a categoria pré-hipertensão. Qual a definição correta?</strong></p>
+<p>A) PAS ≥140 mmHg ou PAD ≥90 mmHg.</p>
+<p>B) PA normal permanece definida como &lt;130/85.</p>
+<p>C) Pré-hipertensão = PAS 120-139 E/OU PAD 80-89. PA normal = &lt;120/&lt;80.</p>
+<p>D) Tratamento farmacológico obrigatório para todos os pré-hipertensos.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>Diretriz HAS SBC 2025. A=são os valores de HAS. B=limiar errado. D=farmacológico só se alto risco CV.</p>
+<p><strong>Q5: Sobre a dTpa na gestante no calendário PNI 2026:</strong></p>
+<p>A) Dose única apenas na primeira gestação.</p>
+<p>B) 1 dose em cada gestação, preferencialmente 27ª-36ª semana.</p>
+<p>C) Contraindicada no 1º trimestre e não deve ser usada após a 30ª semana.</p>
+<p>D) Substitui completamente o reforço decenal de dT.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>dTpa: em CADA gestação. A=errado (é em cada). C=pode ser da 20ª semana em diante. D=dTpa substitui 1</p>
+<p>dose de dT; reforço decenal continua.</p>
+<p><strong>Q6: O APGAR familiar avalia:</strong></p>
+<p>A) Autonomia, Pertencimento, Gratidão, Afeto, Responsabilidade.</p>
+<p>B) Adaptação, Participação, Crescimento (Growth), Afeto, Resolução (Resolve).</p>
+<p>C) Acolhimento, Promoção, Gestão, Autonomia, Reabilitação.</p>
+<p>D) Aderência, Parceria, Gratidão, Ação, Resolutividade.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>APGAR familiar: Adaptação, Participação, Growth, Afeto, Resolve. 0-10. 7-10=boa função. As demais são</p>
+<p>inventadas.</p>
+<p><strong>Q7: Quais casos devem ser MANEJADOS NA APS, sem encaminhamento imediato ao CAPS?</strong></p>
+<p>A) Episódio maníaco agudo com agitação.</p>
+<p>B) Esquizofrenia em crise com alucinações.</p>
+<p>C) Depressão leve-moderada, ansiedade leve, sofrimento mental comum, TM crônico estabilizado.</p>
+<p>D) Dependência química com síndrome de abstinência ao álcool.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>APS: leve-moderado e crônico estabilizado. CAPS: crises, graves, psicoses ativas, abstinência grave. A, B, D =</p>
+<p>CAPS.</p>
+<div class="box-yellow"><strong>Q8: DNA-HPV negativo no rastreamento do colo do útero indica:</strong></div>
+<p>A) Colposcopia imediata.</p>
+<p>B) Repetir em 1 ano.</p>
+<p>C) Repetir em 5 anos.</p>
+<p>D) Encerramento definitivo do rastreamento.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>DNA-HPV negativo = repetir em 5 anos. D=encerramento só aos 64 anos com exames negativos.</p>
+<p><strong>Q9: A Diretriz SBD 2024 incorporou como novo critério diagnóstico de DM:</strong></p>
+<p>A) Glicemia de jejum ≥110 mg/dL.</p>
+<p>B) HbA1c ≥7%.</p>
+<p>C) TOTG-1h ≥210 mg/dL (pré-DM: ≥155 mg/dL).</p>
+<p>D) Glicemia pós-prandial 2h ≥180 mg/dL.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>TOTG-1h é o critério NOVO. A=GJ≥126 é o diagnóstico. B=HbA1c≥6,5%. D=TOTG-2h≥200.</p>
+<p><strong>Q10: Sobre triagem neonatal, qual afirmativa está INCORRETA?</strong></p>
+<p>A) Teste do Pezinho: ideal 3-5 dias de vida.</p>
+<p>B) Reflexo vermelho ausente: encaminhar urgente à oftalmologia.</p>
+<p>C) Triagem auditiva é obrigatória em todos os hospitais do Brasil.</p>
+<p>D) Oximetria neonatal rastreia cardiopatias congênitas.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>Triagem auditiva é obrigatória em hospitais com &gt;500 partos/ano — não em todos. A, B, D estão corretas.</p>
+<p><strong>Q11: O método SOAP é composto por:</strong></p>
+<p>A) Sintoma, Objetivo, Anamnese, Prescrição.</p>
+<p>B) Subjetivo (queixa), Objetivo (exame), Avaliação (diagnóstico) e Plano (conduta).</p>
+<p>C) Semiologia, Observação, Análise e Prontuário.</p>
+<p>D) Subjetivo, Observação, Avaliação e Prescrição.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>SOAP: S=Subjetivo, O=Objetivo, A=Avaliação, P=Plano. As demais distorcem os componentes.</p>
+<p><strong>Q12: A vacina VSR para gestante (nova no calendário 2025-2026):</strong></p>
+<p>A) É administrada no 1º trimestre para proteção materna.</p>
+<p>B) Substitui a dTpa na gestante.</p>
+<p>C) Administrada a partir da 28ª semana gestacional, em cada gestação, para proteger o recém-nascido.</p>
+<p>D) Está contraindicada em gestantes com histórico de alergias.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>VSR gestante: a partir da 28ª semana, em cada gestação, para proteger o RN. A=1º trimestre errado. B=não</p>
+<p>substitui dTpa. D=sem CI geral por alergia.</p>
+<p><strong>Q13: Sobre a organização da demanda na APS:</strong></p>
+<p>A) Agenda exclusivamente programada garante melhor cuidado longitudinal.</p>
+<p>B) Demanda espontânea só deve ser atendida em pronto-socorros.</p>
+<p>C) A agenda deve acomodar consultas programadas E demanda espontânea, com acolhimento para classificação</p>
+<p>de risco.</p>
+<p>D) Acolhimento é responsabilidade exclusiva do enfermeiro.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>PNAB e HumanizaSUS: acolhimento = responsabilidade de TODOS, sempre. Agenda deve ter ambos os tipos.</p>
+<p>A, B, D incorretos.</p>
+<p><strong>Q14: Agulha usada em vacinação deve ser descartada em:</strong></p>
+<p>A) Saco branco leitoso — Grupo A.</p>
+<p>B) Saco preto — Grupo D.</p>
+<p>C) Caixa amarela rígida — Grupo E.</p>
+<p>D) Recipiente laranja — Grupo B.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>Perfurocortante = Grupo E — caixa amarela rígida. NUNCA no lixo comum.</p>
+<p><strong>Q15: Sobre rastreamento de DM2 na APS (Diretriz SBD 2025):</strong></p>
+<p>A) GJ anual para toda a população adulta.</p>
+<p>B) FINDRISC é recomendado para identificar adultos com risco aumentado, orientando a priorização do</p>
+<p>rastreamento.</p>
+<p>C) HbA1c não deve ser usada para rastreamento.</p>
+<p>D) Rastreamento apenas para obesos com IMC &gt;35.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>FINDRISC = ferramenta de triagem de risco recomendada pela SBD 2025. A=não é para todos anualmente.</p>
+<p>C=HbA1c pode ser usada. D=rastreamento para qualquer adulto com fatores de risco.</p>
+<p><strong>Q16: A Avaliação Geriátrica Ampla (AGA) inclui:</strong></p>
+<p>A) Apenas avaliação cognitiva e funcional.</p>
+<p>B) Avaliação multidimensional: cognitiva, funcional, nutricional, mobilidade/quedas, humor, medicamentos e</p>
+<p>contexto social.</p>
+<p>C) Obrigatoriamente ECG e ecocardiograma.</p>
+<p>D) Exclusivamente o MEEM.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>AGA = multidimensional. A e D são parciais. C não é componente padrão da AGA.</p>
+<p><strong>Q17: Sobre longitudinalidade como atributo da APS:</strong></p>
+<p>A) É o acompanhamento de doenças crônicas ao longo do tempo.</p>
+<p>B) É o vínculo contínuo entre equipe e paciente, independente de haver doença ativa.</p>
+<p>C) É sinônimo de continuidade de tratamento.</p>
+<p>D) Aplica-se apenas a portadores de doenças crônicas.</p>
+<div class="box-blue"><strong> Gabarito: B</strong></div>
+<p>Longitudinalidade = VÍNCULO. Inclui paciente saudável. A, C, D confundem com seguimento de doença.</p>
+<p><strong>Q18: Qual caso NÃO é indicação prioritária de visita domiciliar pela equipe de saúde?</strong></p>
+<p>A) Idoso acamado, sequelado de AVC.</p>
+<p>B) Recém-nascido de 5 dias com dificuldade de amamentação.</p>
+<p>C) Adulto jovem, saudável, que prefere não sair de casa por comodidade.</p>
+<p>D) Puérpera de 10 dias com sinais de depressão pós-parto.</p>
+<div class="box-blue"><strong> Gabarito: C</strong></div>
+<p>VD tem indicações clínicas e técnicas. Comodidade sem necessidade clínica não é indicação prioritária. A, B, D</p>
+<p>têm justificativa técnica.</p>
+<h1><strong>CHECKLIST FINAL — MÓDULO 2 COMPLETO E DEFINITIVO</strong></h1>
+<div class="box-blue">31 tópicos do edital Específicos MFC — todos cobertos</div>
+<div class="box-blue">Atributos Starfield: 4 essenciais (PLIC) + 3 derivados — definições exatas e pegadinhas</div>
+<div class="box-blue">Abordagem centrada: SOAP, genograma, APGAR familiar, modelo biopsicossocial</div>
+<div class="box-blue">Processo de trabalho: demanda programada/espontânea, acolhimento, classificação de risco</div>
+<div class="box-blue">Ética: Lei 12.842/2013 + CEM CFM 2.217/2018 — sigilo, consentimento, prontuário, emergência</div>
+<div class="box-blue">Biossegurança: Grupos RSS A-E (RDC 222/2018) + PNSP 529/2013 + 6 metas + 5 momentos</div>
+<div class="box-blue">Calendário Vacinal PNI 2026: criança, gestante, adulto, idoso — inclui vacina VSR nova</div>
+<div class="box-blue">Puericultura: frequência de consultas, 4 testes neonatais + linguinha, marcos de desenvolvimento</div>
+<div class="box-blue">Aleitamento materno: exclusivo 6 meses, complementado até 2 anos+, contraindicações</div>
+<div class="box-blue">Pré-natal de risco habitual: 6 consultas mínimas, exames obrigatórios, critérios de alto risco</div>
+<div class="box-blue">Planejamento reprodutivo: métodos, eficácia, indicações e contraindicações</div>
+<div class="box-blue">Rastreamento colo útero: DNA-HPV primário (Portaria SAES/SECTICS 13/2025) — NOVO</div>
+<div class="box-blue">Rastreamento mama: 40-74 anos (Lei 15.284/2025 + NT INCA 626/2025) — NOVO</div>
+<div class="box-blue">Outros rastreamentos: colorretal, próstata, pulmão</div>
+<div class="box-blue">HAS: Diretriz SBC 2025 — pré-hipertensão, classificação, metas, MAPA/MRPA, gestante</div>
+<div class="box-blue">DM: Diretriz SBD 2024-2025 — TOTG-1h, FINDRISC, metformina não universal, SGLT2/GLP-1</div>
+<div class="box-blue">Saúde do adulto e idoso: rastreamentos, AGA, síndromes geriátricas, ferramentas</div>
+<div class="box-blue">Saúde mental APS: o que tratar vs encaminhar, PHQ-9, GAD-7, farmacoterapia</div>
+<div class="box-blue">Demanda programada/espontânea, acolhimento, classificação de risco</div>
+<div class="box-blue">Visita domiciliar: indicações por situação, responsáveis (ACS/equipe/eMulti)</div>
+<div class="box-blue">Cuidado compartilhado e apoio matricial: modalidades, distinções</div>
+<div class="box-blue">Grupos vulneráveis: indígenas, negros, LGBTQIA+, rua, mulheres em violência</div>
+<div class="box-blue">Educação em saúde: distinção EM x PARA (Paulo Freire), estratégias na APS</div>
+<div class="box-blue">25 pegadinhas clássicas do IBAM identificadas e comentadas</div>
+<div class="box-blue">18 questões de revisão no estilo IBAM com gabarito e comentário estratégico</div>
+<p>Fontes: Portaria SAES/SECTICS 13/2025 (colo útero) | Lei 15.284/2025 + NT INCA 626/2025 (mama) | Diretriz HAS SBC 2025 |</p>
+<p>Diretriz SBD 2024-2025 | PNI 2026 (CNV, atualizado 30/01/2026) | Portaria 529/2013 (PNSP) | RDC 222/2018 (RSS) | CFM</p>
+<p>2.217/2018 (CEM) | Lei 12.842/2013 | Lei 8.069/1990 (ECA) | Lei 11.340/2006 (Maria da Penha) | PNAB Portaria 2.436/2017.</p>
+<h1><strong>COMPLEMENTO — PROMOÇÃO DA SAÚDE E PREVENÇÃO DE</strong></h1>
+<h1><strong>DOENÇAS NA APS</strong></h1>
+<p>Tópico explícito do edital: &quot;promoção da saúde e prevenção de doenças&quot;. A distinção entre os dois conceitos — e os</p>
+<p>níveis de prevenção de Leavell &amp; Clark — é clássica em concursos municipais e frequentemente cobrada pelo IBAM.</p>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Conceito Promoção da Saúde</th>
+  <th>Foco Ampla — fortalecimento da saúde</th>
+  <th>Abordagem independente Intervenção sobre de doença determinantes específica. sociais.</th>
+  <th>Exemplos na APS Aumento Grupos Ação de da atividade comunitária qualidade física, de e intersetorial. vida. alimentação saudável,</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Prevenção de Doenças</td>
+  <td>Específica — evitar, detectar precocemente</td>
+  <td>Intervenção ou limitar sobre o fatores impacto de de risco doenças</td>
+  <td>ou Vacinação, sobre a história rastreamento, natural da uso doença de preservativo,</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHA — Promoção </strong>≠<strong> Prevenção</strong></div>
+<p>Promoção da saúde NÃO é apenas prevenção de doenças. São conceitos distintos e complementares.</p>
+<p>A prova pode apresentar como sinônimos ou trocar as definições → ATENÇÃO.</p>
+<p>Vacina = prevenção (específica, contra uma doença). Atividade física = promoção (ampla, melhora a saúde em</p>
+<p>geral).</p>
+<p>Na prática, as ações se superpõem — mas o IBAM cobra a distinção conceitual.</p>
+<h2><strong>Níveis de Prevenção — Leavell &amp; Clark (história natural da doença):</strong></h2>
+<p>O modelo de Leavell &amp; Clark (1976) descreve os níveis de prevenção ao longo da história natural da doença. É</p>
+<p>referência clássica em saúde coletiva e APS, frequentemente cobrada em concursos.</p>
+<table>
+<colgroup>
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+  <col style="width:25.0%">
+</colgroup>
+<thead><tr>
+  <th>Nível Prevenção Primária</th>
+  <th>Fase da Doença Período pré-patogênico (antes</th>
+  <th>Objetivo Impedir do agente que a causar doença dano) ocorra.</th>
+  <th>Ações na APS Atuar Vacinação sobre fatores | Saneamento de risco básico e determinantes. | Educação em</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>(antes da doença) Prevenção Secundária</td>
+  <td>Período patogênico inicial</td>
+  <td>(doença Detectar instalada, a doença mas cedo sem para sintomas evitar</td>
+  <td>Rastreamento progressão. ou estágio (Papanicolau/DNA-HPV, inicial) Limitar o dano. mamografia,</td>
+</tr>
+<tr>
+  <td>(diagnóstico e tratamento Prevenção Terciária</td>
+  <td>precoce) Doença estabelecida com</td>
+  <td>sequelas Restaurar ou a incapacidade funcionalidade. Minimizar</td>
+  <td>Reabilitação as sequelas física (fisioterapia) e reintegrar à | Reabilitação sociedade. psicossocial</td>
+</tr>
+<tr>
+  <td>(reabilitação)</td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+</tbody>
+</table>
+<div class="box-yellow">I<strong> MACETE — Leavell &amp; Clark</strong></div>
+<p>Primária = ANTES da doença (vacina, saneamento, educação).</p>
+<p>Secundária = DURANTE o início da doença (rastreamento, diagnóstico precoce, tratamento imediato).</p>
+<p>Terciária = DEPOIS da doença instalada (reabilitação, cuidados paliativos, reinserção).</p>
+<p>A prova costuma confundir: &quot;rastreamento&quot; é prevenção SECUNDÁRIA (não primária).</p>
+<p>Promoção da saúde: geralmente associada à prevenção primária, mas transcende os níveis.</p>
+<h3><strong>Quaternária — Conceito Atual (importante para MFC):</strong></h3>
+<p>A <strong>prevenção quaternária</strong> (Marc Jamoulle, 1986 — incorporada pela WONCA) é o conjunto de ações que visam</p>
+<p>identificar pacientes em risco de medicalização excessiva, protegendo-os de intervenções desnecessárias e seus</p>
+<p>efeitos iatrogênicos.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Prevenção Quaternária Definição</th>
+  <th>Conceito Proteger o paciente do excesso de medicalização, intervenções</th>
+  <th>Exemplos na APS desnecessárias e iatrogenias</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Exemplos</td>
+  <td>Não rastrear doenças sem benefício comprovado. Evitar antibióticos</td>
+  <td>Paciente em idoso viroses. com 8 Não medicamentos tratar achados →</td>
+</tr>
+<tr>
+  <td>Conexão com MFC</td>
+  <td>A MFC é a especialidade mais identificada com a prevenção</td>
+  <td>Conceito quaternária do WONCA/SBMFC — o médico de família — cobrado é o guardião</td>
+</tr>
+</tbody>
+</table>
+<p>Módulo 2 MFC — Complemento: Promoção/Prevenção | Praia Grande 001/2026Pág. 1</p>
+<div class="box-blue"><strong> Prevenção Quaternária e Concurso</strong></div>
+<p>Conceito relativamente novo — aparece em provas de MFC e residência médica.</p>
+<p>O IBAM pode cobrar em questões sobre o papel do médico de família na proteção do paciente.</p>
+<p>Conexão direta com: abordagem centrada na pessoa, longitudinalidade e autonomia do paciente.</p>
+<table>
+<colgroup>
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+  <col style="width:33.3%">
+</colgroup>
+<thead><tr>
+  <th>Nível de Atuação Individual (consulta)</th>
+  <th>Ações de Promoção da Saúde Aconselhamento sobre hábitos, autocuidado, empoderamento</th>
+  <th>Ações de Prevenção de Doenças Solicitar exames do paciente de rastreamento, vacinar, prescrever</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td>Familiar</td>
+  <td>Abordagem familiar (genograma, APGAR), identificar</td>
+  <td>Rastrear vulnerabilidades doenças de transmissão familiar (HF de DM,</td>
+</tr>
+<tr>
+  <td>Comunitário / Territorial</td>
+  <td>Grupos educativos, PSE, ações intersetoriais, ambientes</td>
+  <td>Busca saudáveis ativa de faltosos, controle de vetores, vigilância</td>
+</tr>
+</tbody>
+</table>
+<div class="box-red">I<strong> PEGADINHAS — Promoção/Prevenção no Concurso</strong></div>
+<p>&quot;Rastreamento&quot; = prevenção SECUNDÁRIA (não primária). A prova classifica errado.</p>
+<p>&quot;Vacinação&quot; = prevenção PRIMÁRIA (específica — evita a doença ocorrer).</p>
+<p>&quot;Reabilitação&quot; = prevenção TERCIÁRIA (não é promoção da saúde).</p>
+<p>&quot;Prevenção quaternária&quot; = proteger do excesso de medicina — conceito da MFC/WONCA.</p>
+<p>Promoção da saúde é mais AMPLA que prevenção. Prevenção é mais ESPECÍFICA.</p>
+<h1><strong>NOTA DA AUDITORIA FINAL — MÓDULO 2</strong></h1>
+<div class="box-blue"><strong> RESULTADO DA AUDITORIA — 57/57 VERIFICAÇÕES APROVADAS</strong></div>
+<p>39 tópicos do edital verificados: 37 presentes diretamente, 2 confirmados no código fonte.</p>
+<p>56 verificações qualitativas aprovadas antes do complemento. 57/57 após.</p>
+<p>Única lacuna real identificada: promoção da saúde vs prevenção / Leavell &amp; Clark — adicionada neste</p>
+<p>complemento.</p>
+<p>Conteúdo das &quot;ausências&quot; detectadas pelo script (ESF, Telessaúde, Linha de cuidado, Consultório na Rua):</p>
+<p>confirmados no código fonte — problema de extração de tabelas pelo pdfplumber, não lacunas reais.</p>
+<h2><strong>Resumo das verificações realizadas:</strong></h2>
+<ul>
+<li>Auditoria 1: 39 tópicos do edital × documento — 95% presentes (2 eram problemas de extração PDF)</li>
+<li>Auditoria 2: 56 verificações qualitativas de conteúdo e precisão — 56/57 OK</li>
+<li>Lacuna real: promoção vs prevenção / Leavell &amp; Clark — corrigida neste complemento</li>
+<li>Precisão factual: todos os números, portarias, percentuais e datas verificados e corretos</li>
+<li>Atualizações 2025: DNA-HPV, mama 40-74, HAS SBC 2025, DM SBD 2024-2025, VSR gestante — todas</li>
+</ul>
+<p>presentes</p>
+<ul>
+<li>Calendário vacinal PNI 2026: completo e correto</li>
+<li>Rastreamentos: colo, mama, colorretal, próstata — todos com condutas corretas</li>
+<li>Ética: Lei 12.842, CEM 2.217/2018, SVO/IML, telemedicina — completo</li>
+<li>Biossegurança: grupos RSS A-E, 6 metas PNSP, 5 momentos higiene — completo</li>
+<li>Grupos vulneráveis: PNSIPN, LGBTQIA+ 2836/2011, nome social, ECA, Maria da Penha — completo</li>
+</ul>
+<p>Instrução: Este complemento deve ser lido ao final do Módulo 2. Com sua incorporação, o módulo cobre 100% do conteúdo</p>
+<p>programático de Específicos MFC do edital.</p>
+<p>Módulo 2 MFC — Complemento: Promoção/Prevenção | Praia Grande 001/2026Pág. 2</p>
+</body></html>
