@@ -312,7 +312,9 @@ spacer(doc,4)
 
 info_box(doc,
     "⏱️  T4a (30min): Schedule node rodando a cada 30 min — não usar Schedule diário.\n"
-    "  T4b (D+1): Schedule diário 09h00 — disparar se ainda sem pagamento na manhã seguinte.",
+    "  T4b (D+1): Schedule diário 09h00 — disparar se ainda sem pagamento na manhã seguinte.\n"
+    "  ⚠️  Campo lembrete_enviado (boolean, DEFAULT false) na tabela agendamentos evita duplicatas.\n"
+    "     T4a: adicionar AND lembrete_enviado = false no WHERE → após envio setar lembrete_enviado = true.",
     LIGHT_ORANGE, ORANGE_TEXT)
 spacer(doc,4)
 
@@ -514,7 +516,10 @@ spacer(doc,4)
 
 p = doc.add_paragraph(); ps(p,2,4)
 run(p,"  ⚡  Gatilho:  ", bold=True, size=9, color=PINK_TEXT)
-run(p,"data_cadastro = CURRENT_DATE - INTERVAL '1 year'  AND  opt_out = false",
+run(p,"EXTRACT(MONTH FROM data_cadastro) = EXTRACT(MONTH FROM CURRENT_DATE)\n"
+       "  AND EXTRACT(DAY FROM data_cadastro) = EXTRACT(DAY FROM CURRENT_DATE)\n"
+       "  AND data_cadastro <= CURRENT_DATE - INTERVAL '1 year'\n"
+       "  AND opt_out = false",
     size=8, color=DARK_TEXT, mono=True)
 spacer(doc,10)
 
@@ -577,6 +582,17 @@ for f,t,d,n in campos:
     db_row(doc, f, t, d, note=n)
     spacer(doc,1)
 
+spacer(doc,8)
+
+p = doc.add_paragraph(); ps(p,0,4)
+run(p,"  Tabela: agendamentos  |  Adicionar campo abaixo para controle de duplicatas no Bloco 2.",
+    size=9, color=DARK_TEXT, italic=True)
+
+db_row(doc,"Campo","Tipo","Descrição",header=True)
+db_row(doc,"lembrete_enviado","boolean",
+    "Impede que T4a dispare mais de uma vez para o mesmo agendamento.",
+    note="DEFAULT false  |  Setar true após envio do lembrete 30min (T4a)")
+
 spacer(doc,14)
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -610,8 +626,8 @@ triggers = [
      "0 9 * * *", "", False),
 
     ("T4a — Bloco 2  30min",
-     "SELECT a.*, c.nome FROM agendamentos a\nJOIN clientes c ON c.id = a.cliente_id\nWHERE a.criado_em <= NOW() - INTERVAL '30 min'\nAND a.pagamento_confirmado = false\nAND c.opt_out = false",
-     "*/30 * * * *", "Schedule: cada 30min (não diário!)", True),
+     "SELECT a.*, c.nome FROM agendamentos a\nJOIN clientes c ON c.id = a.cliente_id\nWHERE a.criado_em <= NOW() - INTERVAL '30 min'\nAND a.pagamento_confirmado = false\nAND a.lembrete_enviado = false\nAND c.opt_out = false",
+     "*/30 * * * *", "Após envio: setar lembrete_enviado = true na agendamentos", True),
 
     ("T4b — Bloco 2  D+1",
      "SELECT a.*, c.nome FROM agendamentos a\nJOIN clientes c ON c.id = a.cliente_id\nWHERE DATE(a.criado_em) = CURRENT_DATE - 1\nAND a.pagamento_confirmado = false\nAND c.opt_out = false",
@@ -674,8 +690,8 @@ triggers = [
      "0 9 * * *", "", False),
 
     ("T19 — Bloco 8  1 ano REMMED",
-     "SELECT * FROM clientes\nWHERE data_cadastro = CURRENT_DATE - INTERVAL '1 year'\nAND opt_out = false",
-     "0 9 * * *", "", True),
+     "SELECT * FROM clientes\nWHERE EXTRACT(MONTH FROM data_cadastro) = EXTRACT(MONTH FROM CURRENT_DATE)\nAND EXTRACT(DAY FROM data_cadastro) = EXTRACT(DAY FROM CURRENT_DATE)\nAND data_cadastro <= CURRENT_DATE - INTERVAL '1 year'\nAND opt_out = false",
+     "0 9 * * *", "Blindado contra 29/fev anos bissextos", True),
 ]
 
 for tid, query, cron, note, alt in triggers:
@@ -771,6 +787,9 @@ sql_migration = (
     "CREATE INDEX IF NOT EXISTS idx_clientes_proxima_renovacao  ON clientes(proxima_renovacao);\n"
     "CREATE INDEX IF NOT EXISTS idx_clientes_opt_out            ON clientes(opt_out);\n"
     "CREATE INDEX IF NOT EXISTS idx_clientes_status             ON clientes(status_paciente);\n\n"
+    "-- Campo na tabela agendamentos (evita duplicatas T4a)\n"
+    "ALTER TABLE agendamentos\n"
+    "  ADD COLUMN IF NOT EXISTS lembrete_enviado boolean DEFAULT false NOT NULL;\n\n"
     "-- Tabela de log de erros de envio\n"
     "CREATE TABLE IF NOT EXISTS followup_erros (\n"
     "  id          bigserial PRIMARY KEY,\n"
