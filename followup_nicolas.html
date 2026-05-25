@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Follow-Up — REMMED Telemedicina</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6fb;
+    color: #1a1a2e;
+    padding: 40px 20px;
+  }
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #ff6b35, #e63946);
+    color: white;
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .header p { font-size: 15px; opacity: 0.85; }
+  .header .badges { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #888;
+    margin: 36px 0 16px;
+  }
+
+  /* FLUXO CARDS */
+  .fluxo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 700px) { .fluxo-grid { grid-template-columns: 1fr; } }
+
+  .fluxo-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    border-top: 4px solid #ccc;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .fluxo-card.verde { border-top-color: #2ecc71; }
+  .fluxo-card.laranja { border-top-color: #f39c12; }
+
+  .fluxo-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .fluxo-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .fluxo-icon.verde { background: #eafaf1; }
+  .fluxo-icon.laranja { background: #fef9e7; }
+
+  .fluxo-title { font-size: 16px; font-weight: 700; }
+  .fluxo-subtitle { font-size: 12px; color: #888; margin-top: 2px; }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-item {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 20px;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 48px;
+    flex-shrink: 0;
+  }
+  .timeline-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .dot-green { background: #2ecc71; }
+  .dot-blue  { background: #3498db; }
+  .dot-purple { background: #9b59b6; }
+  .dot-orange { background: #f39c12; }
+  .dot-red   { background: #e74c3c; }
+  .dot-gray  { background: #95a5a6; }
+
+  .timeline-line {
+    width: 2px;
+    flex: 1;
+    background: #e8ecf0;
+    margin-top: 4px;
+  }
+  .timeline-item:last-child .timeline-line { display: none; }
+
+  .timeline-content { flex: 1; padding-top: 6px; padding-bottom: 4px; }
+  .timeline-day {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .timeline-msg {
+    background: #f8f9fc;
+    border-radius: 10px;
+    padding: 10px 13px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.5;
+    border-left: 3px solid #e0e0e0;
+    font-style: italic;
+  }
+  .timeline-msg.green-border { border-left-color: #2ecc71; }
+  .timeline-msg.orange-border { border-left-color: #f39c12; }
+
+  .timeline-note {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* BRANCHES */
+  .branch-box {
+    margin-top: 8px;
+    background: #f8f9fc;
+    border-radius: 10px;
+    padding: 10px 13px;
+  }
+  .branch-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: #555;
+    padding: 4px 0;
+    line-height: 1.4;
+  }
+  .branch-row + .branch-row { border-top: 1px dashed #e8ecf0; margin-top: 4px; padding-top: 8px; }
+  .branch-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* CONTINUOUS CARE */
+  .continuous-card {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-top: 20px;
+    box-shadow: 0 4px 20px rgba(102,126,234,0.3);
+  }
+  .continuous-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .continuous-card .sub { font-size: 13px; opacity: 0.8; margin-bottom: 20px; }
+
+  .msg-alternating {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) { .msg-alternating { grid-template-columns: 1fr; } }
+
+  .msg-alt-card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .msg-alt-card .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  .msg-alt-card .text {
+    font-size: 13px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .continuous-note {
+    margin-top: 14px;
+    font-size: 12px;
+    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* RULES */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 700px) { .rules-grid { grid-template-columns: 1fr; } }
+
+  .rule-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .rule-icon { font-size: 28px; margin-bottom: 10px; }
+  .rule-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .rule-desc { font-size: 12px; color: #666; line-height: 1.5; }
+
+  /* DATABASE */
+  .db-card {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 14px;
+  }
+  .db-card h3 { color: #ff6b35; font-size: 14px; margin-bottom: 16px; letter-spacing: 0.5px; }
+  .db-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .db-table th {
+    text-align: left;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-size: 11px;
+    padding: 8px 10px;
+    border-bottom: 1px solid #2a2a3e;
+  }
+  .db-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #2a2a3e;
+    vertical-align: top;
+  }
+  .db-table tr:last-child td { border-bottom: none; }
+  .db-table .field { color: #7ed6df; font-family: monospace; font-size: 13px; }
+  .db-table .type { color: #f9ca24; font-family: monospace; }
+  .db-table .desc { color: #aaa; }
+
+  /* SQL */
+  .sql-card {
+    background: #0d1117;
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 14px;
+    overflow: auto;
+  }
+  .sql-card h3 {
+    color: #58a6ff;
+    font-size: 13px;
+    margin-bottom: 16px;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+  }
+  pre {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #c9d1d9;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .sql-kw { color: #ff7b72; }
+  .sql-fn { color: #d2a8ff; }
+  .sql-str { color: #a5d6ff; }
+  .sql-cm { color: #8b949e; }
+  .sql-col { color: #79c0ff; }
+
+  /* TRIGGERS TABLE */
+  .triggers-card {
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 14px;
+    overflow: auto;
+  }
+  .triggers-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 18px; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .tbl th {
+    background: #f4f6fb;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    font-weight: 700;
+  }
+  .tbl td { padding: 10px 12px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl tr:hover td { background: #fafbfd; }
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tag-green { background: #eafaf1; color: #1e8449; }
+  .tag-orange { background: #fef9e7; color: #d35400; }
+  .tag-purple { background: #f5eef8; color: #7d3c98; }
+  .tag-gray { background: #f2f3f4; color: #666; }
+  .cron { font-family: monospace; font-size: 12px; color: #555; background: #f4f6fb; padding: 2px 8px; border-radius: 4px; }
+
+  /* PRIORITY */
+  .priority-list { display: flex; flex-direction: column; gap: 10px; }
+  .priority-item {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .priority-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+    color: white;
+  }
+  .pn-red { background: #e74c3c; }
+  .pn-orange { background: #f39c12; }
+  .pn-green { background: #2ecc71; }
+  .pn-blue { background: #3498db; }
+  .pn-purple { background: #9b59b6; }
+  .pn-gray { background: #95a5a6; }
+
+  .priority-content { flex: 1; }
+  .priority-title { font-size: 14px; font-weight: 700; }
+  .priority-desc { font-size: 12px; color: #888; margin-top: 2px; }
+  .priority-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 20px;
+  }
+  .pt-alta { background: #fdecea; color: #c0392b; }
+  .pt-media { background: #fef9e7; color: #d35400; }
+  .pt-baixa { background: #eafaf1; color: #1e8449; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #e8ecf0;
+  }
+
+  .divider { height: 1px; background: #e8ecf0; margin: 28px 0; }
+  .warning-box {
+    background: #fef9e7;
+    border: 1px solid #f9ca24;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #7d6608;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Sistema de Follow-Up Automático</h1>
+    <p>REMMED Telemedicina — Documento técnico para implementação no N8N</p>
+    <div class="badges">
+      <span class="badge">Versão 1.0</span>
+      <span class="badge">Maio / 2026</span>
+      <span class="badge">N8N + Supabase + WhatsApp</span>
+    </div>
+  </div>
+
+  <!-- VISÃO GERAL -->
+  <div class="section-title">Visão Geral — 2 Fluxos</div>
+
+  <div class="fluxo-grid">
+
+    <!-- FLUXO 1 -->
+    <div class="fluxo-card verde">
+      <div class="fluxo-header">
+        <div class="fluxo-icon verde">✅</div>
+        <div>
+          <div class="fluxo-title">Fluxo 1 — Pós-Consulta</div>
+          <div class="fluxo-subtitle">Paciente que se consultou • Retenção da base</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-green">D+7</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">7 dias após consulta</div>
+            <div class="timeline-msg green-border">"Como você está? Melhorou?"</div>
+            <div class="branch-box">
+              <div class="branch-row"><span class="branch-icon">😊</span><span><strong>Melhorou</strong> → "Que bom! Qualquer dúvida, estamos aqui."</span></div>
+              <div class="branch-row"><span class="branch-icon">😟</span><span><strong>Não melhorou</strong> → Oferecer nova consulta → direcionar agendamento</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-blue">D+30</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">1 mês após consulta</div>
+            <div class="timeline-msg green-border">"Faz 1 mês da sua consulta! Quer renovar receita, fazer check-up ou nova consulta?"</div>
+            <div class="branch-box">
+              <div class="branch-row"><span class="branch-icon">👍</span><span><strong>Sim</strong> → Direcionar para agendamento</span></div>
+              <div class="branch-row"><span class="branch-icon">🙂</span><span><strong>Não/Bem</strong> → "Fico feliz! Estamos aqui sempre que precisar."</span></div>
+            </div>
+            <div class="timeline-note">⚠️ Só envia se não houve contato desde D+7</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-purple">D+60</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">2 meses após consulta</div>
+            <div class="timeline-msg green-border">"Passando pra saber como você está!"</div>
+            <div class="timeline-note">⚠️ Só envia se não houve contato desde D+30</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-orange">D+90</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">3 meses após consulta</div>
+            <div class="timeline-msg green-border">"Faz um tempo que não nos falamos. Como está sua saúde?"</div>
+            <div class="timeline-note">⚠️ Só envia se não houve contato desde D+60</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-gray">D+120</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">4 meses em diante → Cuidado Contínuo</div>
+            <div class="timeline-msg green-border">"Oi [NOME]! Passando pra saber como você está..."</div>
+            <div class="timeline-note">🔁 A cada 60 dias — ciclo permanente — ver detalhes abaixo</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FLUXO 2 -->
+    <div class="fluxo-card laranja">
+      <div class="fluxo-header">
+        <div class="fluxo-icon laranja">🔔</div>
+        <div>
+          <div class="fluxo-title">Fluxo 2 — Não Marcou</div>
+          <div class="fluxo-subtitle">Paciente que iniciou mas não agendou • Captação</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-orange" style="font-size:9px;">30m</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">30 minutos após iniciar</div>
+            <div class="timeline-msg orange-border">"Vi que você iniciou o agendamento. Posso te ajudar a encontrar um horário disponível?"</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-orange">D+1</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">Manhã do dia seguinte</div>
+            <div class="timeline-msg orange-border">"Ainda posso te ajudar a agendar. Quando preferir, estou aqui!"</div>
+            <div class="timeline-note">⚠️ Só envia se não respondeu a mensagem de 30min</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-orange">D+30</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">1 mês depois</div>
+            <div class="timeline-msg orange-border">"Oi! Caso queira retomar, temos horários disponíveis. Posso verificar para você?"</div>
+            <div class="timeline-note">⚠️ Só envia se não respondeu D+1</div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-dot dot-red">D+90</div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-day">3 meses depois — Última tentativa</div>
+            <div class="timeline-msg orange-border">"Oi [NOME]! Quando quiser consultar, é só me chamar — agendamos rapidinho."</div>
+            <div class="branch-box">
+              <div class="branch-row"><span class="branch-icon">📅</span><span><strong>Agenda</strong> → migra para o Fluxo 1 automaticamente</span></div>
+              <div class="branch-row"><span class="branch-icon">🔇</span><span><strong>Sem resposta</strong> → encerrar todos os envios</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CUIDADO CONTÍNUO -->
+  <div class="continuous-card">
+    <h3>🔁 Cuidado Contínuo — D+120 em diante (Fluxo 1)</h3>
+    <div class="sub">A cada 60 dias, enquanto o paciente estiver ativo. Alterna entre 2 mensagens para não repetir.</div>
+    <div class="msg-alternating">
+      <div class="msg-alt-card">
+        <div class="label">Mensagem A — Envios 1, 3, 5... (ímpar)</div>
+        <div class="text">"Oi [NOME]! Passando pra saber como você está. Qualquer coisa — dúvida, renovação ou consulta — estamos aqui!"</div>
+      </div>
+      <div class="msg-alt-card">
+        <div class="label">Mensagem B — Envios 2, 4, 6... (par)</div>
+        <div class="text">"Oi [NOME]! Só lembrando que estamos sempre aqui. Tudo pelo celular, sem sair de casa."</div>
+      </div>
+    </div>
+    <div class="continuous-note">⚠️ Só envia se não houve nenhum contato nos últimos 60 dias &nbsp;•&nbsp; Ciclo nunca encerra enquanto opt_out = false</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- REGRAS GLOBAIS -->
+  <div class="section-title">Regras Globais</div>
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-icon">⏸️</div>
+      <div class="rule-title">Paciente responde → Pausar</div>
+      <div class="rule-desc">Qualquer resposta pausa o ciclo atual. A próxima mensagem não é enviada. O ciclo só retoma no próximo intervalo programado.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">🔄</div>
+      <div class="rule-title">Agenda → Reiniciar Fluxo 1</div>
+      <div class="rule-desc">Se o paciente do Fluxo 2 agendar em qualquer momento, ele migra automaticamente para o Fluxo 1, reiniciando do D+7.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">🔴</div>
+      <div class="rule-title">Opt-out (LGPD — obrigatório)</div>
+      <div class="rule-desc">Palavras: "pare", "stop", "não quero mensagens", "remover", "cancelar". Ação: setar opt_out = true e parar TODOS os envios imediatamente.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BANCO DE DADOS -->
+  <div class="section-title">Banco de Dados — Campos necessários no Supabase</div>
+
+  <div class="warning-box">
+    ⚠️ <span>Rodar a migration SQL <strong>antes</strong> de criar qualquer workflow no N8N. Sem os campos corretos, os triggers não funcionam.</span>
+  </div>
+
+  <div class="db-card">
+    <h3>TABELA: clientes</h3>
+    <table class="db-table">
+      <tr>
+        <th>Campo</th>
+        <th>Tipo</th>
+        <th>Descrição</th>
+      </tr>
+      <tr>
+        <td class="field">data_ultima_consulta</td>
+        <td class="type">date</td>
+        <td class="desc">Base para D+7, D+30, D+60, D+90, D+120. Atualizar após cada consulta confirmada.</td>
+      </tr>
+      <tr>
+        <td class="field">data_cadastro</td>
+        <td class="type">date</td>
+        <td class="desc">Data do primeiro cadastro. DEFAULT NOW().</td>
+      </tr>
+      <tr>
+        <td class="field">opt_out</td>
+        <td class="type">boolean</td>
+        <td class="desc">false por padrão. Setar true quando paciente pedir para parar. DEFAULT false.</td>
+      </tr>
+      <tr>
+        <td class="field">ultimo_followup</td>
+        <td class="type">date</td>
+        <td class="desc">Atualizar após CADA envio (qualquer fluxo). Controla anti-spam e intervalos.</td>
+      </tr>
+      <tr>
+        <td class="field">status_paciente</td>
+        <td class="type">text</td>
+        <td class="desc">'ativo' por padrão. Setar 'inativo' após D+90 sem resposta no Fluxo 2. DEFAULT 'ativo'.</td>
+      </tr>
+      <tr>
+        <td class="field">respondeu_reativacao</td>
+        <td class="type">boolean</td>
+        <td class="desc">Setar true quando paciente responder. Controla se D+90 do Fluxo 2 foi respondido. DEFAULT false.</td>
+      </tr>
+      <tr>
+        <td class="field">contagem_bloco_continuo</td>
+        <td class="type">int</td>
+        <td class="desc">Contador do cuidado contínuo. Ímpar = Mensagem A, Par = Mensagem B. DEFAULT 0.</td>
+      </tr>
+      <tr>
+        <td class="field">fluxo_atual</td>
+        <td class="type">text</td>
+        <td class="desc">'fluxo1' ou 'fluxo2'. Saber em qual fluxo o paciente está. Muda para 'fluxo1' quando agendar.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="db-card">
+    <h3>TABELA: agendamentos</h3>
+    <table class="db-table">
+      <tr>
+        <th>Campo</th>
+        <th>Tipo</th>
+        <th>Descrição</th>
+      </tr>
+      <tr>
+        <td class="field">lembrete_enviado</td>
+        <td class="type">boolean</td>
+        <td class="desc">Impede que o lembrete de 30min dispare mais de uma vez. DEFAULT false.</td>
+      </tr>
+      <tr>
+        <td class="field">etapa_carrinho</td>
+        <td class="type">int</td>
+        <td class="desc">0 = nenhum lembrete enviado, 1 = 30min enviado, 2 = D+1 enviado, 3 = D+30 enviado, 4 = D+90 enviado (encerrado).</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- SQL -->
+  <div class="sql-card">
+    <h3>// migration.sql — Rodar uma vez no SQL Editor do Supabase</h3>
+    <pre><span class="sql-cm">-- Campos na tabela clientes</span>
+<span class="sql-kw">ALTER TABLE</span> <span class="sql-col">clientes</span>
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">data_ultima_consulta</span>     <span class="sql-fn">date</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">data_cadastro</span>            <span class="sql-fn">date</span> <span class="sql-kw">DEFAULT</span> <span class="sql-fn">CURRENT_DATE</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">opt_out</span>                  <span class="sql-fn">boolean</span> <span class="sql-kw">DEFAULT</span> <span class="sql-str">false</span> <span class="sql-kw">NOT NULL</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">ultimo_followup</span>          <span class="sql-fn">date</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">status_paciente</span>          <span class="sql-fn">text</span>    <span class="sql-kw">DEFAULT</span> <span class="sql-str">'ativo'</span> <span class="sql-kw">NOT NULL</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">respondeu_reativacao</span>     <span class="sql-fn">boolean</span> <span class="sql-kw">DEFAULT</span> <span class="sql-str">false</span> <span class="sql-kw">NOT NULL</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">contagem_bloco_continuo</span>  <span class="sql-fn">int</span>     <span class="sql-kw">DEFAULT</span> <span class="sql-str">0</span> <span class="sql-kw">NOT NULL</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">fluxo_atual</span>              <span class="sql-fn">text</span>    <span class="sql-kw">DEFAULT</span> <span class="sql-str">'fluxo2'</span>;
+
+<span class="sql-cm">-- Campos na tabela agendamentos</span>
+<span class="sql-kw">ALTER TABLE</span> <span class="sql-col">agendamentos</span>
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">lembrete_enviado</span>  <span class="sql-fn">boolean</span> <span class="sql-kw">DEFAULT</span> <span class="sql-str">false</span> <span class="sql-kw">NOT NULL</span>,
+  <span class="sql-kw">ADD COLUMN IF NOT EXISTS</span> <span class="sql-col">etapa_carrinho</span>    <span class="sql-fn">int</span>     <span class="sql-kw">DEFAULT</span> <span class="sql-str">0</span> <span class="sql-kw">NOT NULL</span>;
+
+<span class="sql-cm">-- Índices para performance</span>
+<span class="sql-kw">CREATE INDEX IF NOT EXISTS</span> idx_clientes_ultimo_followup   <span class="sql-kw">ON</span> <span class="sql-col">clientes</span>(<span class="sql-col">ultimo_followup</span>);
+<span class="sql-kw">CREATE INDEX IF NOT EXISTS</span> idx_clientes_data_consulta     <span class="sql-kw">ON</span> <span class="sql-col">clientes</span>(<span class="sql-col">data_ultima_consulta</span>);
+<span class="sql-kw">CREATE INDEX IF NOT EXISTS</span> idx_clientes_opt_out           <span class="sql-kw">ON</span> <span class="sql-col">clientes</span>(<span class="sql-col">opt_out</span>);
+<span class="sql-kw">CREATE INDEX IF NOT EXISTS</span> idx_clientes_status            <span class="sql-kw">ON</span> <span class="sql-col">clientes</span>(<span class="sql-col">status_paciente</span>);</pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TRIGGERS N8N -->
+  <div class="section-title">Triggers N8N — Schedule Nodes</div>
+  <div class="triggers-card">
+    <h3>Todos os workflows e quando rodam</h3>
+    <table class="tbl">
+      <tr>
+        <th>ID</th>
+        <th>Fluxo</th>
+        <th>Quando dispara</th>
+        <th>Cron N8N</th>
+        <th>Condição principal</th>
+      </tr>
+      <tr>
+        <td><strong>T1</strong></td>
+        <td><span class="tag tag-green">Fluxo 1</span></td>
+        <td>D+7 pós-consulta</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>data_ultima_consulta = HOJE - 7 AND opt_out = false</td>
+      </tr>
+      <tr>
+        <td><strong>T2</strong></td>
+        <td><span class="tag tag-green">Fluxo 1</span></td>
+        <td>D+30 pós-consulta</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>data_ultima_consulta = HOJE - 30 AND opt_out = false AND ultimo_followup &lt; HOJE - 20</td>
+      </tr>
+      <tr>
+        <td><strong>T3</strong></td>
+        <td><span class="tag tag-green">Fluxo 1</span></td>
+        <td>D+60 pós-consulta</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>data_ultima_consulta = HOJE - 60 AND opt_out = false AND ultimo_followup &lt; HOJE - 30</td>
+      </tr>
+      <tr>
+        <td><strong>T4</strong></td>
+        <td><span class="tag tag-green">Fluxo 1</span></td>
+        <td>D+90 pós-consulta</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>data_ultima_consulta = HOJE - 90 AND opt_out = false AND ultimo_followup &lt; HOJE - 30</td>
+      </tr>
+      <tr>
+        <td><strong>T5</strong></td>
+        <td><span class="tag tag-purple">Contínuo</span></td>
+        <td>D+120 em diante (60d)</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>data_ultima_consulta &lt;= HOJE - 120 AND opt_out = false AND (ultimo_followup IS NULL OR ultimo_followup &lt;= HOJE - 60)</td>
+      </tr>
+      <tr>
+        <td><strong>T6</strong></td>
+        <td><span class="tag tag-orange">Fluxo 2</span></td>
+        <td>30min sem agendar</td>
+        <td><span class="cron">*/30 * * * *</span></td>
+        <td>criado_em &lt;= NOW() - 30min AND etapa_carrinho = 0 AND opt_out = false</td>
+      </tr>
+      <tr>
+        <td><strong>T7</strong></td>
+        <td><span class="tag tag-orange">Fluxo 2</span></td>
+        <td>D+1 sem agendar</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>DATE(criado_em) = HOJE - 1 AND etapa_carrinho = 1 AND opt_out = false</td>
+      </tr>
+      <tr>
+        <td><strong>T8</strong></td>
+        <td><span class="tag tag-orange">Fluxo 2</span></td>
+        <td>D+30 sem agendar</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>DATE(criado_em) = HOJE - 30 AND etapa_carrinho = 2 AND opt_out = false</td>
+      </tr>
+      <tr>
+        <td><strong>T9</strong></td>
+        <td><span class="tag tag-orange">Fluxo 2</span></td>
+        <td>D+90 sem agendar</td>
+        <td><span class="cron">0 9 * * *</span></td>
+        <td>DATE(criado_em) = HOJE - 90 AND etapa_carrinho = 3 AND opt_out = false</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PRIORIDADE -->
+  <div class="section-title">Ordem de Implementação</div>
+  <div class="priority-list">
+    <div class="priority-item">
+      <div class="priority-num pn-red">1</div>
+      <div class="priority-content">
+        <div class="priority-title">Migration SQL no Supabase</div>
+        <div class="priority-desc">Rodar o SQL acima antes de qualquer outra coisa. Sem os campos, nada funciona.</div>
+      </div>
+      <span class="priority-tag pt-alta">Alta</span>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num pn-red">2</div>
+      <div class="priority-content">
+        <div class="priority-title">Opt-out Global (LGPD)</div>
+        <div class="priority-desc">Obrigatório por lei antes de qualquer disparo em produção. Palavras: "pare", "stop", "não quero mensagens".</div>
+      </div>
+      <span class="priority-tag pt-alta">Alta</span>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num pn-orange">3</div>
+      <div class="priority-content">
+        <div class="priority-title">Fluxo 1 — D+7 e D+30 (pós-consulta)</div>
+        <div class="priority-desc">Principal objetivo do sistema. Começar pelos dois primeiros disparos antes de implementar o restante.</div>
+      </div>
+      <span class="priority-tag pt-alta">Alta</span>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num pn-orange">4</div>
+      <div class="priority-content">
+        <div class="priority-title">Fluxo 2 — Carrinho abandonado (30min + D+1)</div>
+        <div class="priority-desc">Recuperação rápida. Os dois primeiros já existem — adicionar D+30 e D+90 usando o campo etapa_carrinho.</div>
+      </div>
+      <span class="priority-tag pt-alta">Alta</span>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num pn-green">5</div>
+      <div class="priority-content">
+        <div class="priority-title">Fluxo 1 — D+60 e D+90</div>
+        <div class="priority-desc">Completar o ciclo de retenção médio prazo após os dois primeiros estarem funcionando.</div>
+      </div>
+      <span class="priority-tag pt-media">Média</span>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num pn-blue">6</div>
+      <div class="priority-content">
+        <div class="priority-title">Cuidado Contínuo — D+120 em diante</div>
+        <div class="priority-desc">Ciclo permanente a cada 60 dias. Implementar por último pois depende dos anteriores estarem funcionando.</div>
+      </div>
+      <span class="priority-tag pt-media">Média</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    REMMED Telemedicina &nbsp;•&nbsp; Sistema Clara &nbsp;•&nbsp; Follow-Up v1.0 &nbsp;•&nbsp; Maio 2026
+  </div>
+
+</div>
+</body>
+</html>
