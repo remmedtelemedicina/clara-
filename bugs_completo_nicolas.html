@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Completo de Bugs — Clara | REMMED</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #1a1a2e; padding: 40px 20px; }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; border-radius: 16px; padding: 36px 40px; margin-bottom: 32px; }
+  .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.75; margin-bottom: 18px; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge { border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+  .badge-red { background: #e74c3c; color: white; }
+  .badge-orange { background: #f39c12; color: white; }
+  .badge-blue { background: #3498db; color: white; }
+  .badge-green { background: #2ecc71; color: white; }
+
+  /* SECTION */
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #aaa; margin: 36px 0 14px; }
+
+  /* BUG CARD HEADER */
+  .bug-header { border-radius: 14px; padding: 24px 28px; margin-bottom: 20px; }
+  .bug-header.red { background: linear-gradient(135deg, #e63946, #c1121f); color: white; }
+  .bug-header.orange { background: linear-gradient(135deg, #f39c12, #d68910); color: white; }
+  .bug-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .bug-header p { font-size: 13px; opacity: 0.85; }
+
+  /* CARDS */
+  .card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 18px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 18px; color: #1a1a2e; }
+
+  /* CHAT */
+  .msgs { display: flex; flex-direction: column; gap: 10px; }
+  .msg { display: flex; flex-direction: column; max-width: 80%; }
+  .msg.p { align-self: flex-end; align-items: flex-end; }
+  .msg.b { align-self: flex-start; align-items: flex-start; }
+  .bubble { padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
+  .msg.p .bubble { background: #dcf8c6; border-bottom-right-radius: 4px; }
+  .msg.b .bubble { background: #f0f2f5; border-bottom-left-radius: 4px; }
+  .msg.b.ok .bubble { background: #eafaf1; border: 1px solid #a9dfbf; }
+  .msg.b.err .bubble { background: #fdecea; border: 1px solid #f5c6c6; }
+  .msg-lbl { font-size: 11px; font-weight: 700; margin-bottom: 3px; color: #888; }
+  .msg-time { font-size: 11px; color: #aaa; margin-top: 3px; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+  .tag-red { background: #e74c3c; color: white; }
+  .tag-green { background: #2ecc71; color: white; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; align-items: flex-start; }
+  .step:last-child { border-bottom: none; }
+  .dot { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: white; flex-shrink: 0; margin-top: 1px; }
+  .dot-green { background: #2ecc71; }
+  .dot-red { background: #e74c3c; }
+  .dot-gray { background: #bdc3c7; }
+  .dot-orange { background: #f39c12; }
+  .dot-blue { background: #3498db; }
+  .dot-purple { background: #9b59b6; }
+  .step-body { flex: 1; font-size: 13px; line-height: 1.5; }
+  .step-body strong { color: #1a1a2e; }
+  .step-body .sub { font-size: 11px; color: #999; margin-top: 3px; }
+  .step-body .err { color: #e74c3c; font-weight: 700; }
+  .step-body .ok { color: #1e8449; font-weight: 700; }
+  .step-skip { opacity: 0.35; text-decoration: line-through; }
+
+  /* COMPARE GRID */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  @media(max-width: 640px){ .compare { grid-template-columns: 1fr; } }
+  .cbox { border-radius: 12px; padding: 20px; }
+  .cbox.wrong { background: #fdecea; border: 2px solid #e74c3c; }
+  .cbox.right { background: #eafaf1; border: 2px solid #2ecc71; }
+  .cbox h4 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+  .cbox.wrong h4 { color: #922b21; }
+  .cbox.right h4 { color: #1e8449; }
+  .cstep { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 13px; }
+  .cstep:last-child { border-bottom: none; }
+  .cstep span:first-child { font-weight: 700; min-width: 20px; }
+
+  /* CODE BLOCK */
+  .code { background: #1a1a2e; color: #c9d1d9; font-family: monospace; font-size: 12.5px; border-radius: 8px; padding: 14px 16px; margin-top: 10px; line-height: 1.7; white-space: pre-wrap; }
+  .kw { color: #ff7b72; }
+  .val { color: #a5d6ff; }
+  .cm { color: #8b949e; }
+  .hl { color: #ffa657; font-weight: bold; }
+  .ok-c { color: #56d364; }
+
+  /* FLOW */
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .flow-node { border-radius: 10px; padding: 14px 20px; font-size: 13px; font-weight: 600; text-align: center; width: 100%; max-width: 460px; }
+  .fn-gray { background: #f0f2f5; border: 2px solid #ccc; color: #555; }
+  .fn-blue { background: #ebf5fb; border: 2px solid #3498db; color: #1a5276; }
+  .fn-yellow { background: #fef9e7; border: 2px solid #f39c12; color: #7d6608; }
+  .fn-green { background: #eafaf1; border: 2px solid #2ecc71; color: #1e8449; }
+  .fn-red { background: #fdecea; border: 2px solid #e74c3c; color: #922b21; }
+  .fn-purple { background: #f5eef8; border: 2px solid #9b59b6; color: #6c3483; }
+  .flow-arrow { font-size: 22px; color: #bbb; padding: 4px 0; }
+  .flow-branches { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 460px; margin-top: 4px; }
+  .branch { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .branch-lbl { font-size: 12px; font-weight: 700; color: #555; margin-bottom: 4px; }
+
+  /* ALERT BOX */
+  .alert { border-radius: 10px; padding: 14px 18px; font-size: 13px; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; }
+  .alert.yellow { background: #fef9e7; border: 1px solid #f9ca24; color: #7d6608; }
+  .alert.red { background: #fdecea; border: 1px solid #e74c3c; color: #922b21; }
+  .alert.blue { background: #ebf5fb; border: 1px solid #3498db; color: #1a5276; }
+  .alert.green { background: #eafaf1; border: 1px solid #2ecc71; color: #1e8449; }
+
+  /* CAUSA */
+  .cause-item { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid #f0f2f5; }
+  .cause-item:last-child { border-bottom: none; }
+  .cnum { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+  .cn-red { background: #e74c3c; }
+  .cn-orange { background: #f39c12; }
+  .cn-blue { background: #3498db; }
+  .cause-body { flex: 1; }
+  .cause-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .cause-desc { font-size: 13px; color: #555; line-height: 1.5; }
+
+  /* FIX ITEMS */
+  .fix-item { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid #f0f2f5; }
+  .fix-item:last-child { border-bottom: none; }
+  .fnum { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+  .fn1 { background: #3498db; }
+  .fn2 { background: #9b59b6; }
+  .fn3 { background: #2ecc71; }
+  .fn4 { background: #f39c12; }
+  .fn5 { background: #1abc9c; }
+  .fix-body { flex: 1; }
+  .fix-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .fix-desc { font-size: 13px; color: #555; line-height: 1.5; }
+  .fix-where { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; }
+  .where-prompt { background: #ebf5fb; color: #1a5276; }
+  .where-n8n { background: #fef9e7; color: #7d6608; }
+
+  /* SUMMARY TABLE */
+  .sum-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sum-table th { background: #1a1a2e; color: white; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 700; }
+  .sum-table td { padding: 12px 14px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+  .sum-table tr:last-child td { border-bottom: none; }
+  .sum-table tr:nth-child(even) td { background: #f8f9fc; }
+  .status-pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+  .pill-red { background: #fdecea; color: #922b21; }
+  .pill-green { background: #eafaf1; color: #1e8449; }
+  .pill-orange { background: #fef9e7; color: #7d6608; }
+
+  /* DIVIDER */
+  .divider { height: 2px; background: linear-gradient(90deg, #3498db, #9b59b6, #2ecc71); border-radius: 2px; margin: 36px 0; }
+
+  .footer { text-align: center; color: #aaa; font-size: 12px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e8ecf0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>📋 Relatório Completo de Bugs — Clara</h1>
+    <p>REMMED Telemedicina · Documento técnico para Nicolas · 26/05/2026</p>
+    <div class="badges">
+      <span class="badge badge-red">2 bugs críticos</span>
+      <span class="badge badge-orange">Causa raiz identificada</span>
+      <span class="badge badge-blue">5 correções necessárias</span>
+      <span class="badge badge-green">Prompt + N8N</span>
+    </div>
+  </div>
+
+  <!-- RESUMO EXECUTIVO -->
+  <div class="section-label">Visão geral — o que está acontecendo</div>
+  <div class="card">
+    <h3>Os dois bugs são independentes mas se potencializam</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="dot dot-red">1</div>
+        <div class="step-body">
+          <strong>Bug A — Clara mostra checklist de alarme sem o paciente ter dito o sintoma</strong>
+          <div class="sub">O modelo pula etapas e inventa uma lista genérica. Paciente é bloqueado sem motivo real.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-orange">2</div>
+        <div class="step-body">
+          <strong>Bug B — Clara encerra conversa nova dizendo "Nossa conversa foi encerrada"</strong>
+          <div class="sub">O setor "ENCERRADO" de uma conversa anterior fica salvo no Supabase e a Clara lê esse estado na nova conversa.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-purple">⚠️</div>
+        <div class="step-body">
+          <strong>Efeito combinado — Bug B causa Bug A em alguns casos</strong>
+          <div class="sub">Se o setor no banco estiver em uma etapa avançada (ex: TRIAGEM_ALARME) de conversa anterior, a Clara pula direto para o checklist no início da conversa nova — sem perguntar nada.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider"></div>
+
+  <!-- ===== BUG A ===== -->
+  <div class="bug-header red">
+    <h2>🔴 Bug A — Checklist sem sintoma</h2>
+    <p>Clara mostrou lista de alarme antes de saber o sintoma do paciente. Paciente foi bloqueado sem motivo.</p>
+  </div>
+
+  <div class="section-label">A conversa que gerou o bug</div>
+  <div class="card">
+    <div class="msgs">
+
+      <div class="msg p">
+        <div class="msg-lbl">Paciente</div>
+        <div class="bubble">2</div>
+        <div class="msg-time">13:43</div>
+      </div>
+
+      <div class="msg b ok">
+        <div class="msg-lbl">Clara <span class="tag tag-green">✅ CORRETO</span></div>
+        <div class="bubble">
+          Certo! Você solicitou um Atestado Médico 📋<br>
+          💳 Valor: R$ 79,90...<br><br>
+          Podemos continuar?<br>
+          Responda apenas <strong>SIM</strong> ou <strong>NÃO</strong>.
+        </div>
+        <div class="msg-time">13:43</div>
+      </div>
+
+      <div class="msg p">
+        <div class="msg-lbl">Paciente</div>
+        <div class="bubble">Sim</div>
+        <div class="msg-time">13:44</div>
+      </div>
+
+      <div class="msg b err">
+        <div class="msg-lbl">Clara <span class="tag tag-red">❌ PULOU 2 ETAPAS</span></div>
+        <div class="bubble">
+          Antes de continuar, preciso checar sua segurança rapidinho 🧡<br><br>
+          Você está sentindo algum desses sinais de alarme agora?<br><br>
+          · Falta de ar intensa<br>
+          · Dor forte no peito<br>
+          · Desmaio ou convulsão<br>
+          · Sangramento intenso<br>
+          · Febre alta há mais de 3 dias<br><br>
+          ✅ NÃO — não estou sentindo nenhum<br>
+          🚨 SIM — estou sentindo algum
+        </div>
+        <div class="msg-time">13:44</div>
+      </div>
+
+      <div class="msg p">
+        <div class="msg-lbl">Paciente</div>
+        <div class="bubble">Sim</div>
+        <div class="msg-time">13:45</div>
+      </div>
+
+      <div class="msg b err">
+        <div class="msg-lbl">Clara <span class="tag tag-red">❌ BLOQUEOU SEM MOTIVO</span></div>
+        <div class="bubble">⚠️ Pelos sintomas que você descreveu, recomendo procurar um pronto-atendimento AGORA...</div>
+        <div class="msg-time">13:45</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-label">O que deveria ter acontecido vs. o que aconteceu</div>
+  <div class="compare">
+    <div class="cbox wrong">
+      <h4>❌ O que Clara fez</h4>
+      <div class="cstep"><span>1.</span><span>Paciente escolheu opção 2 (atestado) ✅</span></div>
+      <div class="cstep"><span>2.</span><span>Paciente disse "Sim" para confirmar ✅</span></div>
+      <div class="cstep"><span style="color:#e74c3c">✕</span><span style="text-decoration:line-through;opacity:0.5">ETAPA 3 — perguntar leveza</span> PULADA</div>
+      <div class="cstep"><span style="color:#e74c3c">✕</span><span style="text-decoration:line-through;opacity:0.5">ETAPA 3A — pedir sintoma</span> PULADA</div>
+      <div class="cstep"><span>5.</span><span>Mostrou checklist inventado ❌</span></div>
+      <div class="cstep"><span>6.</span><span>Paciente disse "Sim" → bloqueado ❌</span></div>
+    </div>
+    <div class="cbox right">
+      <h4>✅ O que deveria ter feito</h4>
+      <div class="cstep"><span>1.</span><span>Paciente escolheu opção 2 (atestado)</span></div>
+      <div class="cstep"><span>2.</span><span>Paciente disse "Sim" para confirmar</span></div>
+      <div class="cstep"><span>3.</span><span>ETAPA 3 → perguntar leveza dos sintomas</span></div>
+      <div class="cstep"><span>4.</span><span>ETAPA 3A → pedir o principal sintoma</span></div>
+      <div class="cstep"><span>5.</span><span>Paciente informa o sintoma (ex: dor costas)</span></div>
+      <div class="cstep"><span>6.</span><span>Mostrar checklist correto para aquele grupo</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">Por que aconteceu — causas do Bug A</div>
+  <div class="card">
+    <div class="cause-item">
+      <div class="cnum cn-red">1</div>
+      <div class="cause-body">
+        <div class="cause-title">O modelo executou 3 etapas em 1 turno</div>
+        <div class="cause-desc">
+          O prompt tem a regra "execute APENAS a etapa correspondente e encerre". Mas ao receber "Sim", o modelo decidiu ser "eficiente" e executou: confirmação → pergunta de leveza → identificação de grupo → exibição de checklist — tudo de uma vez.
+        </div>
+        <div class="code"><span class="cm"># Regra violada no prompt:</span>
+"Execute APENAS a etapa correspondente —
+nunca execute mais de uma etapa por turno"
+
+<span class="hl"># O modelo ignorou essa regra</span></div>
+      </div>
+    </div>
+    <div class="cause-item">
+      <div class="cnum cn-orange">2</div>
+      <div class="cause-body">
+        <div class="cause-title">O checklist mostrado não existe no prompt — foi inventado</div>
+        <div class="cause-desc">
+          A Clara não usou nenhum dos 18 grupos de sintoma. Criou uma lista genérica misturada. Isso acontece porque ela mostrou o checklist <strong>antes de saber o sintoma</strong> — sem saber o grupo, inventou uma lista "universal" que não está no prompt.
+        </div>
+        <div class="code"><span class="cm"># Regra violada:</span>
+"Copiar texto EXATO dos grupos de sintoma —
+não resumir, não adaptar, não inventar"
+
+<span class="hl"># Clara criou lista própria porque não tinha grupo identificado</span></div>
+      </div>
+    </div>
+    <div class="cause-item">
+      <div class="cnum cn-blue">3</div>
+      <div class="cause-body">
+        <div class="cause-title">Possível: setor estava em estado avançado de conversa anterior</div>
+        <div class="cause-desc">
+          Se o banco Supabase tinha setor = "TRIAGEM_ALARME" de uma conversa anterior, a Clara leu esse estado e foi direto ao checklist sem passar pelas etapas anteriores. <strong>Isso conecta Bug A com Bug B.</strong>
+        </div>
+        <div class="code"><span class="cm"># Cenário combinado:</span>
+Supabase: setor = <span class="val">"TRIAGEM_ALARME"</span> (de ontem)
+Nova mensagem: "Sim"
+Clara lê setor → pula para MOMENTO 1 → mostra checklist
+<span class="hl"># Paciente nunca disse sintoma nessa conversa</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider"></div>
+
+  <!-- ===== BUG B ===== -->
+  <div class="bug-header orange">
+    <h2>🟠 Bug B — Setor ENCERRADO na conversa nova</h2>
+    <p>Paciente abre nova conversa e Clara responde "Nossa conversa foi encerrada" sem motivo aparente.</p>
+  </div>
+
+  <div class="section-label">Por que isso acontece</div>
+  <div class="card">
+    <h3>O WhatsApp não tem "sessão" — o N8N não sabe que é uma conversa nova</h3>
+
+    <div class="alert blue">
+      <span>💡</span>
+      <div>Para o N8N, cada mensagem que chega é apenas um webhook com <code>{ telefone, mensagem }</code>. Ele identifica o paciente pelo número de telefone e busca os dados no Supabase — sem saber se é continuação de conversa ou início de uma nova.</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="dot dot-blue">1</div>
+        <div class="step-body">
+          <strong>Paciente envia nova mensagem (nova conversa)</strong>
+          <div class="sub">Ex: mandou "Olá" ou "2" para iniciar novo atendimento</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-orange">2</div>
+        <div class="step-body">
+          <strong>N8N recebe webhook → identifica pelo telefone → busca no Supabase</strong>
+          <div class="sub">Encontra: setor = "ENCERRADO" (gravado da conversa de ontem/semana passada)</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-orange">3</div>
+        <div class="step-body">
+          <strong>N8N passa setor = "ENCERRADO" para a Clara</strong>
+          <div class="sub">O N8N não verifica há quantas horas está assim — simplesmente lê e repassa</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-red">4</div>
+        <div class="step-body">
+          <strong>Clara executa ALERTA 0 → "Nossa conversa foi encerrada" ❌</strong>
+          <div class="sub">O prompt está certo — o problema é o setor incorreto que veio do banco</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">O que o N8N precisa verificar (novo nó IF)</div>
+  <div class="card">
+    <h3>Fluxo correto após a correção</h3>
+    <div class="flow">
+      <div class="flow-node fn-gray">📨 Mensagem do paciente chega</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-blue">🗄️ GET row — Supabase<br><small>Lê setor + ultimo_contato do paciente</small></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-yellow">❓ IF — nó de verificação (NOVO)<br><small>setor == "ENCERRADO" AND tempo desde último contato &gt; 4h?</small></div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-branches">
+        <div class="branch">
+          <div class="branch-lbl">✅ SIM — nova conversa</div>
+          <div class="flow-node fn-green" style="font-size:12px;">🔄 UPDATE Supabase<br>setor = "TRIAGEM_ATIVA"</div>
+        </div>
+        <div class="branch">
+          <div class="branch-lbl">❌ NÃO — ainda na mesma</div>
+          <div class="flow-node fn-gray" style="font-size:12px; opacity:0.6;">(sem alteração)</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-purple">🤖 Agente Clara recebe setor correto</div>
+    </div>
+  </div>
+
+  <!-- EFEITO COMBINADO -->
+  <div class="divider"></div>
+
+  <div class="section-label">Como os dois bugs se combinam — o cenário mais perigoso</div>
+  <div class="card">
+    <h3>Quando Bug B causa Bug A</h3>
+
+    <div class="alert red">
+      <span>🚨</span>
+      <div><strong>Cenário:</strong> Paciente teve uma consulta ontem. Conversa chegou até a etapa TRIAGEM_ALARME. Hoje abre nova conversa e diz "Olá".</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="dot dot-blue">D-1</div>
+        <div class="step-body">
+          <strong>Ontem: Paciente foi até a etapa de checklist de alarme</strong>
+          <div class="sub">Supabase gravou: setor = "TRIAGEM_ALARME"</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-blue">D</div>
+        <div class="step-body">
+          <strong>Hoje: Paciente manda nova mensagem</strong>
+          <div class="sub">N8N lê setor = "TRIAGEM_ALARME" do banco</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-red">!</div>
+        <div class="step-body">
+          <strong>Clara recebe setor = "TRIAGEM_ALARME" e vai direto ao checklist</strong>
+          <div class="sub">Pula boas-vindas, pula confirmação de opção, pula pergunta de sintoma</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-red">❌</div>
+        <div class="step-body">
+          <strong>Paciente recebe checklist de alarme sem ter dito nenhum sintoma</strong>
+          <div class="sub">Se responder "Sim" por confusão → bloqueado e mandado para presencial sem motivo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert yellow" style="margin-top: 16px;">
+      <span>⚠️</span>
+      <div>Por isso o reset de setor no N8N (correção do Bug B) também <strong>resolve parte do Bug A</strong>. As duas correções precisam ser feitas juntas.</div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider"></div>
+
+  <!-- CORREÇÕES -->
+  <div class="section-label">Todas as correções necessárias</div>
+
+  <div class="card">
+    <h3>5 correções — Prompt (Clara) + N8N</h3>
+
+    <!-- FIX 1 -->
+    <div class="fix-item">
+      <div class="fnum fn1">1</div>
+      <div class="fix-body">
+        <span class="fix-where where-prompt">📝 Prompt Clara</span>
+        <div class="fix-title">ETAPA 3 — Adicionar instrução de parada obrigatória</div>
+        <div class="fix-desc">Após o paciente confirmar "Sim" (confirmação da consulta), a Clara deve perguntar leveza e <strong>encerrar o turno imediatamente</strong> — sem avançar para checklist nem pedir sintoma.</div>
+        <div class="code"><span class="cm"># Localizar no prompt: seção ETAPA 3 / TRIAGEM_SINTOMA</span>
+<span class="cm"># Adicionar ao final do bloco "SIM:"</span>
+
+<span class="hl">🔴 ENCERRAR IMEDIATAMENTE APÓS ESTE OUTPUT.</span>
+<span class="hl">🔴 NÃO continuar para próxima etapa.</span>
+<span class="hl">🔴 NÃO mostrar lista de alarme.</span>
+<span class="hl">🔴 NÃO pedir sintoma agora — aguardar próximo turno.</span></div>
+      </div>
+    </div>
+
+    <!-- FIX 2 -->
+    <div class="fix-item">
+      <div class="fnum fn2">2</div>
+      <div class="fix-body">
+        <span class="fix-where where-prompt">📝 Prompt Clara</span>
+        <div class="fix-title">ETAPA 3A — Adicionar instrução de parada obrigatória</div>
+        <div class="fix-desc">Após pedir o sintoma principal ao paciente, a Clara deve <strong>encerrar o turno</strong> — sem identificar grupo nem mostrar checklist antes de receber a resposta.</div>
+        <div class="code"><span class="cm"># Localizar no prompt: seção ETAPA 3A / TRIAGEM_LEVEZA</span>
+<span class="cm"># Adicionar ao final do bloco "SIM:"</span>
+
+<span class="hl">🔴 ENCERRAR IMEDIATAMENTE APÓS ESTE OUTPUT.</span>
+<span class="hl">🔴 NÃO identificar grupo de sintoma agora.</span>
+<span class="hl">🔴 NÃO mostrar checklist agora.</span>
+<span class="hl">🔴 Aguardar o sintoma no próximo turno.</span></div>
+      </div>
+    </div>
+
+    <!-- FIX 3 -->
+    <div class="fix-item">
+      <div class="fnum fn3">3</div>
+      <div class="fix-body">
+        <span class="fix-where where-prompt">📝 Prompt Clara</span>
+        <div class="fix-title">ETAPA 3B MOMENTO 1 — Verificar se sintoma foi informado antes de mostrar checklist</div>
+        <div class="fix-desc">No início do MOMENTO 1, verificar se a mensagem contém um sintoma real. Se for só "Sim", "Ok" ou vaga — pedir o sintoma antes de qualquer coisa.</div>
+        <div class="code"><span class="cm"># Localizar no prompt: seção ETAPA 3B / MOMENTO 1</span>
+<span class="cm"># Adicionar NO INÍCIO, antes de qualquer outra instrução:</span>
+
+<span class="hl">🔴 ANTES DE QUALQUER COISA: verificar se paciente informou sintoma.</span>
+<span class="hl">   Se a mensagem for apenas "Sim", "Ok", "Pode" ou vaga</span>
+<span class="hl">   E não há sintoma na memória da conversa →</span>
+<span class="hl">   NÃO mostrar checklist. NÃO atualizar setor.</span>
+
+Output obrigatório nesse caso:
+<span class="val">"Para eu conseguir te atender, preciso saber:
+qual é o seu *principal sintoma* agora?
+(Ex: dor de cabeça, gripe, dor nas costas...)"</span>
+<span class="hl">🔴 Aguardar resposta. Encerrar turno.</span></div>
+      </div>
+    </div>
+
+    <!-- FIX 4 -->
+    <div class="fix-item">
+      <div class="fnum fn4">4</div>
+      <div class="fix-body">
+        <span class="fix-where where-n8n">⚙️ N8N</span>
+        <div class="fix-title">Adicionar coluna ultimo_contato no Supabase + nó IF no workflow</div>
+        <div class="fix-desc">A tabela de pacientes precisa de um campo com data/hora do último contato. O N8N verifica esse campo antes de passar o setor para a Clara.</div>
+        <div class="code"><span class="cm">-- Passo 1: adicionar coluna no Supabase</span>
+<span class="kw">ALTER TABLE</span> clientes
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> ultimo_contato <span class="val">timestamptz</span> <span class="kw">DEFAULT NOW</span>();
+
+<span class="cm">-- Passo 2: nó IF no N8N (entre "Get a row" e agente Clara)</span>
+Condição:
+  {{ $json.setor }} == <span class="val">"ENCERRADO"</span>
+  <span class="kw">AND</span>
+  {{ $now.diff($json.ultimo_contato, 'hours') }} > <span class="val">4</span>
+
+Branch TRUE → Supabase UPDATE setor = <span class="val">"TRIAGEM_ATIVA"</span>
+Branch FALSE → segue sem alteração</div>
+      </div>
+    </div>
+
+    <!-- FIX 5 -->
+    <div class="fix-item">
+      <div class="fnum fn5">5</div>
+      <div class="fix-body">
+        <span class="fix-where where-n8n">⚙️ N8N</span>
+        <div class="fix-title">Atualizar ultimo_contato a cada mensagem recebida</div>
+        <div class="fix-desc">No início do workflow, assim que o número do paciente é identificado, atualizar o campo <code>ultimo_contato</code>. Isso garante que o cálculo de tempo seja sempre preciso.</div>
+        <div class="code"><span class="cm">-- Supabase UPDATE no início do workflow (antes do IF):</span>
+<span class="kw">UPDATE</span> clientes
+<span class="kw">SET</span> ultimo_contato = <span class="val">NOW()</span>
+<span class="kw">WHERE</span> telefone = {{ $json.telefone }}</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABELA RESUMO -->
+  <div class="divider"></div>
+
+  <div class="section-label">Resumo — O que fazer e onde</div>
+  <div class="card">
+    <table class="sum-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Correção</th>
+          <th>Onde aplicar</th>
+          <th>Prioridade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>ETAPA 3 — instrução de parada (🔴 ENCERRAR)</td>
+          <td>Prompt da Clara (n8n)</td>
+          <td><span class="status-pill pill-red">🔴 Urgente</span></td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>ETAPA 3A — instrução de parada (🔴 ENCERRAR)</td>
+          <td>Prompt da Clara (n8n)</td>
+          <td><span class="status-pill pill-red">🔴 Urgente</span></td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>ETAPA 3B MOMENTO 1 — checar sintoma antes do checklist</td>
+          <td>Prompt da Clara (n8n)</td>
+          <td><span class="status-pill pill-red">🔴 Urgente</span></td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Coluna ultimo_contato + nó IF (reset setor após 4h)</td>
+          <td>Supabase + N8N workflow</td>
+          <td><span class="status-pill pill-orange">🟠 Alta</span></td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Atualizar ultimo_contato a cada mensagem</td>
+          <td>N8N workflow (início)</td>
+          <td><span class="status-pill pill-orange">🟠 Alta</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert green" style="margin-top: 8px;">
+    <span>✅</span>
+    <div><strong>Depois dessas 5 correções:</strong> Clara só mostrará o checklist de alarme após receber o sintoma do paciente. Conversas novas sempre iniciarão com setor correto. Pacientes não serão mais bloqueados sem motivo.</div>
+  </div>
+
+  <div class="footer">
+    REMMED Telemedicina &nbsp;•&nbsp; Relatório completo de bugs — Clara &nbsp;•&nbsp; Maio 2026
+  </div>
+
+</div>
+</body>
+</html>
