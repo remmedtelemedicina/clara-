@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bug Fix — Setor ENCERRADO | REMMED</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6fb;
+    color: #1a1a2e;
+    padding: 40px 20px;
+  }
+  .page { max-width: 860px; margin: 0 auto; }
+
+  .header {
+    background: linear-gradient(135deg, #e63946, #c1121f);
+    color: white;
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 28px;
+  }
+  .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+  .header p { font-size: 14px; opacity: 0.85; }
+  .header .badges { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .badge { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 3px 12px; font-size: 12px; font-weight: 600; }
+
+  .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin: 28px 0 14px; }
+
+  /* CONVERSA */
+  .chat-card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 14px; }
+  .chat-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .chat-messages { display: flex; flex-direction: column; gap: 10px; }
+  .msg { display: flex; flex-direction: column; max-width: 75%; }
+  .msg.patient { align-self: flex-end; align-items: flex-end; }
+  .msg.bot { align-self: flex-start; align-items: flex-start; }
+  .msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
+  .msg.patient .msg-bubble { background: #dcf8c6; color: #1a1a2e; border-bottom-right-radius: 4px; }
+  .msg.bot .msg-bubble { background: #f0f2f5; color: #1a1a2e; border-bottom-left-radius: 4px; }
+  .msg.bot.error .msg-bubble { background: #fdecea; border: 1px solid #f5c6c6; }
+  .msg-time { font-size: 11px; color: #aaa; margin-top: 3px; }
+  .msg-label { font-size: 11px; font-weight: 700; margin-bottom: 3px; color: #888; }
+
+  /* DIAGNÓSTICO */
+  .diag-card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 14px; }
+  .diag-step { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+  .diag-step:last-child { border-bottom: none; }
+  .diag-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+  .num-red { background: #e74c3c; }
+  .num-orange { background: #f39c12; }
+  .num-blue { background: #3498db; }
+  .diag-content { flex: 1; }
+  .diag-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .diag-desc { font-size: 13px; color: #555; line-height: 1.5; }
+  .diag-highlight { background: #fef9e7; border-left: 3px solid #f39c12; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: #7d6608; }
+  .diag-code { background: #1a1a2e; color: #7ed6df; font-family: monospace; font-size: 12px; border-radius: 6px; padding: 8px 12px; margin-top: 8px; }
+
+  /* FLUXO VISUAL */
+  .flow-card { background: white; border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 14px; }
+  .flow-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 20px; }
+
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-row { display: flex; align-items: stretch; gap: 0; margin-bottom: 0; }
+
+  .flow-node {
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .node-gray { background: #f0f2f5; color: #555; border: 2px solid #ddd; }
+  .node-blue { background: #ebf5fb; color: #1a5276; border: 2px solid #3498db; }
+  .node-green { background: #eafaf1; color: #1e8449; border: 2px solid #2ecc71; }
+  .node-red { background: #fdecea; color: #922b21; border: 2px solid #e74c3c; }
+  .node-yellow { background: #fef9e7; color: #7d6608; border: 2px solid #f39c12; }
+  .node-purple { background: #f5eef8; color: #6c3483; border: 2px solid #9b59b6; }
+
+  .node-icon { font-size: 20px; }
+  .node-title { font-size: 13px; font-weight: 700; }
+  .node-sub { font-size: 11px; font-weight: 400; opacity: 0.8; }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    font-size: 20px;
+    color: #bbb;
+  }
+  .flow-arrow.down { flex-direction: column; }
+
+  .flow-branches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 0;
+  }
+  .branch-label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 0 8px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .branch-yes .branch-label { color: #e74c3c; }
+  .branch-no .branch-label { color: #2ecc71; }
+
+  /* BEFORE / AFTER */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card { border-radius: 12px; padding: 20px; }
+  .compare-card.before { background: #fdecea; border: 1px solid #f5c6c6; }
+  .compare-card.after { background: #eafaf1; border: 1px solid #a9dfbf; }
+  .compare-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .compare-card.before h4 { color: #922b21; }
+  .compare-card.after h4 { color: #1e8449; }
+  .compare-step { font-size: 12px; color: #555; line-height: 1.6; padding: 4px 0; display: flex; gap: 8px; }
+
+  /* N8N STEPS */
+  .steps-card { background: white; border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .steps-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 20px; }
+  .step-item { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+  .step-item:last-child { border-bottom: none; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; color: white; flex-shrink: 0; }
+  .s1 { background: #3498db; }
+  .s2 { background: #f39c12; }
+  .s3 { background: #9b59b6; }
+  .s4 { background: #2ecc71; }
+  .s5 { background: #e74c3c; }
+  .step-content { flex: 1; }
+  .step-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .step-desc { font-size: 13px; color: #555; line-height: 1.5; }
+  .step-code { background: #1a1a2e; border-radius: 8px; padding: 12px 14px; margin-top: 10px; font-family: monospace; font-size: 12px; color: #c9d1d9; line-height: 1.7; }
+  .kw { color: #ff7b72; }
+  .val { color: #a5d6ff; }
+  .cm { color: #8b949e; }
+  .fn { color: #d2a8ff; }
+
+  .warning { background: #fef9e7; border: 1px solid #f9ca24; border-radius: 10px; padding: 14px 16px; font-size: 13px; color: #7d6608; display: flex; gap: 10px; margin-bottom: 14px; }
+
+  .footer { text-align: center; color: #aaa; font-size: 12px; margin-top: 36px; padding-top: 18px; border-top: 1px solid #e8ecf0; }
+  .divider { height: 1px; background: #e8ecf0; margin: 24px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🐛 Bug Fix — Paciente novo recebendo "conversa encerrada"</h1>
+    <p>REMMED Telemedicina — Correção no workflow N8N • Documento técnico para Nicolas</p>
+    <div class="badges">
+      <span class="badge">Bug confirmado</span>
+      <span class="badge">Correção: N8N</span>
+      <span class="badge">Não é bug do prompt</span>
+    </div>
+  </div>
+
+  <!-- CONVERSA REAL -->
+  <div class="section-title">A conversa que gerou o bug</div>
+  <div class="chat-card">
+    <div class="chat-title">📱 Conversa real — 25/05/2026 às 18h05</div>
+    <div class="chat-messages">
+
+      <div class="msg bot">
+        <div class="msg-label">Clara</div>
+        <div class="msg-bubble">⚠️ Atenção: As consultas por telemedicina NÃO atendem casos de urgência ou emergência.<br><br>Me diz rapidinho: qual seu PRINCIPAL SINTOMA agora?</div>
+        <div class="msg-time">18:03</div>
+      </div>
+
+      <div class="msg patient">
+        <div class="msg-label">Paciente</div>
+        <div class="msg-bubble">Dor nas costas que vai irradiando para os lados e para lombar</div>
+        <div class="msg-time">18:05</div>
+      </div>
+
+      <div class="msg bot error">
+        <div class="msg-label">Clara ❌ RESPOSTA ERRADA</div>
+        <div class="msg-bubble">Nossa conversa foi encerrada.<br>Qualquer dúvida, estaremos à disposição. 🧡</div>
+        <div class="msg-time">18:05</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DIAGNÓSTICO -->
+  <div class="section-title">Por que aconteceu</div>
+  <div class="diag-card">
+
+    <div class="diag-step">
+      <div class="diag-num num-red">1</div>
+      <div class="diag-content">
+        <div class="diag-title">Esse número de telefone já tinha uma conversa anterior</div>
+        <div class="diag-desc">O paciente conversou com a Clara antes. Ao final daquela conversa, o campo <code>setor</code> no Supabase foi atualizado para <strong>"ENCERRADO"</strong>.</div>
+      </div>
+    </div>
+
+    <div class="diag-step">
+      <div class="diag-num num-orange">2</div>
+      <div class="diag-content">
+        <div class="diag-title">Na nova conversa, o N8N leu o setor do banco — e ainda era ENCERRADO</div>
+        <div class="diag-desc">O workflow fez o <strong>Get a row</strong> no Supabase, leu <code>setor = "ENCERRADO"</code> e passou esse valor para a Clara.</div>
+        <div class="diag-highlight">⚠️ O N8N não sabe distinguir "conversa antiga encerrada" de "conversa nova". Ele só lê o setor e passa para frente.</div>
+      </div>
+    </div>
+
+    <div class="diag-step">
+      <div class="diag-num num-blue">3</div>
+      <div class="diag-content">
+        <div class="diag-title">O ALERTA 0 do prompt disparou corretamente — mas no contexto errado</div>
+        <div class="diag-desc">A Clara leu <code>setor = "ENCERRADO"</code> e executou o ALERTA 0 como foi programada para fazer. O prompt está certo. O problema é que o setor não devia ser ENCERRADO.</div>
+        <div class="diag-code">ALERTA 0: Se setor = "ENCERRADO" → output: "Nossa conversa foi encerrada." ✅ correto</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FLUXO VISUAL -->
+  <div class="section-title">Como o fluxo deve funcionar após a correção</div>
+  <div class="flow-card">
+    <h3>Lógica a adicionar no N8N — antes do agente Clara</h3>
+
+    <div class="flow">
+
+      <div class="flow-row">
+        <div class="flow-node node-gray">
+          <div class="node-icon">📨</div>
+          <div class="node-title">Mensagem do paciente chega</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-node node-blue">
+          <div class="node-icon">🗄️</div>
+          <div class="node-title">Get a row — Supabase</div>
+          <div class="node-sub">Lê setor atual do paciente</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-row">
+        <div class="flow-node node-yellow">
+          <div class="node-icon">❓</div>
+          <div class="node-title">IF — Nó de verificação (NOVO)</div>
+          <div class="node-sub">setor == "ENCERRADO" AND tempo desde último contato > 4h?</div>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-branches">
+        <div class="branch-yes">
+          <div class="branch-label">✅ SIM — nova conversa</div>
+          <div class="flow-node node-green">
+            <div class="node-icon">🔄</div>
+            <div class="node-title">Supabase UPDATE</div>
+            <div class="node-sub">setor = "TRIAGEM_ATIVA"</div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node node-purple">
+            <div class="node-icon">🤖</div>
+            <div class="node-title">Agente Clara</div>
+            <div class="node-sub">Recebe setor = TRIAGEM_ATIVA</div>
+          </div>
+        </div>
+
+        <div class="branch-no">
+          <div class="branch-label">❌ NÃO — conversa ainda ativa</div>
+          <div class="flow-node node-gray" style="opacity:0.5; min-height: 60px;">
+            <div class="node-sub">(sem alteração)</div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-node node-purple">
+            <div class="node-icon">🤖</div>
+            <div class="node-title">Agente Clara</div>
+            <div class="node-sub">Recebe setor original</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ANTES E DEPOIS -->
+  <div class="section-title">Antes vs. depois da correção</div>
+  <div class="compare-grid">
+    <div class="compare-card before">
+      <h4>❌ Antes — comportamento errado</h4>
+      <div class="compare-step"><span>1.</span><span>Paciente envia nova mensagem</span></div>
+      <div class="compare-step"><span>2.</span><span>N8N lê setor = ENCERRADO (de conversa antiga)</span></div>
+      <div class="compare-step"><span>3.</span><span>Clara dispara ALERTA 0 imediatamente</span></div>
+      <div class="compare-step"><span>4.</span><span>Paciente recebe "Nossa conversa foi encerrada" 😞</span></div>
+    </div>
+    <div class="compare-card after">
+      <h4>✅ Depois — comportamento correto</h4>
+      <div class="compare-step"><span>1.</span><span>Paciente envia nova mensagem</span></div>
+      <div class="compare-step"><span>2.</span><span>N8N lê setor = ENCERRADO + verifica tempo</span></div>
+      <div class="compare-step"><span>3.</span><span>Detecta que passou mais de 4h → reseta para TRIAGEM_ATIVA</span></div>
+      <div class="compare-step"><span>4.</span><span>Clara atende normalmente 🧡</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PASSO A PASSO N8N -->
+  <div class="section-title">Passo a passo — implementar no N8N</div>
+
+  <div class="warning">
+    ⚠️ <span>Fazer isso <strong>antes</strong> do agente Clara no workflow — não dentro do prompt.</span>
+  </div>
+
+  <div class="steps-card">
+    <h3>Como adicionar o nó de verificação</h3>
+
+    <div class="step-item">
+      <div class="step-num s1">1</div>
+      <div class="step-content">
+        <div class="step-title">Adicionar campo updated_at no Supabase</div>
+        <div class="step-desc">A tabela de clientes/conversas precisa ter um campo com a data/hora do último contato para calcular o tempo decorrido.</div>
+        <div class="step-code"><span class="kw">ALTER TABLE</span> clientes
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> ultimo_contato <span class="fn">timestamptz</span> <span class="kw">DEFAULT</span> <span class="fn">NOW()</span>;<br><br>
+<span class="cm">-- Atualizar esse campo a cada mensagem recebida</span></div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num s2">2</div>
+      <div class="step-content">
+        <div class="step-title">Adicionar nó IF após o "Get a row"</div>
+        <div class="step-desc">No N8N, arraste um nó <strong>IF</strong> entre o "Get a row" e o agente Clara. Configure a condição:</div>
+        <div class="step-code"><span class="cm">-- Condição do nó IF:</span>
+{{ $json.setor }} == <span class="val">"ENCERRADO"</span>
+<span class="kw">AND</span>
+{{ $now.diff($json.ultimo_contato, 'hours') }} > <span class="val">4</span></div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num s3">3</div>
+      <div class="step-content">
+        <div class="step-title">Branch TRUE — Supabase UPDATE + resetar setor</div>
+        <div class="step-desc">Quando a condição for verdadeira (conversa antiga encerrada + mais de 4h), adicionar um nó Supabase para resetar o setor.</div>
+        <div class="step-code"><span class="cm">-- Supabase node: UPDATE</span>
+<span class="kw">Table:</span> clientes
+<span class="kw">Update:</span> setor = <span class="val">"TRIAGEM_ATIVA"</span>
+<span class="kw">Where:</span> telefone = {{ $json.telefone }}</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num s4">4</div>
+      <div class="step-content">
+        <div class="step-title">Reconectar ambos os branches ao agente Clara</div>
+        <div class="step-desc">Tanto o branch TRUE (após o UPDATE) quanto o branch FALSE devem conectar ao agente Clara. O agente vai receber o setor correto em ambos os casos.</div>
+      </div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num s5">5</div>
+      <div class="step-content">
+        <div class="step-title">Atualizar ultimo_contato a cada mensagem recebida</div>
+        <div class="step-desc">Garantir que a cada mensagem do paciente, o campo <code>ultimo_contato</code> seja atualizado. Isso pode ser feito no início do workflow, logo após identificar o número do paciente.</div>
+        <div class="step-code"><span class="cm">-- Supabase UPDATE no início do workflow:</span>
+<span class="kw">UPDATE</span> clientes
+<span class="kw">SET</span> ultimo_contato = <span class="fn">NOW()</span>
+<span class="kw">WHERE</span> telefone = {{ $json.telefone }}</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    REMMED Telemedicina &nbsp;•&nbsp; Bug Fix: Setor ENCERRADO &nbsp;•&nbsp; Maio 2026
+  </div>
+
+</div>
+</body>
+</html>
