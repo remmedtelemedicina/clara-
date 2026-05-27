@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoria do Workflow — Clara | REMMED</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #1a1a2e; padding: 40px 20px; }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; border-radius: 16px; padding: 36px 40px; margin-bottom: 32px; }
+  .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.75; margin-bottom: 18px; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge { border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+  .badge-red { background: #e74c3c; color: white; }
+  .badge-orange { background: #f39c12; color: white; }
+  .badge-green { background: #2ecc71; color: white; }
+  .badge-blue { background: #3498db; color: white; }
+
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #aaa; margin: 36px 0 14px; }
+
+  .card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 18px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+
+  /* STATUS GRID */
+  .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  @media(max-width:640px){ .status-grid { grid-template-columns: 1fr; } }
+  .status-box { border-radius: 12px; padding: 18px; text-align: center; }
+  .status-box.red { background: #fdecea; border: 2px solid #e74c3c; }
+  .status-box.orange { background: #fef9e7; border: 2px solid #f39c12; }
+  .status-box.green { background: #eafaf1; border: 2px solid #2ecc71; }
+  .status-num { font-size: 40px; font-weight: 800; margin-bottom: 4px; }
+  .status-box.red .status-num { color: #e74c3c; }
+  .status-box.orange .status-num { color: #f39c12; }
+  .status-box.green .status-num { color: #2ecc71; }
+  .status-label { font-size: 12px; font-weight: 700; }
+  .status-box.red .status-label { color: #922b21; }
+  .status-box.orange .status-label { color: #7d6608; }
+  .status-box.green .status-label { color: #1e8449; }
+
+  /* ITEM LISTS */
+  .item-list { display: flex; flex-direction: column; }
+  .item { display: flex; gap: 14px; padding: 15px 0; border-bottom: 1px solid #f0f2f5; align-items: flex-start; }
+  .item:last-child { border-bottom: none; }
+  .item-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .icon-red { background: #fdecea; }
+  .icon-orange { background: #fef9e7; }
+  .icon-green { background: #eafaf1; }
+  .icon-blue { background: #ebf5fb; }
+  .item-body { flex: 1; }
+  .item-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .item-desc { font-size: 13px; color: #555; line-height: 1.5; }
+  .item-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-top: 5px; }
+  .tag-red { background: #e74c3c; color: white; }
+  .tag-orange { background: #f39c12; color: white; }
+  .tag-blue { background: #3498db; color: white; }
+  .tag-gray { background: #95a5a6; color: white; }
+
+  /* COMPARE */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+  @media(max-width:600px){ .compare { grid-template-columns: 1fr; } }
+  .cbox { border-radius: 12px; padding: 18px; }
+  .cbox.wrong { background: #fdecea; border: 2px solid #e74c3c; }
+  .cbox.right { background: #eafaf1; border: 2px solid #2ecc71; }
+  .cbox h4 { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .cbox.wrong h4 { color: #922b21; }
+  .cbox.right h4 { color: #1e8449; }
+  .cstep { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 12px; line-height: 1.5; }
+  .cstep:last-child { border-bottom: none; }
+
+  /* CODE */
+  .code { background: #1a1a2e; color: #c9d1d9; font-family: monospace; font-size: 12.5px; border-radius: 8px; padding: 14px 16px; margin-top: 12px; line-height: 1.7; white-space: pre-wrap; }
+  .kw { color: #ff7b72; }
+  .val { color: #a5d6ff; }
+  .cm { color: #8b949e; }
+  .ok { color: #56d364; }
+  .hl { color: #ffa657; }
+
+  /* FLOW */
+  .flow { display: flex; flex-direction: column; align-items: center; }
+  .fn { border-radius: 10px; padding: 12px 20px; font-size: 13px; font-weight: 600; text-align: center; width: 100%; max-width: 500px; }
+  .fn-gray { background: #f0f2f5; border: 2px solid #ccc; color: #555; }
+  .fn-blue { background: #ebf5fb; border: 2px solid #3498db; color: #1a5276; }
+  .fn-yellow { background: #fef9e7; border: 2px solid #f39c12; color: #7d6608; }
+  .fn-green { background: #eafaf1; border: 2px solid #2ecc71; color: #1e8449; }
+  .fn-red { background: #fdecea; border: 2px solid #e74c3c; color: #922b21; }
+  .fn-new { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; border: none; }
+  .fa { font-size: 22px; color: #bbb; padding: 3px 0; }
+  .flow-br { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 500px; }
+  .br { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .br-lbl { font-size: 11px; font-weight: 700; color: #888; }
+
+  /* PRIORITY TABLE */
+  .pri-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .pri-table th { background: #1a1a2e; color: white; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 700; }
+  .pri-table td { padding: 12px 14px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+  .pri-table tr:last-child td { border-bottom: none; }
+  .pri-table tr:nth-child(even) td { background: #f8f9fc; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+  .pill-red { background: #e74c3c; color: white; }
+  .pill-orange { background: #f39c12; color: white; }
+  .pill-blue { background: #3498db; color: white; }
+  .pill-gray { background: #95a5a6; color: white; }
+  .pill-green { background: #2ecc71; color: white; }
+
+  .alert { border-radius: 10px; padding: 14px 18px; font-size: 13px; margin-bottom: 14px; display: flex; gap: 10px; }
+  .alert.yellow { background: #fef9e7; border: 1px solid #f9ca24; color: #7d6608; }
+  .alert.red { background: #fdecea; border: 1px solid #e74c3c; color: #922b21; }
+  .alert.green { background: #eafaf1; border: 1px solid #2ecc71; color: #1e8449; }
+  .alert.blue { background: #ebf5fb; border: 1px solid #3498db; color: #1a5276; }
+
+  .divider { height: 2px; background: linear-gradient(90deg, #e74c3c, #f39c12, #2ecc71); border-radius: 2px; margin: 32px 0; }
+  .footer { text-align: center; color: #aaa; font-size: 12px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e8ecf0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🔍 Auditoria do Workflow — Fluxo_Mult_Agent_Clara_11</h1>
+    <p>REMMED Telemedicina · Análise completa do JSON do N8N · Maio 2026</p>
+    <div class="badges">
+      <span class="badge badge-red">3 críticos não implementados</span>
+      <span class="badge badge-orange">5 bugs encontrados</span>
+      <span class="badge badge-green">Core funcionando</span>
+      <span class="badge badge-blue">191 nós mapeados</span>
+    </div>
+  </div>
+
+  <!-- RESUMO NUMÉRICO -->
+  <div class="status-grid">
+    <div class="status-box red">
+      <div class="status-num">3</div>
+      <div class="status-label">Funcionalidades críticas<br>não implementadas</div>
+    </div>
+    <div class="status-box orange">
+      <div class="status-num">5</div>
+      <div class="status-label">Bugs identificados<br>no workflow atual</div>
+    </div>
+    <div class="status-box green">
+      <div class="status-num">✓</div>
+      <div class="status-label">Core funciona<br>áudio, imagem, doc, agentes</div>
+    </div>
+  </div>
+
+  <!-- CRÍTICOS -->
+  <div class="section-label">🔴 Crítico — O que foi pedido e NÃO foi implementado</div>
+
+  <div class="alert red">
+    <span>🚨</span>
+    <div>O arquivo JSON foi analisado nó por nó. As 3 funcionalidades abaixo foram <strong>documentadas e combinadas</strong> mas não existem em nenhum nó do workflow atual.</div>
+  </div>
+
+  <div class="card">
+    <div class="item-list">
+
+      <div class="item">
+        <div class="item-icon icon-red">⏱️</div>
+        <div class="item-body">
+          <div class="item-title">Reset de setor após 4h — NÃO EXISTE no workflow</div>
+          <div class="item-desc">
+            Este é o bug que causa pacientes receberem "Nossa conversa foi encerrada" ao voltar depois de um tempo.
+            O workflow lê o <code>setor</code> do Supabase e passa direto para Clara — sem verificar há quanto tempo está ENCERRADO.
+            <br><br>
+            <strong>O nó IF com verificação de tempo nunca foi criado.</strong>
+          </div>
+          <span class="item-tag tag-red">Causa direta de pacientes sendo bloqueados</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-icon icon-red">💬</div>
+        <div class="item-body">
+          <div class="item-title">Sistema de comandos da dona (pausa/liga/atende) — NÃO EXISTE</div>
+          <div class="item-desc">
+            O número da dona (<strong>5511947937839</strong>) é detectado no workflow, mas apenas para ser roteado normalmente como se fosse um paciente.
+            Nenhum dos comandos combinados foi implementado: <code>pausa</code>, <code>liga</code>, <code>atende [número]</code>, <code>bloqueia</code>, <code>status</code>.
+          </div>
+          <span class="item-tag tag-red">Nenhum controle por WhatsApp disponível</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-icon icon-red">🚫</div>
+        <div class="item-body">
+          <div class="item-title">Lista de pacientes bloqueados — NÃO EXISTE</div>
+          <div class="item-desc">
+            Não há tabela, não há verificação, não há nó no workflow que identifique pacientes bloqueados.
+            Qualquer número envia mensagem e é atendido normalmente — incluindo pacientes difíceis que não devem ser atendidos.
+          </div>
+          <span class="item-tag tag-red">Nenhuma proteção contra pacientes bloqueados</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- O QUE PRECISA SER CRIADO -->
+  <div class="section-label">Como corrigir o bug mais urgente — reset de setor</div>
+
+  <div class="compare">
+    <div class="cbox wrong">
+      <h4>❌ Fluxo ATUAL (com bug)</h4>
+      <div class="cstep"><span>1.</span><span>Paciente manda mensagem nova</span></div>
+      <div class="cstep"><span>2.</span><span>N8N lê setor = ENCERRADO do Supabase</span></div>
+      <div class="cstep"><span>3.</span><span>Passa direto para Clara sem verificar tempo</span></div>
+      <div class="cstep"><span>4.</span><span>Clara dispara ALERTA 0 → "Nossa conversa foi encerrada" ❌</span></div>
+    </div>
+    <div class="cbox right">
+      <h4>✅ Fluxo CORRETO (após correção)</h4>
+      <div class="cstep"><span>1.</span><span>Paciente manda mensagem nova</span></div>
+      <div class="cstep"><span>2.</span><span>N8N lê setor = ENCERRADO + verifica ultimo_contato</span></div>
+      <div class="cstep"><span>3.</span><span>Passou mais de 4h? → UPDATE setor = TRIAGEM_ATIVA</span></div>
+      <div class="cstep"><span>4.</span><span>Clara atende normalmente ✅</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Onde inserir no workflow — entre "Get a row" e o agente Clara</h3>
+    <div class="flow">
+      <div class="fn fn-gray">🗄️ Get a row — Supabase<br><small>lê setor + ultimo_contato do paciente</small></div>
+      <div class="fa">↓</div>
+      <div class="fn fn-new">⭐ IF — NÓ NOVO (inserir aqui)<br><small>setor == "ENCERRADO" AND agora - ultimo_contato > 4h?</small></div>
+      <div class="fa">↓</div>
+      <div class="flow-br">
+        <div class="br">
+          <div class="br-lbl">✅ SIM — nova conversa</div>
+          <div class="fn fn-green" style="font-size:12px;">UPDATE setor = "TRIAGEM_ATIVA"</div>
+        </div>
+        <div class="br">
+          <div class="br-lbl">❌ NÃO — mesma conversa</div>
+          <div class="fn fn-gray" style="font-size:12px;opacity:0.6;">sem alteração</div>
+        </div>
+      </div>
+      <div class="fa">↓</div>
+      <div class="fn fn-blue">🤖 Agente Clara — recebe setor correto</div>
+    </div>
+
+    <div class="code"><span class="cm">-- PASSO 1: adicionar coluna no Supabase (se não existir)</span>
+<span class="kw">ALTER TABLE</span> dados_cliente
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> ultimo_contato <span class="val">TIMESTAMPTZ DEFAULT NOW()</span>;
+
+<span class="cm">-- PASSO 2: atualizar a cada mensagem recebida (início do workflow)</span>
+<span class="cm">-- Supabase node: UPDATE dados_cliente</span>
+<span class="cm">-- SET ultimo_contato = NOW()</span>
+<span class="cm">-- WHERE telefone = {{ $('Dados').item.json.Telefone }}</span>
+
+<span class="cm">-- PASSO 3: condição do nó IF (após "Get a row")</span>
+Condição A: {{ $json.setor }} == <span class="val">"ENCERRADO"</span>
+Condição B: {{ $now.diff($json.ultimo_contato, 'hours') }} >= <span class="val">4</span>
+
+<span class="cm">-- Branch TRUE → Supabase UPDATE setor = "TRIAGEM_ATIVA"</span>
+<span class="cm">-- Branch FALSE → segue direto para Clara com setor original</span>
+
+<span class="cm">-- ⚠️ ATENÇÃO: atualizado_em e updated_at existentes são TEXT no banco.</span>
+<span class="cm">-- ultimo_contato DEVE ser TIMESTAMPTZ para $now.diff() funcionar.</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BUGS ENCONTRADOS -->
+  <div class="section-label">🟠 Bugs encontrados no workflow atual</div>
+
+  <div class="card">
+    <div class="item-list">
+
+      <div class="item">
+        <div class="item-icon icon-orange">🔄</div>
+        <div class="item-body">
+          <div class="item-title">Reativação da IA depende de texto exato "Atendimento finalizado"</div>
+          <div class="item-desc">
+            Quando um humano atende um paciente e termina, o workflow só reativa a Clara se alguém enviar a mensagem exata <strong>"Atendimento finalizado"</strong>. Se não enviar, a IA fica pausada para aquele paciente para sempre — ele nunca mais é atendido automaticamente.
+            <br><strong>Fix:</strong> Adicionar timer automático de 30 min. Se nenhuma mensagem humana em 30 min com setor=HUMANO → reativar automaticamente.
+          </div>
+          <span class="item-tag tag-orange">Pacientes ficam presos sem atendimento</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-icon icon-orange">🗄️</div>
+        <div class="item-body">
+          <div class="item-title">Colunas de data são TEXT — impossibilita cálculo de tempo</div>
+          <div class="item-desc">
+            Os campos <code>atualizado_em</code> e <code>updated_at</code> existentes na tabela estão salvos como <strong>TEXT</strong> (string), não como <strong>TIMESTAMPTZ</strong>. Isso impede qualquer cálculo de "passou X horas desde Y". A coluna <code>ultimo_contato</code> nova precisa ser criada como TIMESTAMPTZ desde o início.
+          </div>
+          <span class="item-tag tag-orange">Bloqueia implementação do reset de 4h</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-icon icon-orange">📝</div>
+        <div class="item-body">
+          <div class="item-title">Mensagens com aspas ou quebra de linha podem corromper o Redis</div>
+          <div class="item-desc">
+            O código que salva mensagens no Redis remove aspas simples e duplas (<code>.replace(/['"]/g, '')</code>) mas não trata outros caracteres especiais. Mensagens com quebras de linha complexas, emojis fora do Unicode padrão ou caracteres de controle podem corromper o JSON no Redis — e a mensagem é perdida silenciosamente.
+          </div>
+          <span class="item-tag tag-orange">Mensagens podem ser perdidas</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-icon icon-orange">🗑️</div>
+        <div class="item-body">
+          <div class="item-title">/reset deleta TUDO sem backup — 4 tabelas apagadas</div>
+          <div class="item-desc">
+            O comando <code>/reset</code> deleta dados de 4 tabelas ao mesmo tempo: <code>dados_cliente</code>, <code>chats</code>, <code>chat_messages</code> e <code>n8n_chat_histories</code>. Não há confirmação, não há backup, não há undo. Se executado por engano, histórico completo do paciente é perdido.
+            <br><strong>Fix sugerido:</strong> /reset deve apenas limpar a memória Redis e resetar o setor — nunca deletar o histórico.
+          </div>
+          <span class="item-tag tag-orange">Dados permanentemente perdidos se usado errado</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-icon icon-orange">🌍</div>
+        <div class="item-body">
+          <div class="item-title">Pacientes internacionais ficam com setor=HUMANO para sempre</div>
+          <div class="item-desc">
+            Quando um número internacional (não começa com 55) manda mensagem, o workflow seta <code>setor = "HUMANO"</code> e para. Se esse mesmo número mandar mensagem novamente, cai em um loop — setor é HUMANO, IA não atende, humano não foi notificado novamente.
+          </div>
+          <span class="item-tag tag-gray">Caso raro mas sem tratamento</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- O QUE ESTÁ BOM -->
+  <div class="section-label">✅ O que está funcionando corretamente</div>
+  <div class="card">
+    <div class="item-list">
+      <div class="item">
+        <div class="item-icon icon-green">🎙️</div>
+        <div class="item-body">
+          <div class="item-title">Áudio, imagem e documentos</div>
+          <div class="item-desc">Transcrição de áudio via OpenAI, análise de imagem via GPT-4o-mini, OCR de documentos via Gemini — todos funcionando.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-icon icon-green">🤖</div>
+        <div class="item-body">
+          <div class="item-title">Múltiplos agentes</div>
+          <div class="item-desc">Clara, Triagem Médica, Agenda Consulta, Renovação de Receita e Escalar Humano — todos conectados e com memória em Postgres.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-icon icon-green">⏱️</div>
+        <div class="item-body">
+          <div class="item-title">Buffer de 10 segundos para múltiplas mensagens</div>
+          <div class="item-desc">Paciente que manda várias mensagens seguidas tem todas agrupadas antes de chegar na Clara — evita respostas parciais.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-icon icon-green">⏸️</div>
+        <div class="item-body">
+          <div class="item-title">Pausa para atendimento humano</div>
+          <div class="item-desc">Quando humano assume, o campo <code>atendimento_ia</code> é setado para "pause" e Clara para de responder. Funciona, mas precisa da melhoria do timer de 30min.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-icon icon-green">📱</div>
+        <div class="item-body">
+          <div class="item-title">Filtro de mensagens próprias</div>
+          <div class="item-desc">Mensagens "outcoming" (enviadas pelo próprio número) são filtradas — a Clara não processa as próprias respostas como se fossem do paciente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELA DE PRIORIDADES -->
+  <div class="divider"></div>
+  <div class="section-label">Lista de tarefas — ordem de implementação</div>
+  <div class="card">
+    <table class="pri-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>O que fazer</th>
+          <th>Onde</th>
+          <th>Prioridade</th>
+          <th>Tempo est.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Criar coluna <code>ultimo_contato TIMESTAMPTZ</code> no Supabase</td>
+          <td>Supabase SQL</td>
+          <td><span class="pill pill-red">🔴 Urgente</span></td>
+          <td>10 min</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>UPDATE <code>ultimo_contato = NOW()</code> a cada mensagem recebida</td>
+          <td>N8N — início do workflow</td>
+          <td><span class="pill pill-red">🔴 Urgente</span></td>
+          <td>30 min</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>IF node: setor=ENCERRADO + tempo>4h → resetar para TRIAGEM_ATIVA</td>
+          <td>N8N — após "Get a row"</td>
+          <td><span class="pill pill-red">🔴 Urgente</span></td>
+          <td>1h</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>IF node: setor=HUMANO + tempo>30min → resetar para TRIAGEM_ATIVA</td>
+          <td>N8N — após "Get a row"</td>
+          <td><span class="pill pill-red">🔴 Urgente</span></td>
+          <td>30 min</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Parser de comandos do número da dona (pausa/liga/atende/bloqueia/status)</td>
+          <td>N8N — início do webhook</td>
+          <td><span class="pill pill-orange">🟠 Alta</span></td>
+          <td>2–3h</td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td>Tabela <code>pacientes_bloqueados</code> + verificação no início do fluxo</td>
+          <td>Supabase + N8N</td>
+          <td><span class="pill pill-orange">🟠 Alta</span></td>
+          <td>1–2h</td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td>Reativação automática após 30min sem resposta humana</td>
+          <td>N8N — pause flow</td>
+          <td><span class="pill pill-orange">🟠 Alta</span></td>
+          <td>1h</td>
+        </tr>
+        <tr>
+          <td><strong>8</strong></td>
+          <td>Corrigir /reset — limpar apenas Redis + setor, nunca deletar histórico</td>
+          <td>N8N — Reset node</td>
+          <td><span class="pill pill-blue">🔵 Média</span></td>
+          <td>30 min</td>
+        </tr>
+        <tr>
+          <td><strong>9</strong></td>
+          <td>Verificação de etiqueta WPP "nao-atender" no payload</td>
+          <td>N8N — início do webhook</td>
+          <td><span class="pill pill-blue">🔵 Média</span></td>
+          <td>1h</td>
+        </tr>
+        <tr>
+          <td><strong>10</strong></td>
+          <td>Follow-up — Fluxo 1 (pós-consulta) + Fluxo 2 (carrinho abandonado)</td>
+          <td>N8N — workflows separados</td>
+          <td><span class="pill pill-blue">🔵 Média</span></td>
+          <td>4–6h</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert yellow">
+    <span>⚠️</span>
+    <div>
+      <strong>Atenção Nicolas:</strong> Os itens 1, 2, 3 e 4 resolvem o principal bug de produção — pacientes recebendo "Nossa conversa foi encerrada" ao iniciar nova conversa. Esses 4 itens juntos levam aproximadamente <strong>2 horas</strong> para implementar e eliminam o problema completamente.
+    </div>
+  </div>
+
+  <div class="footer">
+    REMMED Telemedicina &nbsp;•&nbsp; Auditoria Workflow Clara v11 &nbsp;•&nbsp; Maio 2026
+  </div>
+
+</div>
+</body>
+</html>
