@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bug Crítico — Checklist sem Sintoma | REMMED</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #1a1a2e; padding: 40px 20px; }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .header { background: linear-gradient(135deg, #c0392b, #922b21); color: white; border-radius: 16px; padding: 36px 40px; margin-bottom: 32px; }
+  .header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.85; margin-bottom: 18px; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge { border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+  .badge-red { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); }
+  .badge-orange { background: #f39c12; color: white; }
+
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #aaa; margin: 36px 0 14px; }
+
+  .card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 18px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: #1a1a2e; }
+
+  .alert-box { border-radius: 12px; padding: 20px 24px; margin-bottom: 18px; }
+  .alert-red { background: #fdecea; border-left: 5px solid #e74c3c; }
+  .alert-orange { background: #fef9e7; border-left: 5px solid #f39c12; }
+  .alert-blue { background: #eaf4fb; border-left: 5px solid #3498db; }
+  .alert-green { background: #eafaf1; border-left: 5px solid #2ecc71; }
+  .alert-box h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .alert-box p, .alert-box li { font-size: 13px; line-height: 1.6; }
+  .alert-box ul { padding-left: 18px; }
+
+  /* CHAT */
+  .chat { background: #e5ddd5; border-radius: 14px; padding: 20px; margin-bottom: 18px; }
+  .chat-title { font-size: 12px; font-weight: 700; color: #555; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  .bubble-wrap { display: flex; margin-bottom: 12px; }
+  .bubble-wrap.right { justify-content: flex-end; }
+  .bubble { max-width: 75%; border-radius: 12px; padding: 10px 14px; font-size: 13px; line-height: 1.5; }
+  .bubble.bot { background: white; border-bottom-left-radius: 4px; }
+  .bubble.user { background: #dcf8c6; border-bottom-right-radius: 4px; }
+  .bubble .time { font-size: 10px; color: #888; text-align: right; margin-top: 4px; }
+  .bubble .sender { font-size: 10px; font-weight: 700; color: #128c7e; margin-bottom: 4px; }
+  .bubble.bot .sender { color: #888; }
+  .annotation { background: #fff3cd; border: 1px dashed #f39c12; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #7d6608; margin: -6px 0 12px 20px; max-width: 80%; }
+  .annotation.right { margin: -6px 20px 12px auto; text-align: right; }
+
+  /* FLUXO */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-step { display: flex; align-items: flex-start; gap: 16px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+  .flow-step:last-child { border-bottom: none; }
+  .flow-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  .num-ok { background: #eafaf1; color: #1e8449; }
+  .num-err { background: #fdecea; color: #c0392b; }
+  .num-warn { background: #fef9e7; color: #7d6608; }
+  .flow-content h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .flow-content p { font-size: 12px; color: #555; line-height: 1.5; }
+  .flow-arrow { text-align: center; color: #ccc; font-size: 18px; padding: 2px 0; }
+
+  /* TABELA */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #1a1a2e; color: white; padding: 10px 14px; text-align: left; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+  .tag-red { background: #fdecea; color: #c0392b; }
+  .tag-green { background: #eafaf1; color: #1e8449; }
+  .tag-orange { background: #fef9e7; color: #7d6608; }
+
+  /* CÓDIGO */
+  .code-block { background: #1e2330; color: #abb2bf; border-radius: 10px; padding: 18px 20px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; margin: 12px 0; }
+  .code-block .comment { color: #5c6370; }
+  .code-block .keyword { color: #c678dd; }
+  .code-block .string { color: #98c379; }
+  .code-block .number { color: #d19a66; }
+
+  /* CENÁRIOS */
+  .scenario { border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+  .scenario-a { background: #fdecea; border: 2px solid #e74c3c; }
+  .scenario-b { background: #fef9e7; border: 2px solid #f39c12; }
+  .scenario h4 { font-size: 14px; font-weight: 800; margin-bottom: 10px; }
+  .scenario-a h4 { color: #c0392b; }
+  .scenario-b h4 { color: #7d6608; }
+
+  .priority-num { display: inline-block; width: 28px; height: 28px; border-radius: 50%; background: #e74c3c; color: white; font-size: 12px; font-weight: 800; text-align: center; line-height: 28px; margin-right: 8px; }
+  .priority-num.two { background: #f39c12; }
+  .priority-num.three { background: #3498db; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>🚨 Bug Crítico — Clara mostra checklist sem o paciente informar sintoma</h1>
+    <p>Documento técnico para Nicolas — REMMED Telemedicina · 27/05/2026</p>
+    <div class="badges">
+      <span class="badge badge-red">🔴 Crítico</span>
+      <span class="badge badge-orange">Afeta todos os pacientes</span>
+      <span class="badge badge-red">2 cenários confirmados</span>
+    </div>
+  </div>
+
+  <!-- O QUE ESTÁ ACONTECENDO -->
+  <div class="section-label">O Problema</div>
+
+  <div class="alert-box alert-red">
+    <h4>🚨 Clara está mostrando checklists de alarme SEM o paciente ter informado nenhum sintoma</h4>
+    <p>O paciente chega, escolhe a opção, confirma "Sim"... e Clara já mostra uma lista de sinais de alarme (como se o paciente tivesse dito que tem falta de ar, dor no peito, etc.) sem nunca ter perguntado qual é o sintoma. Isso acontece em dois cenários distintos.</p>
+  </div>
+
+  <!-- CONVERSA REAL -->
+  <div class="section-label">Evidência — Conversa Real (09:11, 27/05/2026)</div>
+
+  <div class="chat">
+    <div class="chat-title">WhatsApp — Raissa Van Der Maas</div>
+
+    <div class="bubble-wrap">
+      <div class="bubble bot">
+        <div class="sender">Remmed Telemedicina · 09:10</div>
+        🔁 Memoria resetada!
+      </div>
+    </div>
+
+    <div class="bubble-wrap right">
+      <div class="bubble user">
+        Oi
+        <div class="time">09:10</div>
+      </div>
+    </div>
+
+    <div class="bubble-wrap">
+      <div class="bubble bot">
+        <div class="sender">Remmed Telemedicina · 09:10</div>
+        Olá! Eu sou a Clara... Você pode escolher uma das opções:<br><br>
+        1️⃣ Consulta médica<br>2️⃣ Solicitar atestado...<br>...
+      </div>
+    </div>
+
+    <div class="bubble-wrap right">
+      <div class="bubble user">
+        1
+        <div class="time">09:11</div>
+      </div>
+    </div>
+
+    <div class="bubble-wrap">
+      <div class="bubble bot">
+        <div class="sender">Remmed Telemedicina · 09:11</div>
+        Perfeito! Você escolheu Consulta Médica Online 🩺<br><br>
+        💳 Valor: R$ 79,90...<br><br>
+        Podemos continuar? Responda apenas SIM ou NÃO.
+      </div>
+    </div>
+
+    <div class="bubble-wrap right">
+      <div class="bubble user">
+        Sim
+        <div class="time">09:11</div>
+      </div>
+    </div>
+
+    <div class="annotation right">⬆️ Paciente confirmou continuar. Ainda não falou nenhum sintoma.</div>
+
+    <div class="bubble-wrap">
+      <div class="bubble bot" style="border: 2px solid #e74c3c;">
+        <div class="sender">Remmed Telemedicina · 09:12</div>
+        Antes de continuar, preciso checar sua segurança rapidinho 🧡<br><br>
+        Você está sentindo algum desses <b>sinais de alarme</b> agora?<br>
+        ⚠️ Se tiver algum, precisará de atendimento presencial<br><br>
+        · Falta de ar, dificuldade ou dor para respirar<br>
+        · Chiado no peito<br>
+        · Febre acima de 39°C há mais de 3 dias<br>
+        · Cansaço extremo ao mínimo esforço<br>
+        · Lábios ou unhas roxos<br>
+        · Febre + tosse com catarro amarelo/esverdeado há mais de 7 dias<br><br>
+        ✅ NÃO — não estou sentindo nenhum desses<br>
+        🚨 SIM — estou sentindo algum desses
+        <div class="time">09:12</div>
+      </div>
+    </div>
+
+    <div class="annotation">⬆️ 🚨 PROBLEMA: Clara mostrou checklist do Grupo 1 (Respiratório) sem o paciente ter dito nenhum sintoma. O paciente só disse "Sim" para confirmar que quer continuar.</div>
+  </div>
+
+  <!-- OS DOIS CENÁRIOS -->
+  <div class="section-label">Os Dois Cenários em que isso acontece</div>
+
+  <div class="scenario scenario-a">
+    <h4>🔴 Cenário A — Paciente novo (ou após /reset)</h4>
+    <p style="font-size:13px; line-height:1.6;">
+      Quando um paciente inicia uma conversa e o setor no Supabase já está como <code>TRIAGEM_ALARME</code>
+      (de uma conversa anterior), Clara pula as etapas de confirmação e de leveza e vai direto para
+      mostrar o checklist de alarme. O "Sim" do paciente (confirmando que quer continuar) é interpretado
+      como se fosse uma resposta dentro da etapa de alarme.
+    </p>
+  </div>
+
+  <div class="scenario scenario-b">
+    <h4>🟡 Cenário B — Após /reset</h4>
+    <p style="font-size:13px; line-height:1.6;">
+      O comando /reset limpa apenas a memória do Redis (buffer de mensagens).
+      Ele <strong>não limpa o setor no Supabase</strong> nem a memória longa do Postgres.
+      Então o setor continua como <code>TRIAGEM_ALARME</code> e a memória do Postgres ainda tem
+      conteúdo de conversas anteriores (incluindo exemplos de sintomas que a própria Clara escreveu
+      em mensagens antigas, como "falta de ar, dor no peito"). Clara lê esses exemplos como se fossem
+      sintomas reais do paciente e mostra o checklist correspondente.
+    </p>
+  </div>
+
+  <!-- CAUSA RAIZ TÉCNICA -->
+  <div class="section-label">Causa Raiz Técnica — O que acontece por dentro</div>
+
+  <div class="card">
+    <h3>Fluxo atual (quebrado)</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num num-warn">1</div>
+        <div class="flow-content">
+          <h4>N8N busca o setor no Supabase</h4>
+          <p>Retorna <code>TRIAGEM_ALARME</code> — valor salvo da conversa anterior. O /reset não limpou.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num num-ok">2</div>
+        <div class="flow-content">
+          <h4>"Oi", "1", "Sim" são processados</h4>
+          <p>"Oi" e "1" são roteados pelo switch do N8N (não passam pela Clara). O setor nunca é atualizado.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num num-err">3</div>
+        <div class="flow-content">
+          <h4>Paciente diz "Sim" — Clara recebe com setor = TRIAGEM_ALARME</h4>
+          <p>Clara deveria estar na ETAPA 3 (TRIAGEM_SINTOMA) ou ETAPA 3A (TRIAGEM_LEVEZA). Mas está na ETAPA 3B porque o setor está errado.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num num-err">4</div>
+        <div class="flow-content">
+          <h4>Guard-rail não dispara — memória tem conteúdo antigo</h4>
+          <p>O guard-rail devia pedir o sintoma. Mas ele verifica se "há sintoma na memória" — o Postgres tem conteúdo antigo da conversa anterior (incluindo exemplos de sintomas que a própria Clara escreveu). Então o guard-rail entende que "já tem sintoma" e não dispara.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num num-err">5</div>
+        <div class="flow-content">
+          <h4>Clara identifica grupo pelo conteúdo da memória</h4>
+          <p>Com base no conteúdo antigo do Postgres (ex: mensagem anterior da Clara citando "falta de ar" como exemplo), ela identifica Grupo 1 (Respiratório) e exibe o checklist — sem que o paciente tenha dito uma única palavra sobre seus sintomas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- O QUE O /RESET DEVERIA FAZER -->
+  <div class="section-label">O que o /reset precisa fazer (vs. o que faz hoje)</div>
+
+  <div class="card">
+    <table>
+      <tr>
+        <th>Ação</th>
+        <th>Hoje</th>
+        <th>O que deveria fazer</th>
+      </tr>
+      <tr>
+        <td>Limpar Redis (buffer 10s)</td>
+        <td><span class="tag tag-green">✅ Faz</span></td>
+        <td><span class="tag tag-green">✅ Correto</span></td>
+      </tr>
+      <tr>
+        <td>Limpar Postgres Chat Memory</td>
+        <td><span class="tag tag-red">❌ Não faz</span></td>
+        <td><span class="tag tag-green">✅ Deve limpar</span> — senão memória antiga contamina nova conversa</td>
+      </tr>
+      <tr>
+        <td>Resetar setor no Supabase</td>
+        <td><span class="tag tag-red">❌ Não faz</span></td>
+        <td><span class="tag tag-green">✅ Deve setar TRIAGEM_ATIVA</span> — senão Clara começa no meio do fluxo</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- CORREÇÕES NECESSÁRIAS -->
+  <div class="section-label">O que Nicolas precisa corrigir no N8N</div>
+
+  <div class="card">
+    <h3><span class="priority-num">1</span> Correção do /reset — adicionar UPDATE no Supabase + limpar Postgres</h3>
+    <p style="font-size:13px; color:#555; margin-bottom: 12px;">No nó do /reset no N8N, após limpar o Redis, adicionar dois passos:</p>
+    <div class="code-block">
+<span class="comment">-- Passo 1: Resetar setor no Supabase</span>
+<span class="keyword">UPDATE</span> dados_cliente
+<span class="keyword">SET</span> setor = <span class="string">'TRIAGEM_ATIVA'</span>,
+    atualizado_em = NOW()
+<span class="keyword">WHERE</span> telefone = <span class="string">'{{ $json.telefone }}'</span>;
+
+<span class="comment">-- Passo 2: Limpar Postgres Chat Memory</span>
+<span class="keyword">DELETE FROM</span> n8n_chat_histories
+<span class="keyword">WHERE</span> session_id = <span class="string">'{{ $json.telefone }}'</span>;
+    </div>
+    <div class="alert-box alert-orange" style="margin-top:8px;">
+      <h4>⚠️ Atenção</h4>
+      <p>Verificar se a tabela do Postgres Chat Memory se chama <code>n8n_chat_histories</code> ou outro nome no seu workflow. O session_id provavelmente é o telefone do paciente.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="priority-num two">2</span> IF node para resetar setor em novas conversas (paciente sem /reset)</h3>
+    <p style="font-size:13px; color:#555; margin-bottom: 12px;">Para pacientes que voltam depois de horas sem ter feito /reset, adicionar um IF node no início do fluxo:</p>
+    <div class="code-block">
+<span class="comment">// IF node — colocar ANTES de passar para a Clara</span>
+<span class="comment">// Condição A: setor == "ENCERRADO"</span>
+<span class="comment">// Condição B: horas desde ultimo_contato >= 4</span>
+
+Condição: {{ $json.setor }} === <span class="string">"ENCERRADO"</span>
+   OU
+{{ $now.diff($json.ultimo_contato, <span class="string">'hours'</span>) }} >= <span class="number">4</span>
+
+<span class="comment">// Branch TRUE → UPDATE setor = 'TRIAGEM_ATIVA'</span>
+<span class="comment">// Branch FALSE → continuar normalmente</span>
+    </div>
+    <div class="alert-box alert-blue" style="margin-top:8px;">
+      <h4>📋 SQL para adicionar coluna necessária</h4>
+      <div class="code-block" style="margin:0;">
+<span class="keyword">ALTER TABLE</span> dados_cliente
+  <span class="keyword">ADD COLUMN IF NOT EXISTS</span> ultimo_contato TIMESTAMPTZ <span class="keyword">DEFAULT</span> NOW();
+
+<span class="comment">-- Atualizar o ultimo_contato a cada mensagem recebida</span>
+<span class="keyword">UPDATE</span> dados_cliente
+<span class="keyword">SET</span> ultimo_contato = NOW()
+<span class="keyword">WHERE</span> telefone = <span class="string">'{{ $json.telefone }}'</span>;
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="priority-num three">3</span> Correção do prompt (já aplicada parcialmente)</h3>
+    <p style="font-size:13px; color:#555; margin-bottom:12px;">Além do N8N, o guard-rail no prompt precisa ser ajustado para não depender da memória:</p>
+    <div class="alert-box alert-red">
+      <h4>❌ Condição atual do guard-rail (problemática)</h4>
+      <p style="font-family: monospace; font-size: 12px;">SE mensagem for confirmação curta <strong>E NÃO houver sintoma no histórico</strong> → pedir sintoma</p>
+      <p style="margin-top: 6px; font-size: 12px;">O problema: o Postgres tem conteúdo antigo → "há sintoma no histórico" = VERDADEIRO → guard-rail não dispara</p>
+    </div>
+    <div class="alert-box alert-green" style="margin-top: 8px;">
+      <h4>✅ Condição corrigida</h4>
+      <p style="font-family: monospace; font-size: 12px;">SE mensagem for confirmação curta <strong>independente do que está na memória</strong> → pedir sintoma</p>
+    </div>
+  </div>
+
+  <!-- RESUMO EXECUTIVO -->
+  <div class="section-label">Resumo — O que precisa ser feito</div>
+
+  <div class="card">
+    <table>
+      <tr>
+        <th>#</th>
+        <th>Ação</th>
+        <th>Onde</th>
+        <th>Prioridade</th>
+        <th>Responsável</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Fazer /reset limpar Postgres Chat Memory + setar setor = TRIAGEM_ATIVA no Supabase</td>
+        <td>N8N — nó do /reset</td>
+        <td><span class="tag tag-red">🔴 Urgente</span></td>
+        <td>Nicolas</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Remover condição "E NÃO houver sintoma no histórico" do guard-rail</td>
+        <td>System Prompt</td>
+        <td><span class="tag tag-red">🔴 Urgente</span></td>
+        <td>Você</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>IF node para resetar setor quando ENCERRADO + tempo > 4h</td>
+        <td>N8N — início do fluxo</td>
+        <td><span class="tag tag-orange">🟡 Importante</span></td>
+        <td>Nicolas</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>ADD COLUMN ultimo_contato na tabela dados_cliente</td>
+        <td>Supabase</td>
+        <td><span class="tag tag-orange">🟡 Importante</span></td>
+        <td>Nicolas</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="alert-box alert-blue">
+    <h4>💡 Contexto importante para Nicolas</h4>
+    <ul style="margin-top: 8px;">
+      <li>O /reset foi criado para testes — mas na prática está deixando o sistema em estado inconsistente</li>
+      <li>O setor no Supabase é a "memória de longo prazo" do estado da conversa — se não for resetado junto com o Redis, a Clara sempre acorda no meio do fluxo</li>
+      <li>O Postgres Chat Memory guarda o histórico de mensagens — se não for limpo, a Clara "lembra" de conversas antigas e confunde com a conversa atual</li>
+      <li>Esses dois problemas juntos fazem a Clara mostrar checklists de sintomas que o paciente nunca informou</li>
+    </ul>
+  </div>
+
+  <div style="text-align:center; margin-top: 40px; font-size: 12px; color: #aaa;">
+    Documento gerado para REMMED Telemedicina · Bug Report v2 · 27/05/2026
+  </div>
+
+</div>
+</body>
+</html>
