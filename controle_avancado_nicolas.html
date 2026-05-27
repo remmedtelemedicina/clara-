@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle Avançado — Clara | REMMED</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #1a1a2e; padding: 40px 20px; }
+  .page { max-width: 980px; margin: 0 auto; }
+
+  .header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; border-radius: 16px; padding: 36px 40px; margin-bottom: 32px; }
+  .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.75; margin-bottom: 18px; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge { border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 700; }
+  .badge-blue { background: #3498db; color: white; }
+  .badge-green { background: #2ecc71; color: white; }
+  .badge-orange { background: #f39c12; color: white; }
+  .badge-purple { background: #9b59b6; color: white; }
+  .badge-red { background: #e74c3c; color: white; }
+
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #aaa; margin: 36px 0 14px; }
+
+  /* FEATURE HEADER */
+  .feat-header { border-radius: 14px; padding: 22px 28px; margin-bottom: 18px; display: flex; gap: 18px; align-items: flex-start; }
+  .feat-header.blue { background: linear-gradient(135deg, #2980b9, #1a5276); color: white; }
+  .feat-header.green { background: linear-gradient(135deg, #27ae60, #1e8449); color: white; }
+  .feat-header.orange { background: linear-gradient(135deg, #d35400, #e67e22); color: white; }
+  .feat-header.purple { background: linear-gradient(135deg, #8e44ad, #6c3483); color: white; }
+  .feat-header.red { background: linear-gradient(135deg, #c0392b, #922b21); color: white; }
+  .feat-icon { font-size: 36px; flex-shrink: 0; }
+  .feat-text h2 { font-size: 20px; font-weight: 700; margin-bottom: 5px; }
+  .feat-text p { font-size: 13px; opacity: 0.85; line-height: 1.5; }
+
+  /* CARD */
+  .card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 18px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; }
+  .step { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; align-items: flex-start; }
+  .step:last-child { border-bottom: none; }
+  .dot { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: white; flex-shrink: 0; }
+  .dot-blue { background: #3498db; }
+  .dot-green { background: #2ecc71; }
+  .dot-orange { background: #f39c12; }
+  .dot-purple { background: #9b59b6; }
+  .dot-red { background: #e74c3c; }
+  .dot-gray { background: #bdc3c7; }
+  .step-body { flex: 1; font-size: 13px; line-height: 1.5; }
+  .step-body strong { color: #1a1a2e; }
+  .step-body .sub { font-size: 11px; color: #999; margin-top: 3px; }
+
+  /* CODE */
+  .code { background: #1a1a2e; color: #c9d1d9; font-family: monospace; font-size: 12.5px; border-radius: 8px; padding: 14px 16px; margin-top: 10px; line-height: 1.7; white-space: pre-wrap; }
+  .kw { color: #ff7b72; }
+  .val { color: #a5d6ff; }
+  .cm { color: #8b949e; }
+  .ok { color: #56d364; }
+  .hl { color: #ffa657; font-weight: bold; }
+  .str { color: #a5d6ff; }
+
+  /* COMMAND TABLE */
+  .cmd-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+  .cmd-table th { background: #1a1a2e; color: white; padding: 10px 14px; text-align: left; font-size: 12px; }
+  .cmd-table td { padding: 10px 14px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+  .cmd-table tr:last-child td { border-bottom: none; }
+  .cmd-table tr:nth-child(even) td { background: #f8f9fc; }
+  .cmd-pill { display: inline-block; background: #1a1a2e; color: #56d364; font-family: monospace; font-size: 12px; padding: 2px 10px; border-radius: 6px; font-weight: 700; }
+
+  /* FLOW */
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .flow-node { border-radius: 10px; padding: 13px 18px; font-size: 13px; font-weight: 600; text-align: center; width: 100%; max-width: 520px; }
+  .fn-gray { background: #f0f2f5; border: 2px solid #ccc; color: #555; }
+  .fn-blue { background: #ebf5fb; border: 2px solid #3498db; color: #1a5276; }
+  .fn-yellow { background: #fef9e7; border: 2px solid #f39c12; color: #7d6608; }
+  .fn-green { background: #eafaf1; border: 2px solid #2ecc71; color: #1e8449; }
+  .fn-red { background: #fdecea; border: 2px solid #e74c3c; color: #922b21; }
+  .fn-purple { background: #f5eef8; border: 2px solid #9b59b6; color: #6c3483; }
+  .flow-arrow { font-size: 22px; color: #bbb; padding: 4px 0; }
+  .flow-branches { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 520px; }
+  .branch { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .branch-lbl { font-size: 11px; font-weight: 700; color: #888; }
+
+  /* ALERT */
+  .alert { border-radius: 10px; padding: 14px 18px; font-size: 13px; margin-bottom: 14px; display: flex; gap: 10px; align-items: flex-start; }
+  .alert.yellow { background: #fef9e7; border: 1px solid #f9ca24; color: #7d6608; }
+  .alert.blue { background: #ebf5fb; border: 1px solid #3498db; color: #1a5276; }
+  .alert.green { background: #eafaf1; border: 1px solid #2ecc71; color: #1e8449; }
+  .alert.red { background: #fdecea; border: 1px solid #e74c3c; color: #922b21; }
+
+  /* SUMMARY */
+  .sum-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sum-table th { background: #1a1a2e; color: white; padding: 10px 14px; text-align: left; font-size: 12px; }
+  .sum-table td { padding: 12px 14px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+  .sum-table tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+  .pill-easy { background: #eafaf1; color: #1e8449; }
+  .pill-medium { background: #fef9e7; color: #7d6608; }
+  .pill-hard { background: #fdecea; color: #922b21; }
+
+  .divider { height: 2px; background: linear-gradient(90deg, #3498db, #9b59b6, #2ecc71); border-radius: 2px; margin: 36px 0; }
+  .footer { text-align: center; color: #aaa; font-size: 12px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e8ecf0; }
+
+  /* SCHEMA BOX */
+  .schema-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+  @media(max-width: 640px) { .schema-grid { grid-template-columns: 1fr; } }
+  .schema-box { background: #f8f9fc; border: 1px solid #e0e4ea; border-radius: 10px; padding: 14px 16px; }
+  .schema-box h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 10px; }
+  .schema-field { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 12px; }
+  .schema-field:last-child { border-bottom: none; }
+  .field-name { font-weight: 700; color: #1a1a2e; font-family: monospace; }
+  .field-type { color: #888; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>⚙️ Controle Avançado — Clara</h1>
+    <p>REMMED Telemedicina · Especificações técnicas para Nicolas · Maio 2026</p>
+    <div class="badges">
+      <span class="badge badge-red">🔴 Kill switch</span>
+      <span class="badge badge-orange">🚫 Lista de bloqueados</span>
+      <span class="badge badge-blue">💬 Comandos via WhatsApp</span>
+      <span class="badge badge-green">▶️ Retomada automática</span>
+      <span class="badge badge-purple">📋 Follow-up</span>
+    </div>
+  </div>
+
+  <!-- NOVO FLUXO N8N -->
+  <div class="section-label">Visão geral — novo fluxo do N8N com todos os controles</div>
+  <div class="card">
+    <h3>Ordem de verificação a cada mensagem recebida</h3>
+    <div class="flow">
+      <div class="flow-node fn-gray">📨 Mensagem do paciente chega (webhook)</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-purple">👑 É mensagem do número da dona? → executar COMANDO → parar</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-red">🔴 Clara está ativa? (config_sistema) → NÃO → "Fora do ar" → parar</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-red">🚫 Paciente bloqueado? (lista_bloqueados) → SIM → silêncio → parar</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-orange">🏷️ Tem etiqueta "nao-atender" no WPP? → SIM → bloquear + parar</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-yellow">⏱️ Setor = ENCERRADO + tempo &gt; 4h? → resetar para TRIAGEM_ATIVA</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-yellow">⏱️ Setor = HUMANO + tempo &gt; 30min sem resposta? → resetar para TRIAGEM_ATIVA</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-blue">🗄️ GET row Supabase + atualizar ultimo_contato</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node fn-green">🤖 Agente Clara</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURE 1: KILL SWITCH -->
+  <div class="feat-header red">
+    <div class="feat-icon">🔴</div>
+    <div class="feat-text">
+      <h2>Funcionalidade 1 — Kill Switch</h2>
+      <p>Desligar e ligar a Clara instantaneamente via WhatsApp, sem precisar acessar o N8N. Para emergências ou pausas programadas.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Como funciona</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="dot dot-purple">1</div>
+        <div class="step-body">
+          <strong>Dona envia mensagem do seu número pessoal para o número da REMMED</strong>
+          <div class="sub">N8N identifica o número como "owner" e entra no modo de comando</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-red">2</div>
+        <div class="step-body">
+          <strong>Comando "pausa" → N8N atualiza Supabase: clara_ativa = false</strong>
+          <div class="sub">A partir daí, todas as mensagens de pacientes recebem a mensagem de fora do ar</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-green">3</div>
+        <div class="step-body">
+          <strong>Comando "liga" → N8N atualiza Supabase: clara_ativa = true</strong>
+          <div class="sub">Clara volta a atender normalmente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Supabase — tabela config_sistema</h3>
+    <div class="schema-box">
+      <h4>Tabela: config_sistema</h4>
+      <div class="schema-field"><span class="field-name">chave</span><span class="field-type">TEXT (primary key)</span></div>
+      <div class="schema-field"><span class="field-name">valor</span><span class="field-type">TEXT</span></div>
+      <div class="schema-field"><span class="field-name">atualizado_em</span><span class="field-type">TIMESTAMPTZ DEFAULT NOW()</span></div>
+    </div>
+    <div class="code"><span class="cm">-- Criar tabela e inserir valores iniciais</span>
+<span class="kw">CREATE TABLE</span> config_sistema (
+  chave        <span class="val">TEXT PRIMARY KEY</span>,
+  valor        <span class="val">TEXT</span>,
+  atualizado_em <span class="val">TIMESTAMPTZ DEFAULT NOW()</span>
+);
+
+<span class="kw">INSERT INTO</span> config_sistema <span class="kw">VALUES</span>
+  (<span class="str">'clara_ativa'</span>,     <span class="str">'true'</span>,             <span class="val">NOW()</span>),
+  (<span class="str">'owner_telefone'</span>,  <span class="str">'5511XXXXXXXXX'</span>,    <span class="val">NOW()</span>),
+  (<span class="str">'msg_fora_do_ar'</span>,  <span class="str">'Estamos com atendimento pausado. Retornamos em breve! 🧡'</span>, <span class="val">NOW()</span>);</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURE 2: BLOCKLIST -->
+  <div class="feat-header orange">
+    <div class="feat-icon">🚫</div>
+    <div class="feat-text">
+      <h2>Funcionalidade 2 — Lista de Pacientes Bloqueados</h2>
+      <p>Pacientes difíceis ou que não devem ser atendidos pela Clara são ignorados silenciosamente. Dois métodos: etiqueta no WPP ou comando.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Método A — Etiqueta no WhatsApp Business (preferido)</h3>
+    <div class="alert yellow">
+      <span>⚠️</span>
+      <div>Funciona via <strong>Evolution API</strong>. Quando uma mensagem chega, o payload inclui as etiquetas do contato. Se tiver a etiqueta <code>nao-atender</code>, o N8N ignora e adiciona automaticamente ao Supabase.</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="dot dot-orange">1</div>
+        <div class="step-body">
+          <strong>Criar etiqueta "nao-atender" no WPP Business</strong>
+          <div class="sub">WhatsApp Business → Configurações → Etiquetas → Nova etiqueta: "nao-atender"</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-orange">2</div>
+        <div class="step-body">
+          <strong>N8N verifica labels no webhook a cada mensagem</strong>
+          <div class="sub">IF payload.labels inclui "nao-atender" → não responder + registrar no Supabase</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-orange">3</div>
+        <div class="step-body">
+          <strong>Para bloquear: adicionar etiqueta no contato dentro do WPP</strong>
+          <div class="sub">Próxima mensagem desse contato é automaticamente ignorada</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code"><span class="cm">-- Tabela de bloqueados no Supabase</span>
+<span class="kw">CREATE TABLE</span> pacientes_bloqueados (
+  telefone     <span class="val">TEXT PRIMARY KEY</span>,
+  motivo       <span class="val">TEXT</span>,
+  bloqueado_em <span class="val">TIMESTAMPTZ DEFAULT NOW()</span>,
+  origem       <span class="val">TEXT</span> <span class="cm">-- 'etiqueta_wpp', 'comando', 'manual'</span>
+);
+
+<span class="cm">-- Verificação no N8N (node Function ou IF):</span>
+<span class="cm">-- 1. GET de pacientes_bloqueados WHERE telefone = sender</span>
+<span class="cm">-- 2. SE encontrado → parar, não responder</span>
+<span class="cm">-- 3. SE label "nao-atender" detectada → INSERT + parar</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURE 3: COMANDOS -->
+  <div class="feat-header blue">
+    <div class="feat-icon">💬</div>
+    <div class="feat-text">
+      <h2>Funcionalidade 3 — Central de Comandos via WhatsApp</h2>
+      <p>A dona controla tudo enviando mensagens do seu número pessoal para o número da REMMED. Simples, rápido, funciona de qualquer lugar.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Todos os comandos disponíveis</h3>
+    <table class="cmd-table">
+      <thead>
+        <tr>
+          <th>Comando</th>
+          <th>O que faz</th>
+          <th>Confirmação enviada de volta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cmd-pill">pausa</span></td>
+          <td>Desliga a Clara — pacientes recebem mensagem de fora do ar</td>
+          <td>"🔴 Clara pausada. Nenhum paciente será atendido."</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-pill">liga</span></td>
+          <td>Liga a Clara — atendimento normal retomado</td>
+          <td>"✅ Clara ativa. Atendimento retomado!"</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-pill">atende 5511999...</span></td>
+          <td>Reseta setor do paciente para TRIAGEM_ATIVA — Clara retoma o atendimento</td>
+          <td>"▶️ Paciente 5511999... sendo atendido pela Clara."</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-pill">bloqueia 5511999...</span></td>
+          <td>Adiciona número à lista de bloqueados</td>
+          <td>"🚫 Número 5511999... bloqueado."</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-pill">desbloqueia 5511999...</span></td>
+          <td>Remove número da lista de bloqueados</td>
+          <td>"✅ Número 5511999... desbloqueado."</td>
+        </tr>
+        <tr>
+          <td><span class="cmd-pill">status</span></td>
+          <td>Retorna status atual do sistema</td>
+          <td>"📊 Clara: ATIVA | Bloqueados: 3 | Atendimentos hoje: 12"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Como implementar no N8N</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="dot dot-blue">1</div>
+        <div class="step-body">
+          <strong>No início do workflow, verificar se sender = owner_telefone</strong>
+          <div class="sub">IF {{ $json.sender }} == {{ $('config').item.json.owner_telefone }} → entrar no modo comando</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-blue">2</div>
+        <div class="step-body">
+          <strong>Node "Switch" para identificar qual comando</strong>
+          <div class="sub">Cada branch corresponde a um comando: pausa / liga / atende / bloqueia / desbloqueia / status</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-blue">3</div>
+        <div class="step-body">
+          <strong>Cada branch executa a ação no Supabase e responde para o owner</strong>
+          <div class="sub">Supabase UPDATE + WPP send message de volta para o número do owner com confirmação</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot dot-blue">4</div>
+        <div class="step-body">
+          <strong>Parar o workflow — não passar para Clara</strong>
+          <div class="sub">Mensagens de comando nunca chegam ao agente Clara</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code"><span class="cm">// Node Function — Parser de comandos (JavaScript)</span>
+<span class="kw">const</span> msg = <span class="val">$input.item.json.message</span>.toLowerCase().trim();
+<span class="kw">const</span> sender = <span class="val">$input.item.json.sender</span>;
+<span class="kw">const</span> owner = <span class="val">$('Config').item.json.owner_telefone</span>;
+
+<span class="cm">// Verificar se é owner</span>
+<span class="kw">if</span> (sender !== owner) <span class="kw">return</span> [{ json: { is_command: <span class="ok">false</span> } }];
+
+<span class="cm">// Identificar comando</span>
+<span class="kw">if</span> (msg === <span class="str">'pausa'</span>) <span class="kw">return</span> [{ json: { cmd: <span class="str">'pausa'</span> } }];
+<span class="kw">if</span> (msg === <span class="str">'liga'</span>)  <span class="kw">return</span> [{ json: { cmd: <span class="str">'liga'</span> } }];
+<span class="kw">if</span> (msg === <span class="str">'status'</span>) <span class="kw">return</span> [{ json: { cmd: <span class="str">'status'</span> } }];
+
+<span class="kw">if</span> (msg.startsWith(<span class="str">'atende '</span>)) {
+  <span class="kw">const</span> tel = msg.replace(<span class="str">'atende '</span>, <span class="str">''</span>).trim();
+  <span class="kw">return</span> [{ json: { cmd: <span class="str">'atende'</span>, telefone: tel } }];
+}
+<span class="kw">if</span> (msg.startsWith(<span class="str">'bloqueia '</span>)) {
+  <span class="kw">const</span> tel = msg.replace(<span class="str">'bloqueia '</span>, <span class="str">''</span>).trim();
+  <span class="kw">return</span> [{ json: { cmd: <span class="str">'bloqueia'</span>, telefone: tel } }];
+}
+<span class="kw">if</span> (msg.startsWith(<span class="str">'desbloqueia '</span>)) {
+  <span class="kw">const</span> tel = msg.replace(<span class="str">'desbloqueia '</span>, <span class="str">''</span>).trim();
+  <span class="kw">return</span> [{ json: { cmd: <span class="str">'desbloqueia'</span>, telefone: tel } }];
+}
+
+<span class="cm">// Comando não reconhecido</span>
+<span class="kw">return</span> [{ json: { cmd: <span class="str">'ajuda'</span> } }];</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURE 4: RETOMADA -->
+  <div class="feat-header green">
+    <div class="feat-icon">▶️</div>
+    <div class="feat-text">
+      <h2>Funcionalidade 4 — Retomada Após Atendimento Humano</h2>
+      <p>Quando a equipe responde um paciente manualmente, a Clara pausa. Agora ela retoma automaticamente após 30 min de silêncio, ou imediatamente via comando.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Dois caminhos de retomada</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:#eafaf1;border:2px solid #2ecc71;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#1e8449;margin-bottom:12px;">▶️ Caminho A — Comando manual</div>
+        <div style="font-size:13px;color:#333;line-height:1.6;">
+          Dona envia do seu número:<br>
+          <code style="background:#1a1a2e;color:#56d364;padding:2px 8px;border-radius:4px;font-size:12px;">atende 5511999...</code><br><br>
+          N8N reseta setor = TRIAGEM_ATIVA.<br>
+          Próxima mensagem do paciente → Clara atende.
+        </div>
+      </div>
+      <div style="background:#ebf5fb;border:2px solid #3498db;border-radius:12px;padding:18px;">
+        <div style="font-weight:700;color:#1a5276;margin-bottom:12px;">⏱️ Caminho B — Timer automático</div>
+        <div style="font-size:13px;color:#333;line-height:1.6;">
+          Se setor = HUMANO E último contato humano &gt; 30 min atrás → setor = TRIAGEM_ATIVA<br><br>
+          Próxima mensagem do paciente é atendida pela Clara automaticamente.
+        </div>
+      </div>
+    </div>
+
+    <div class="code" style="margin-top:16px;"><span class="cm">-- Coluna necessária no Supabase (clientes)</span>
+<span class="kw">ALTER TABLE</span> clientes
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> ultimo_contato     <span class="val">TIMESTAMPTZ DEFAULT NOW()</span>,
+  <span class="kw">ADD COLUMN IF NOT EXISTS</span> ultimo_msg_humano  <span class="val">TIMESTAMPTZ</span>;
+
+<span class="cm">-- Lógica no N8N (antes do agente Clara):</span>
+<span class="cm">-- SE setor = "HUMANO"</span>
+<span class="cm">--   E NOW() - ultimo_msg_humano > 30 minutos</span>
+<span class="cm">--   → UPDATE setor = "TRIAGEM_ATIVA"</span>
+<span class="cm">--   → Clara atende normalmente</span>
+
+<span class="cm">-- Quando humano responde ao paciente:</span>
+<span class="cm">-- → UPDATE ultimo_msg_humano = NOW() WHERE telefone = paciente</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURE 5: FOLLOW-UP -->
+  <div class="feat-header purple">
+    <div class="feat-icon">📋</div>
+    <div class="feat-text">
+      <h2>Funcionalidade 5 — Follow-up de Pacientes</h2>
+      <p>Documentado anteriormente (arquivo followup_nicolas.html). Resumo da arquitetura abaixo para referência rápida.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Dois fluxos de follow-up</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div style="background:#f5eef8;border:2px solid #9b59b6;border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:#6c3483;margin-bottom:10px;">Fluxo 1 — Pagou e consultou</div>
+        <div style="font-size:12px;color:#555;line-height:1.8;">
+          D+7 → Como foi a consulta?<br>
+          D+30 → Nova consulta / renovação?<br>
+          D+60 → Check-up de rotina<br>
+          D+90 → Manutenção<br>
+          D+120+ → Paciente ativo permanente
+        </div>
+      </div>
+      <div style="background:#eafaf1;border:2px solid #2ecc71;border-radius:12px;padding:16px;">
+        <div style="font-weight:700;color:#1e8449;margin-bottom:10px;">Fluxo 2 — Não agendou (carrinho)</div>
+        <div style="font-size:12px;color:#555;line-height:1.8;">
+          30min → Lembrete urgente<br>
+          D+1 → Segundo contato<br>
+          D+30 → Tentativa final<br>
+          D+90 → Encerrar se sem resposta
+        </div>
+      </div>
+    </div>
+
+    <div class="alert blue">
+      <span>📌</span>
+      <div>Documento completo com SQL, triggers e arquitetura N8N já entregue no arquivo <strong>followup_nicolas.html</strong>. Implementação estimada: 4-6h de trabalho N8N + Supabase.</div>
+    </div>
+  </div>
+
+  <!-- RESUMO FINAL -->
+  <div class="divider"></div>
+  <div class="section-label">Resumo — O que implementar e dificuldade</div>
+  <div class="card">
+    <table class="sum-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Funcionalidade</th>
+          <th>O que precisa criar</th>
+          <th>Complexidade</th>
+          <th>Estimativa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Kill switch + Comandos</td>
+          <td>Tabela config_sistema + N8N parser de comandos</td>
+          <td><span class="pill pill-easy">Fácil</span></td>
+          <td>2–3h</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>Lista de bloqueados</td>
+          <td>Tabela pacientes_bloqueados + verificação no N8N</td>
+          <td><span class="pill pill-easy">Fácil</span></td>
+          <td>1–2h</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>Etiqueta WPP "nao-atender"</td>
+          <td>Nó IF no N8N verificando label do payload</td>
+          <td><span class="pill pill-medium">Médio</span></td>
+          <td>1–2h</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Retomada após humano</td>
+          <td>Coluna ultimo_msg_humano + IF node timer 30min</td>
+          <td><span class="pill pill-medium">Médio</span></td>
+          <td>2–3h</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Follow-up (2 fluxos)</td>
+          <td>2 workflows N8N + triggers Supabase + mensagens</td>
+          <td><span class="pill pill-hard">Complexo</span></td>
+          <td>4–6h</td>
+        </tr>
+        <tr>
+          <td><strong>+</strong></td>
+          <td>Reset setor após 4h (já documentado)</td>
+          <td>IF node + coluna ultimo_contato</td>
+          <td><span class="pill pill-easy">Fácil</span></td>
+          <td>1h</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="alert green">
+    <span>✅</span>
+    <div><strong>Funcionalidades 1, 2 e 3 podem ser feitas todas de uma vez</strong> — compartilham a mesma lógica de verificação no início do workflow N8N. Recomenda-se implementar na ordem: reset setor → kill switch → blocklist → comandos → retomada → follow-up.</div>
+  </div>
+
+  <div class="footer">
+    REMMED Telemedicina &nbsp;•&nbsp; Controle Avançado da Clara &nbsp;•&nbsp; Maio 2026
+  </div>
+
+</div>
+</body>
+</html>
