@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REMMED · Visão Estratégica Completa</title>
+  <style>
+    :root {
+      --azul-escuro: #071828;
+      --azul: #0f4c81;
+      --azul-medio: #1a6db5;
+      --azul-claro: #3b9eda;
+      --verde: #00b894;
+      --verde-claro: #00d4aa;
+      --laranja: #f39c12;
+      --vermelho: #e74c3c;
+      --branco: #ffffff;
+      --cinza-claro: #f4f7fb;
+      --cinza-medio: #e8eef6;
+      --cinza-texto: #4a5568;
+      --preto: #1a202c;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--branco);
+      color: var(--preto);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:100;
+      background: rgba(7,24,40,0.97);
+      backdrop-filter: blur(12px);
+      padding: 14px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size:20px; font-weight:800; color:white; letter-spacing:-0.5px; }
+    .nav-logo span { color: var(--verde-claro); }
+    .nav-links { display:flex; gap:32px; }
+    .nav-links a {
+      color: rgba(255,255,255,0.6); font-size:13px; font-weight:500;
+      text-decoration:none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: white; }
+    .nav-tag {
+      background: rgba(0,212,170,0.15);
+      border: 1px solid rgba(0,212,170,0.3);
+      color: var(--verde-claro);
+      font-size:11px; font-weight:700; letter-spacing:1px;
+      padding: 5px 14px; border-radius:20px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #040d17 0%, #071828 35%, #0a2a4a 65%, #0d3d5e 100%);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-orb-1 {
+      position:absolute; width:700px; height:700px;
+      background: radial-gradient(circle, rgba(0,184,148,0.08) 0%, transparent 65%);
+      top:-200px; right:-200px; border-radius:50%;
+    }
+    .hero-orb-2 {
+      position:absolute; width:500px; height:500px;
+      background: radial-gradient(circle, rgba(59,158,218,0.07) 0%, transparent 65%);
+      bottom:-150px; left:-150px; border-radius:50%;
+    }
+    .hero-orb-3 {
+      position:absolute; width:300px; height:300px;
+      background: radial-gradient(circle, rgba(0,212,170,0.05) 0%, transparent 65%);
+      top:50%; left:50%; transform:translate(-50%,-50%); border-radius:50%;
+    }
+    .hero-content { position:relative; z-index:2; max-width:900px; }
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.75);
+      padding: 8px 20px; border-radius:40px;
+      font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+      margin-bottom:36px;
+    }
+    .hero-eyebrow::before { content:'◆'; color: var(--verde-claro); font-size:8px; }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 78px);
+      font-weight: 900;
+      color: white;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin-bottom: 28px;
+    }
+    .hero h1 .green {
+      background: linear-gradient(90deg, var(--verde-claro), #7eecd0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero h1 .blue {
+      background: linear-gradient(90deg, var(--azul-claro), #7dc8ef);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 21px);
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      max-width: 680px; margin: 0 auto 52px;
+    }
+    .hero-sub strong { color: rgba(255,255,255,0.9); }
+    .hero-pills {
+      display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:60px;
+    }
+    .pill {
+      display:flex; align-items:center; gap:8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.75);
+      padding: 10px 20px; border-radius:40px;
+      font-size:14px; font-weight:500;
+    }
+    .pill-icon { font-size:16px; }
+    .hero-metrics {
+      display:grid; grid-template-columns: repeat(4,1fr); gap:1px;
+      background: rgba(255,255,255,0.08);
+      border-radius:16px; overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      max-width:700px; margin:0 auto;
+    }
+    .metric {
+      background: rgba(255,255,255,0.04);
+      padding: 28px 20px; text-align:center;
+    }
+    .metric-num {
+      font-size:32px; font-weight:800;
+      color: var(--verde-claro);
+      display:block; line-height:1;
+      margin-bottom:6px;
+    }
+    .metric-label {
+      font-size:12px; color: rgba(255,255,255,0.5);
+      line-height:1.4;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 100px 48px; }
+    .container { max-width:1100px; margin:0 auto; }
+    .sec-tag {
+      display:inline-block;
+      border: 1px solid rgba(59,158,218,0.3);
+      color: var(--azul-claro);
+      font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      padding: 5px 16px; border-radius:30px; margin-bottom:20px;
+    }
+    .sec-title {
+      font-size: clamp(30px, 4vw, 52px);
+      font-weight:900; line-height:1.1;
+      letter-spacing:-1px; margin-bottom:16px;
+    }
+    .sec-sub {
+      font-size:18px; color:var(--cinza-texto);
+      line-height:1.75; max-width:600px;
+    }
+
+    /* ── GAP ── */
+    .gap-section { background:var(--cinza-claro); }
+    .gap-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:60px;
+      align-items:center; margin-top:60px;
+    }
+    .gap-exists {
+      display:flex; flex-direction:column; gap:16px;
+    }
+    .gap-item {
+      display:flex; align-items:center; gap:16px;
+      background:white; border-radius:12px; padding:20px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-medio);
+    }
+    .gap-item-icon { font-size:28px; }
+    .gap-item-text { }
+    .gap-item-text strong { font-size:15px; color:var(--preto); display:block; }
+    .gap-item-text span { font-size:13px; color:var(--cinza-texto); }
+    .gap-item.missing {
+      border: 2px dashed rgba(0,184,148,0.4);
+      background: linear-gradient(135deg, rgba(0,184,148,0.04), rgba(59,158,218,0.04));
+    }
+    .gap-item.missing strong { color:var(--verde); }
+    .gap-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+      color:white; font-size:12px; font-weight:700;
+      padding: 4px 12px; border-radius:20px; margin-top:4px;
+    }
+    .gap-right-card {
+      background:white; border-radius:20px; padding:44px;
+      box-shadow: 0 8px 40px rgba(15,76,129,0.12);
+      border: 1px solid var(--cinza-medio);
+      position:relative; overflow:hidden;
+    }
+    .gap-right-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:4px;
+      background: linear-gradient(90deg, var(--verde), var(--azul-claro));
+    }
+    .gap-right-card h3 {
+      font-size:24px; font-weight:800; margin-bottom:20px;
+      color:var(--preto);
+    }
+    .gap-right-card p {
+      font-size:15px; color:var(--cinza-texto); line-height:1.8; margin-bottom:16px;
+    }
+    .gap-right-card p strong { color:var(--azul); }
+
+    /* ── 3 CAMADAS ── */
+    .layers-section { background:var(--azul-escuro); }
+    .layers-section .sec-tag { border-color:rgba(0,212,170,0.3); color:var(--verde-claro); }
+    .layers-section .sec-title { color:white; }
+    .layers-section .sec-sub { color:rgba(255,255,255,0.6); }
+    .layers-grid {
+      display:grid; grid-template-columns: repeat(3,1fr);
+      gap:24px; margin-top:60px;
+    }
+    .layer-card {
+      border-radius:20px; padding:40px;
+      position:relative; overflow:hidden;
+    }
+    .layer-card.l1 {
+      background: rgba(0,184,148,0.08);
+      border: 1px solid rgba(0,184,148,0.2);
+    }
+    .layer-card.l2 {
+      background: rgba(59,158,218,0.08);
+      border: 1px solid rgba(59,158,218,0.2);
+    }
+    .layer-card.l3 {
+      background: rgba(243,156,18,0.08);
+      border: 1px solid rgba(243,156,18,0.2);
+    }
+    .layer-num {
+      font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      margin-bottom:20px; display:block;
+    }
+    .l1 .layer-num { color:var(--verde-claro); }
+    .l2 .layer-num { color:var(--azul-claro); }
+    .l3 .layer-num { color:var(--laranja); }
+    .layer-title {
+      font-size:26px; font-weight:800; color:white;
+      margin-bottom:8px; line-height:1.2;
+    }
+    .layer-sub {
+      font-size:13px; margin-bottom:24px;
+    }
+    .l1 .layer-sub { color:rgba(0,212,170,0.7); }
+    .l2 .layer-sub { color:rgba(59,158,218,0.8); }
+    .l3 .layer-sub { color:rgba(243,156,18,0.8); }
+    .layer-desc {
+      font-size:14px; color:rgba(255,255,255,0.65);
+      line-height:1.7; margin-bottom:28px;
+    }
+    .layer-items { display:flex; flex-direction:column; gap:10px; }
+    .layer-item {
+      display:flex; align-items:flex-start; gap:10px;
+      font-size:13px; color:rgba(255,255,255,0.7);
+    }
+    .layer-item::before {
+      content:'→'; font-weight:700; margin-top:1px; flex-shrink:0;
+    }
+    .l1 .layer-item::before { color:var(--verde-claro); }
+    .l2 .layer-item::before { color:var(--azul-claro); }
+    .l3 .layer-item::before { color:var(--laranja); }
+    .layer-revenue {
+      margin-top:28px; padding-top:24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .layer-revenue-label {
+      font-size:11px; letter-spacing:1px; text-transform:uppercase;
+      color:rgba(255,255,255,0.4); margin-bottom:6px; display:block;
+    }
+    .layer-revenue-val {
+      font-size:20px; font-weight:800; color:white;
+    }
+    .layer-arrow {
+      display:flex; align-items:center; justify-content:center;
+      font-size:28px; color:rgba(255,255,255,0.2);
+      margin-top:60px;
+    }
+    .trojan-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius:16px; padding:32px 40px;
+      margin-top:48px; text-align:center;
+    }
+    .trojan-box p {
+      font-size:18px; color:rgba(255,255,255,0.8); line-height:1.7;
+    }
+    .trojan-box p strong { color:white; }
+    .trojan-box .trojan-insight {
+      font-size:22px; font-weight:700; color:var(--verde-claro);
+      margin-top:16px; display:block;
+    }
+
+    /* ── MEDICO SOLO ── */
+    .medico-section { }
+    .medico-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:60px;
+      align-items:center; margin-top:60px;
+    }
+    .medico-profile {
+      background:var(--cinza-claro); border-radius:20px; padding:40px;
+      border: 1px solid var(--cinza-medio);
+    }
+    .profile-header {
+      display:flex; align-items:center; gap:16px; margin-bottom:28px;
+    }
+    .profile-avatar {
+      width:60px; height:60px; background:linear-gradient(135deg,var(--azul),var(--azul-claro));
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:26px;
+    }
+    .profile-info strong { font-size:16px; color:var(--preto); display:block; }
+    .profile-info span { font-size:13px; color:var(--cinza-texto); }
+    .profile-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+    .pstat {
+      background:white; border-radius:10px; padding:14px 16px;
+      border: 1px solid var(--cinza-medio);
+    }
+    .pstat-val { font-size:20px; font-weight:800; color:var(--azul); display:block; }
+    .pstat-label { font-size:11px; color:var(--cinza-texto); margin-top:2px; }
+    .profile-dores { display:flex; flex-direction:column; gap:10px; }
+    .dor-tag {
+      display:flex; align-items:center; gap:10px;
+      font-size:13px; color:var(--cinza-texto);
+    }
+    .dor-tag::before { content:'×'; color:var(--vermelho); font-weight:800; font-size:16px; }
+    .medico-right { }
+    .medico-right h3 { font-size:28px; font-weight:800; margin-bottom:20px; }
+    .medico-right p { font-size:15px; color:var(--cinza-texto); line-height:1.8; margin-bottom:16px; }
+    .medico-right p strong { color:var(--azul); }
+    .nicho-box {
+      background: linear-gradient(135deg, rgba(0,184,148,0.08), rgba(59,158,218,0.08));
+      border: 1.5px solid rgba(0,184,148,0.25);
+      border-radius:14px; padding:24px 28px; margin-top:24px;
+    }
+    .nicho-box h4 { font-size:16px; font-weight:700; color:var(--verde); margin-bottom:12px; }
+    .nicho-box ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    .nicho-box ul li { font-size:14px; color:var(--cinza-texto); display:flex; align-items:flex-start; gap:8px; }
+    .nicho-box ul li::before { content:'✓'; color:var(--verde); font-weight:700; margin-top:1px; }
+
+    /* ── FLUXO ── */
+    .fluxo-section { background:var(--cinza-claro); }
+    .fluxo-container {
+      background:white; border-radius:20px;
+      box-shadow: 0 4px 24px rgba(15,76,129,0.1);
+      border: 1px solid var(--cinza-medio);
+      overflow:hidden; margin-top:60px;
+    }
+    .fluxo-header {
+      background:linear-gradient(135deg, var(--azul-escuro), var(--azul));
+      padding:28px 40px;
+      display:flex; align-items:center; gap:16px;
+    }
+    .fluxo-header h3 { font-size:18px; font-weight:700; color:white; }
+    .fluxo-header span { font-size:13px; color:rgba(255,255,255,0.6); }
+    .whatsapp-dot {
+      width:12px; height:12px; background:#25d366; border-radius:50%;
+      box-shadow: 0 0 8px rgba(37,211,102,0.6);
+    }
+    .fluxo-steps {
+      padding:40px;
+      display:grid; grid-template-columns: repeat(5,1fr); gap:0;
+      position:relative;
+    }
+    .fluxo-steps::before {
+      content:''; position:absolute;
+      top:68px; left:12%; right:12%; height:2px;
+      background: linear-gradient(90deg, var(--verde), var(--azul-claro), var(--laranja));
+    }
+    .fstep { text-align:center; padding:0 12px; position:relative; z-index:1; }
+    .fstep-icon {
+      width:56px; height:56px;
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 16px; font-size:22px;
+      border:3px solid white;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    }
+    .fstep:nth-child(1) .fstep-icon { background:linear-gradient(135deg,#25d366,#128c7e); }
+    .fstep:nth-child(2) .fstep-icon { background:linear-gradient(135deg,var(--azul),var(--azul-claro)); }
+    .fstep:nth-child(3) .fstep-icon { background:linear-gradient(135deg,var(--verde),var(--verde-claro)); }
+    .fstep:nth-child(4) .fstep-icon { background:linear-gradient(135deg,var(--laranja),#f1c40f); }
+    .fstep:nth-child(5) .fstep-icon { background:linear-gradient(135deg,#9b59b6,#8e44ad); }
+    .fstep h4 { font-size:13px; font-weight:700; color:var(--preto); margin-bottom:6px; }
+    .fstep p { font-size:12px; color:var(--cinza-texto); line-height:1.5; }
+    .fluxo-financeiro {
+      background:var(--cinza-claro); padding:32px 40px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-top: 1px solid var(--cinza-medio);
+    }
+    .fluxo-fin-item { text-align:center; }
+    .fluxo-fin-val { font-size:26px; font-weight:800; color:var(--azul); }
+    .fluxo-fin-label { font-size:12px; color:var(--cinza-texto); margin-top:4px; }
+    .fluxo-fin-arrow { font-size:24px; color:var(--cinza-medio); }
+
+    /* ── POR QUE WHATSAPP ── */
+    .wpp-section { background:var(--azul-escuro); }
+    .wpp-section .sec-tag { border-color:rgba(37,211,102,0.3); color:#25d366; }
+    .wpp-section .sec-title { color:white; }
+    .wpp-section .sec-sub { color:rgba(255,255,255,0.6); }
+    .wpp-grid {
+      display:grid; grid-template-columns: 1.2fr 1fr; gap:60px;
+      align-items:center; margin-top:60px;
+    }
+    .wpp-stats { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .wpp-stat {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius:14px; padding:24px;
+    }
+    .wpp-stat-num { font-size:36px; font-weight:900; color:#25d366; display:block; }
+    .wpp-stat-label { font-size:13px; color:rgba(255,255,255,0.5); margin-top:4px; line-height:1.4; }
+    .wpp-moat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius:16px; padding:36px;
+    }
+    .wpp-moat h3 { font-size:22px; font-weight:800; color:white; margin-bottom:20px; }
+    .wpp-moat-items { display:flex; flex-direction:column; gap:16px; }
+    .wpp-moat-item { display:flex; align-items:flex-start; gap:14px; }
+    .wpp-moat-check {
+      width:24px; height:24px; min-width:24px;
+      background: rgba(37,211,102,0.2); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; color:#25d366; font-weight:700; margin-top:2px;
+    }
+    .wpp-moat-item p { font-size:14px; color:rgba(255,255,255,0.7); line-height:1.6; }
+    .wpp-moat-item p strong { color:white; }
+    .wpp-window {
+      margin-top:32px; background:rgba(37,211,102,0.08);
+      border: 1px solid rgba(37,211,102,0.2);
+      border-radius:12px; padding:20px 24px; text-align:center;
+    }
+    .wpp-window p { font-size:15px; color:rgba(255,255,255,0.7); }
+    .wpp-window strong { color:#25d366; font-size:18px; }
+
+    /* ── RISCOS ── */
+    .riscos-section { }
+    .riscos-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; margin-top:60px; }
+    .risco-card {
+      border-radius:16px; padding:32px;
+      border: 1px solid var(--cinza-medio);
+      background:white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .risco-icon {
+      width:48px; height:48px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px; margin-bottom:20px;
+    }
+    .risco-card.r1 .risco-icon { background:rgba(231,76,60,0.1); }
+    .risco-card.r2 .risco-icon { background:rgba(243,156,18,0.1); }
+    .risco-card.r3 .risco-icon { background:rgba(59,158,218,0.1); }
+    .risco-card h3 { font-size:16px; font-weight:700; color:var(--preto); margin-bottom:10px; }
+    .risco-card p { font-size:14px; color:var(--cinza-texto); line-height:1.7; margin-bottom:16px; }
+    .risco-solucao {
+      background:var(--cinza-claro); border-radius:8px; padding:12px 16px;
+      font-size:13px; color:var(--azul); font-weight:600;
+      border-left:3px solid var(--azul-claro);
+    }
+
+    /* ── PLANO 90 DIAS ── */
+    .plano-section { background:var(--cinza-claro); }
+    .fases { display:flex; flex-direction:column; gap:24px; margin-top:60px; }
+    .fase {
+      background:white; border-radius:16px;
+      overflow:hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-medio);
+    }
+    .fase-header {
+      padding:24px 32px;
+      display:flex; align-items:center; gap:20px;
+    }
+    .fase.f0 .fase-header { background:linear-gradient(135deg, rgba(0,184,148,0.08), rgba(0,184,148,0.04)); }
+    .fase.f1 .fase-header { background:linear-gradient(135deg, rgba(59,158,218,0.08), rgba(59,158,218,0.04)); }
+    .fase.f2 .fase-header { background:linear-gradient(135deg, rgba(243,156,18,0.08), rgba(243,156,18,0.04)); }
+    .fase.f3 .fase-header { background:linear-gradient(135deg, rgba(155,89,182,0.08), rgba(155,89,182,0.04)); }
+    .fase-num {
+      width:48px; height:48px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px; font-weight:800; flex-shrink:0;
+    }
+    .fase.f0 .fase-num { background:rgba(0,184,148,0.15); color:var(--verde); }
+    .fase.f1 .fase-num { background:rgba(59,158,218,0.15); color:var(--azul-claro); }
+    .fase.f2 .fase-num { background:rgba(243,156,18,0.15); color:var(--laranja); }
+    .fase.f3 .fase-num { background:rgba(155,89,182,0.15); color:#9b59b6; }
+    .fase-header-text h3 { font-size:18px; font-weight:700; color:var(--preto); }
+    .fase-header-text span { font-size:13px; color:var(--cinza-texto); }
+    .fase-body { padding:28px 32px; }
+    .fase-cols { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+    .fase-col h4 { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--cinza-texto); margin-bottom:14px; }
+    .fase-items { display:flex; flex-direction:column; gap:10px; }
+    .fase-item {
+      display:flex; align-items:flex-start; gap:10px;
+      font-size:14px; color:var(--cinza-texto); line-height:1.5;
+    }
+    .fase-item .fi-dot {
+      width:6px; height:6px; border-radius:50%;
+      margin-top:6px; flex-shrink:0;
+    }
+    .fase.f0 .fi-dot { background:var(--verde); }
+    .fase.f1 .fi-dot { background:var(--azul-claro); }
+    .fase.f2 .fi-dot { background:var(--laranja); }
+    .fase.f3 .fi-dot { background:#9b59b6; }
+    .fase-item strong { color:var(--preto); font-weight:600; }
+    .fase-meta {
+      margin-top:20px; padding:16px 20px;
+      background:var(--cinza-claro); border-radius:10px;
+      font-size:14px; font-weight:600;
+      display:flex; align-items:center; gap:10px;
+    }
+    .fase.f0 .fase-meta { color:var(--verde); border-left:3px solid var(--verde); }
+    .fase.f1 .fase-meta { color:var(--azul-claro); border-left:3px solid var(--azul-claro); }
+    .fase.f2 .fase-meta { color:var(--laranja); border-left:3px solid var(--laranja); }
+    .fase.f3 .fase-meta { color:#9b59b6; border-left:3px solid #9b59b6; }
+
+    /* ── PROJEÇÃO ── */
+    .projecao-section { background:var(--azul-escuro); }
+    .projecao-section .sec-title { color:white; }
+    .projecao-section .sec-sub { color:rgba(255,255,255,0.6); }
+    .timeline { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:60px; }
+    .tcard {
+      border-radius:16px; padding:36px;
+      position:relative; overflow:hidden;
+    }
+    .tcard.t1 { background:rgba(0,184,148,0.08); border:1px solid rgba(0,184,148,0.2); }
+    .tcard.t2 { background:rgba(59,158,218,0.08); border:1px solid rgba(59,158,218,0.2); }
+    .tcard.t3 { background:rgba(243,156,18,0.08); border:1px solid rgba(243,156,18,0.2); }
+    .tcard-period {
+      font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      display:block; margin-bottom:20px;
+    }
+    .t1 .tcard-period { color:var(--verde-claro); }
+    .t2 .tcard-period { color:var(--azul-claro); }
+    .t3 .tcard-period { color:var(--laranja); }
+    .tcard-receita { font-size:40px; font-weight:900; color:white; margin-bottom:20px; line-height:1; }
+    .tcard-items { display:flex; flex-direction:column; gap:10px; }
+    .tcard-item { font-size:14px; color:rgba(255,255,255,0.6); display:flex; align-items:flex-start; gap:8px; }
+    .tcard-item::before { content:'·'; font-weight:900; margin-top:-2px; flex-shrink:0; }
+    .t1 .tcard-item::before { color:var(--verde-claro); }
+    .t2 .tcard-item::before { color:var(--azul-claro); }
+    .t3 .tcard-item::before { color:var(--laranja); }
+    .tcard-item strong { color:rgba(255,255,255,0.85); }
+
+    /* ── POSICIONAMENTO ── */
+    .pos-section {
+      background: linear-gradient(160deg, #040d17, #071828 40%, #0a1f35);
+      text-align:center; padding:120px 48px;
+    }
+    .pos-section h2 {
+      font-size: clamp(32px,5vw,64px);
+      font-weight:900; color:white; line-height:1.1;
+      letter-spacing:-1.5px; margin-bottom:28px;
+      max-width:800px; margin-left:auto; margin-right:auto;
+    }
+    .pos-section h2 em {
+      font-style:normal;
+      background:linear-gradient(90deg, var(--verde-claro), var(--azul-claro));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .pos-section p {
+      font-size:18px; color:rgba(255,255,255,0.6); max-width:560px;
+      margin:0 auto 48px; line-height:1.75;
+    }
+    .pos-quote {
+      max-width:720px; margin:0 auto;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius:20px; padding:48px;
+    }
+    .pos-quote blockquote {
+      font-size:clamp(18px,2.5vw,26px);
+      font-weight:600; color:rgba(255,255,255,0.9);
+      line-height:1.6; font-style:italic;
+    }
+    .pos-quote cite {
+      display:block; margin-top:24px;
+      font-size:14px; color:var(--verde-claro);
+      font-style:normal; font-weight:600;
+    }
+    .pos-pills {
+      display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:48px;
+    }
+    .pos-pill {
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.1);
+      color:rgba(255,255,255,0.75);
+      padding:12px 24px; border-radius:40px;
+      font-size:15px; font-weight:600;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background:#040d17; padding:48px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:24px;
+    }
+    .footer-logo { font-size:24px; font-weight:900; color:white; }
+    .footer-logo span { color:var(--verde-claro); }
+    footer p { font-size:13px; color:rgba(255,255,255,0.35); line-height:1.6; }
+
+    /* ── FADE IN ── */
+    .fi { opacity:0; transform:translateY(24px); transition:opacity 0.55s, transform 0.55s; }
+    .fi.on { opacity:1; transform:translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:960px){
+      section { padding:70px 24px; }
+      nav { padding:14px 24px; }
+      .nav-links { display:none; }
+      .gap-grid,.medico-grid,.wpp-grid,.fluxo-steps { grid-template-columns:1fr; }
+      .fluxo-steps::before { display:none; }
+      .layers-grid,.riscos-grid,.timeline { grid-template-columns:1fr; }
+      .fase-cols { grid-template-columns:1fr; }
+      .hero-metrics { grid-template-columns:1fr 1fr; }
+      .fluxo-financeiro { flex-direction:column; gap:20px; }
+    }
+    @media(max-width:600px){
+      .hero h1 { font-size:38px; }
+      .hero-metrics { grid-template-columns:1fr 1fr; }
+      .wpp-stats { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">REM<span>MED</span></div>
+  <div class="nav-links">
+    <a href="#gap">O Gap</a>
+    <a href="#camadas">As Camadas</a>
+    <a href="#fluxo">Como Funciona</a>
+    <a href="#plano">Plano 90 dias</a>
+    <a href="#projecao">Projeção</a>
+  </div>
+  <div class="nav-tag">VISÃO ESTRATÉGICA 2026</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb-1"></div>
+  <div class="hero-orb-2"></div>
+  <div class="hero-orb-3"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Infraestrutura de Acesso à Saúde · Brasil</div>
+    <h1>
+      O <span class="green">médico certo,</span><br/>
+      no <span class="blue">momento certo,</span><br/>
+      pelo canal onde o<br/>paciente já está.
+    </h1>
+    <p class="hero-sub">
+      A REMMED não é uma clínica online. Não é telemedicina.<br/>
+      É a <strong>infraestrutura que conecta o paciente ao cuidado médico imediato</strong> —
+      via WhatsApp, com triagem inteligente, em todo o Brasil.
+    </p>
+    <div class="hero-pills">
+      <div class="pill"><span class="pill-icon">💬</span> WhatsApp nativo</div>
+      <div class="pill"><span class="pill-icon">🩺</span> Triagem clínica real</div>
+      <div class="pill"><span class="pill-icon">⚡</span> Acesso imediato</div>
+      <div class="pill"><span class="pill-icon">🇧🇷</span> Feito para o Brasil</div>
+    </div>
+    <div class="hero-metrics">
+      <div class="metric"><span class="metric-num">97%</span><div class="metric-label">smartphones BR<br/>têm WhatsApp</div></div>
+      <div class="metric"><span class="metric-num">0</span><div class="metric-label">apps para baixar</div></div>
+      <div class="metric"><span class="metric-num">24h</span><div class="metric-label">Clara ativa<br/>por dia</div></div>
+      <div class="metric"><span class="metric-num">∅</span><div class="metric-label">concorrente<br/>igual no Brasil</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GAP -->
+<section class="gap-section" id="gap">
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">O Problema</div>
+      <h2 class="sec-title">O gap que ninguém<br/>resolveu ainda.</h2>
+      <p class="sec-sub">O comportamento do consumidor brasileiro foi transformado por três plataformas. Falta uma quarta.</p>
+    </div>
+    <div class="gap-grid fi">
+      <div class="gap-exists">
+        <div class="gap-item">
+          <span class="gap-item-icon">🍔</span>
+          <div class="gap-item-text">
+            <strong>Quero comida agora</strong>
+            <span>iFood → resolvido em 2011</span>
+          </div>
+        </div>
+        <div class="gap-item">
+          <span class="gap-item-icon">🚗</span>
+          <div class="gap-item-text">
+            <strong>Quero transporte agora</strong>
+            <span>Uber → resolvido em 2014</span>
+          </div>
+        </div>
+        <div class="gap-item">
+          <span class="gap-item-icon">🏠</span>
+          <div class="gap-item-text">
+            <strong>Quero hospedagem agora</strong>
+            <span>Airbnb → resolvido em 2012</span>
+          </div>
+        </div>
+        <div class="gap-item missing">
+          <span class="gap-item-icon">🩺</span>
+          <div class="gap-item-text">
+            <strong>Quero um médico agora</strong>
+            <div class="gap-badge">→ não existe ainda</div>
+          </div>
+        </div>
+      </div>
+      <div class="gap-right-card">
+        <h3>Por que ninguém resolveu?</h3>
+        <p>O Doctoralia agenda para <strong>amanhã</strong>. A Conexa atende <strong>empresas</strong>, não pessoas. O DrConsulta é <strong>presencial</strong>. Nenhum deles é WhatsApp-nativo.</p>
+        <p>O que falta é um sistema que receba o paciente <strong>onde ele já está</strong>, entenda a queixa dele com inteligência clínica real, e conecte ao médico certo em minutos — não dias.</p>
+        <p>A Clara já faz a parte mais difícil. <strong>A triagem inteligente.</strong><br/>Agora é hora de ligar os pontos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 CAMADAS -->
+<section class="layers-section" id="camadas">
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">A Arquitetura</div>
+      <h2 class="sec-title">Três camadas.<br/>Uma visão.</h2>
+      <p class="sec-sub">Não construímos tudo de uma vez. Cada camada financia e alimenta a próxima.</p>
+    </div>
+    <div class="layers-grid fi">
+      <div class="layer-card l1">
+        <span class="layer-num">Camada 1 · Agora</span>
+        <div class="layer-title">Clara Lite</div>
+        <div class="layer-sub">SaaS para médico solo</div>
+        <p class="layer-desc">Assistente clínica inteligente via WhatsApp para médicos que estão começando — triagem, FAQ automático, filtro de urgência, tudo personalizado.</p>
+        <div class="layer-items">
+          <div class="layer-item">Triagem com 7 grupos de sintomas</div>
+          <div class="layer-item">FAQ 24h configurado com dados do médico</div>
+          <div class="layer-item">Filtro de segurança para telemedicina</div>
+          <div class="layer-item">Resumo estruturado antes da consulta</div>
+        </div>
+        <div class="layer-revenue">
+          <span class="layer-revenue-label">Receita</span>
+          <div class="layer-revenue-val">R$700/mês por médico</div>
+        </div>
+      </div>
+      <div class="layer-card l2">
+        <span class="layer-num">Camada 2 · 6 meses</span>
+        <div class="layer-title">REMMED Network</div>
+        <div class="layer-sub">Rede de médicos disponíveis</div>
+        <p class="layer-desc">Médicos da Clara Lite entram na rede de disponibilidade. Quando estão livres, ficam "online" e recebem pacientes encaminhados pela REMMED.</p>
+        <div class="layer-items">
+          <div class="layer-item">Médico ativa disponibilidade via WhatsApp</div>
+          <div class="layer-item">Clara roteia paciente ao especialista certo</div>
+          <div class="layer-item">Pagamento automático com split</div>
+          <div class="layer-item">Link de videochamada gerado automaticamente</div>
+        </div>
+        <div class="layer-revenue">
+          <span class="layer-revenue-label">Receita</span>
+          <div class="layer-revenue-val">25% por consulta efetivada</div>
+        </div>
+      </div>
+      <div class="layer-card l3">
+        <span class="layer-num">Camada 3 · 18 meses</span>
+        <div class="layer-title">Marketplace</div>
+        <div class="layer-sub">Acesso médico sob demanda</div>
+        <p class="layer-desc">Plataforma nacional de acesso médico imediato. O paciente descreve a queixa, a Clara identifica o perfil clínico, o sistema conecta ao médico certo em minutos.</p>
+        <div class="layer-items">
+          <div class="layer-item">App mobile + WhatsApp simultâneos</div>
+          <div class="layer-item">Matching inteligente por especialidade</div>
+          <div class="layer-item">Disponibilidade em tempo real</div>
+          <div class="layer-item">Cobertura nacional</div>
+        </div>
+        <div class="layer-revenue">
+          <span class="layer-revenue-label">Receita</span>
+          <div class="layer-revenue-val">MRR + take rate + premium</div>
+        </div>
+      </div>
+    </div>
+    <div class="trojan-box fi">
+      <p>
+        A <strong>Clara Lite não é o produto final</strong>. Ela é o cavalo de Troia.<br/>
+        O médico entra pagando pela automação. Mas ao entrar, torna-se <strong>oferta dentro do marketplace</strong>.<br/>
+        A REMMED adquire fornecedores com receita positiva — a maioria dos marketplaces paga para isso.
+      </p>
+      <span class="trojan-insight">Aquisição de oferta com receita positiva. Ninguém faz isso.</span>
+    </div>
+  </div>
+</section>
+
+<!-- MÉDICO SOLO -->
+<section id="medico">
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">O Cliente Ideal</div>
+      <h2 class="sec-title">O médico que a REMMED<br/>veio ajudar.</h2>
+    </div>
+    <div class="medico-grid fi">
+      <div class="medico-profile">
+        <div class="profile-header">
+          <div class="profile-avatar">👨‍⚕️</div>
+          <div class="profile-info">
+            <strong>Dr. Rafael Souza</strong>
+            <span>Clínico Geral · Interior de SP · 28 anos</span>
+          </div>
+        </div>
+        <div class="profile-stats">
+          <div class="pstat"><span class="pstat-val">R$11k</span><div class="pstat-label">Renda mensal com plantões</div></div>
+          <div class="pstat"><span class="pstat-val">3×</span><div class="pstat-label">Plantões por semana para complementar</div></div>
+          <div class="pstat"><span class="pstat-val">0</span><div class="pstat-label">Funcionários no consultório</div></div>
+          <div class="pstat"><span class="pstat-val">40+</span><div class="pstat-label">Mensagens no WhatsApp por dia</div></div>
+        </div>
+        <div class="profile-dores">
+          <div class="dor-tag">Sem coragem de contratar secretária ainda</div>
+          <div class="dor-tag">Responde WhatsApp entre um paciente e outro</div>
+          <div class="dor-tag">Perde paciente por demora no retorno</div>
+          <div class="dor-tag">Sem sistema de triagem antes da consulta</div>
+          <div class="dor-tag">Medo de caso de urgência na telemedicina</div>
+        </div>
+      </div>
+      <div class="medico-right">
+        <h3>Por que a medicina vai "colapsar" como a odontologia</h3>
+        <p>O mercado médico está seguindo o mesmo caminho da odontologia: <strong>excesso de profissionais, queda de remuneração, pressão por volume</strong>. O médico solo que não digitalizar sua operação vai trabalhar cada vez mais para ganhar cada vez menos.</p>
+        <p>A Clara Lite não é um luxo. É a diferença entre crescer ou continuar trocando hora por dinheiro indefinidamente.</p>
+        <div class="nicho-box">
+          <h4>🧠 Por que começar com Saúde Mental</h4>
+          <ul>
+            <li>Espera média para psiquiatra no Brasil: 3 a 6 semanas. Você oferece em 30 min.</li>
+            <li>Funciona perfeitamente por vídeo — nenhum exame físico necessário</li>
+            <li>Paciente volta todo mês — retenção natural altíssima</li>
+            <li>CFM mais flexível com telepsiquiatria</li>
+            <li>Estigma caindo rapidamente na geração Z</li>
+            <li>NPS alto → indicação orgânica forte</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLUXO -->
+<section class="fluxo-section" id="fluxo">
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">Como Funciona</div>
+      <h2 class="sec-title">Zero app. Zero fricção.<br/>Funciona hoje.</h2>
+      <p class="sec-sub">O fluxo completo — do primeiro "oi" do paciente ao pagamento do médico — sem nenhum download.</p>
+    </div>
+    <div class="fluxo-container fi">
+      <div class="fluxo-header">
+        <div class="whatsapp-dot"></div>
+        <div>
+          <h3>Fluxo completo via WhatsApp</h3>
+          <span>Sem app · Sem cadastro · Sem espera</span>
+        </div>
+      </div>
+      <div class="fluxo-steps">
+        <div class="fstep">
+          <div class="fstep-icon">💬</div>
+          <h4>Paciente escreve</h4>
+          <p>Manda mensagem no WhatsApp do consultório ou da REMMED</p>
+        </div>
+        <div class="fstep">
+          <div class="fstep-icon">🩺</div>
+          <h4>Clara faz triagem</h4>
+          <p>Coleta queixa, sintomas, tempo, intensidade e alertas de urgência</p>
+        </div>
+        <div class="fstep">
+          <div class="fstep-icon">🎯</div>
+          <h4>Match inteligente</h4>
+          <p>Sistema identifica especialidade e médico disponível em segundos</p>
+        </div>
+        <div class="fstep">
+          <div class="fstep-icon">💳</div>
+          <h4>Pix automático</h4>
+          <p>Paciente paga via Pix. Split automático: médico recebe 75%, REMMED 25%</p>
+        </div>
+        <div class="fstep">
+          <div class="fstep-icon">📹</div>
+          <h4>Consulta começa</h4>
+          <p>Link de vídeo enviado. Médico já recebeu resumo da triagem da Clara</p>
+        </div>
+      </div>
+      <div class="fluxo-financeiro">
+        <div class="fluxo-fin-item">
+          <div class="fluxo-fin-val">R$99,90</div>
+          <div class="fluxo-fin-label">Valor da consulta</div>
+        </div>
+        <div class="fluxo-fin-arrow">→</div>
+        <div class="fluxo-fin-item">
+          <div class="fluxo-fin-val">R$75,00</div>
+          <div class="fluxo-fin-label">Médico recebe (75%)</div>
+        </div>
+        <div class="fluxo-fin-arrow">+</div>
+        <div class="fluxo-fin-item">
+          <div class="fluxo-fin-val">R$24,90</div>
+          <div class="fluxo-fin-label">REMMED recebe (25%)</div>
+        </div>
+        <div class="fluxo-fin-arrow">×</div>
+        <div class="fluxo-fin-item">
+          <div class="fluxo-fin-val">30/dia</div>
+          <div class="fluxo-fin-label">Com 10 médicos × 3 consultas</div>
+        </div>
+        <div class="fluxo-fin-arrow">=</div>
+        <div class="fluxo-fin-item">
+          <div class="fluxo-fin-val" style="color:var(--verde)">R$22.500</div>
+          <div class="fluxo-fin-label">Por mês só no marketplace</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHATSAPP -->
+<section class="wpp-section">
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">O Moat</div>
+      <h2 class="sec-title">Por que o WhatsApp<br/>é o maior ativo.</h2>
+      <p class="sec-sub">Nenhuma das grandes empresas de saúde está usando WhatsApp como infraestrutura principal. Esse é o espaço.</p>
+    </div>
+    <div class="wpp-grid fi">
+      <div class="wpp-stats">
+        <div class="wpp-stat">
+          <span class="wpp-stat-num">97%</span>
+          <div class="wpp-stat-label">dos smartphones brasileiros têm WhatsApp instalado</div>
+        </div>
+        <div class="wpp-stat">
+          <span class="wpp-stat-num">R$0</span>
+          <div class="wpp-stat-label">custo de aquisição de usuário vs. custo de app store</div>
+        </div>
+        <div class="wpp-stat">
+          <span class="wpp-stat-num">0</span>
+          <div class="wpp-stat-label">downloads necessários do paciente para usar</div>
+        </div>
+        <div class="wpp-stat">
+          <span class="wpp-stat-num">18m</span>
+          <div class="wpp-stat-label">janela estimada antes que concorrentes percebam</div>
+        </div>
+      </div>
+      <div>
+        <div class="wpp-moat">
+          <h3>Por que ninguém copia rápido</h3>
+          <div class="wpp-moat-items">
+            <div class="wpp-moat-item">
+              <div class="wpp-moat-check">✓</div>
+              <p><strong>Tecnologia de triagem clínica</strong> leva meses para construir bem. A REMMED já tem 2 anos de refinamento com pacientes reais.</p>
+            </div>
+            <div class="wpp-moat-item">
+              <div class="wpp-moat-check">✓</div>
+              <p><strong>Confiança médica</strong> é construída por reputação, não por dinheiro. Médico não entra em plataforma desconhecida do dia para noite.</p>
+            </div>
+            <div class="wpp-moat-item">
+              <div class="wpp-moat-check">✓</div>
+              <p><strong>Clara Lite como canal de aquisição</strong> é um modelo que ninguém está usando. Copiar significa entender o negócio profundamente — o que leva tempo.</p>
+            </div>
+          </div>
+        </div>
+        <div class="wpp-window">
+          <p>A <strong>China tem WeChat. O Brasil tem WhatsApp.</strong><br/>
+          O Ping An Good Doctor construiu U$15 bilhões em cima do WeChat chinês.<br/>
+          <strong>O equivalente brasileiro ainda não existe.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RISCOS -->
+<section>
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">Honestidade</div>
+      <h2 class="sec-title">Os riscos reais —<br/>e como mitigar.</h2>
+      <p class="sec-sub">Negócio bom é o que conhece seus riscos antes de correr para construir.</p>
+    </div>
+    <div class="riscos-grid fi">
+      <div class="risco-card r1">
+        <div class="risco-icon">⚠️</div>
+        <h3>Qualidade clínica</h3>
+        <p>Um evento adverso — paciente que precisava ir ao pronto-socorro mas não foi orientado — pode destruir a reputação instantaneamente no setor de saúde.</p>
+        <div class="risco-solucao">Mitigação: filtro de alarme infalível na Clara + regra de consistência + protocolo de orientação para urgência</div>
+      </div>
+      <div class="risco-card r2">
+        <div class="risco-icon">🔒</div>
+        <h3>Regulação CFM</h3>
+        <p>O CFM já embargou plataformas maiores por linguagem errada. "A REMMED te atende" vs "conectamos você a um médico" são frases com responsabilidade jurídica completamente diferente.</p>
+        <div class="risco-solucao">Mitigação: advogado especialista em direito médico antes do lançamento público — o contrato define tudo</div>
+      </div>
+      <div class="risco-card r3">
+        <div class="risco-icon">📊</div>
+        <h3>Retenção do médico</h3>
+        <p>Médico tem CRM, tem consultório. Assim que constrói relação com o paciente via plataforma, pode tentar sair. O modelo precisa tornar ficar sempre melhor que sair.</p>
+        <div class="risco-solucao">Mitigação: Clara Lite como âncora — o médico já usa a Clara no próprio consultório; sair da REMMED significa perder também a IA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANO 90 DIAS -->
+<section class="plano-section" id="plano">
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">Execução</div>
+      <h2 class="sec-title">Os próximos 90 dias —<br/>passo a passo.</h2>
+      <p class="sec-sub">Sem app. Sem investimento externo ainda. Só execução com o que já existe.</p>
+    </div>
+    <div class="fases fi">
+
+      <div class="fase f0">
+        <div class="fase-header">
+          <div class="fase-num">✓</div>
+          <div class="fase-header-text">
+            <h3>O que já existe hoje</h3>
+            <span>Base construída — pronto para ativar</span>
+          </div>
+        </div>
+        <div class="fase-body">
+          <div class="fase-cols">
+            <div class="fase-col">
+              <h4>Infraestrutura pronta</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div>Clara com triagem clínica funcional (7 grupos)</div>
+                <div class="fase-item"><div class="fi-dot"></div>FAQ automático via WhatsApp</div>
+                <div class="fase-item"><div class="fi-dot"></div>Filtro de alarme e segurança</div>
+                <div class="fase-item"><div class="fi-dot"></div>n8n + Evolution API + Supabase em produção</div>
+              </div>
+            </div>
+            <div class="fase-col">
+              <h4>O que falta para ativar</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div>Parametrizar prompt por cliente (nome, especialidade)</div>
+                <div class="fase-item"><div class="fi-dot"></div>Formulário de onboarding do médico</div>
+                <div class="fase-item"><div class="fi-dot"></div>Número WhatsApp de demonstração</div>
+                <div class="fase-item"><div class="fi-dot"></div>Contrato jurídico médico ↔ REMMED</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fase f1">
+        <div class="fase-header">
+          <div class="fase-num">1</div>
+          <div class="fase-header-text">
+            <h3>Semanas 1–4 · Validação manual</h3>
+            <span>Provar que o modelo funciona antes de automatizar</span>
+          </div>
+        </div>
+        <div class="fase-body">
+          <div class="fase-cols">
+            <div class="fase-col">
+              <h4>Nicolas constrói</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div><strong>Parametrização:</strong> prompt da Clara por cliente</div>
+                <div class="fase-item"><div class="fi-dot"></div><strong>Instância separada</strong> no Evolution API por médico</div>
+                <div class="fase-item"><div class="fi-dot"></div><strong>Conta Asaas</strong> configurada (split de pagamento nativo)</div>
+                <div class="fase-item"><div class="fi-dot"></div>Fluxo Pix → split → repasse (pode ser manual nas primeiras semanas)</div>
+              </div>
+            </div>
+            <div class="fase-col">
+              <h4>Raíssa executa</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div>Recrutar <strong>3 médicos parceiros</strong> para piloto da rede</div>
+                <div class="fase-item"><div class="fi-dot"></div>Contrato simples médico ↔ REMMED com advogado</div>
+                <div class="fase-item"><div class="fi-dot"></div>Executar 20 consultas manualmente — acompanhar cada uma</div>
+                <div class="fase-item"><div class="fi-dot"></div>Registrar conversão: triagem → consulta efetivada</div>
+              </div>
+            </div>
+          </div>
+          <div class="fase-meta">🎯 Meta: 3 médicos ativos, 30 consultas efetivadas, taxa de conversão documentada</div>
+        </div>
+      </div>
+
+      <div class="fase f2">
+        <div class="fase-header">
+          <div class="fase-num">2</div>
+          <div class="fase-header-text">
+            <h3>Semanas 5–8 · Automatização</h3>
+            <span>Remover o trabalho manual do processo</span>
+          </div>
+        </div>
+        <div class="fase-body">
+          <div class="fase-cols">
+            <div class="fase-col">
+              <h4>Nicolas constrói</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div><strong>Roteamento automático:</strong> Clara finaliza triagem → notifica médico disponível</div>
+                <div class="fase-item"><div class="fi-dot"></div><strong>Disponibilidade via WhatsApp:</strong> médico manda "disponível" / "indisponível"</div>
+                <div class="fase-item"><div class="fi-dot"></div><strong>Pix dinâmico automático</strong> via Asaas API</div>
+                <div class="fase-item"><div class="fi-dot"></div><strong>Link de vídeo gerado</strong> automaticamente (Daily.co ou Whereby API)</div>
+                <div class="fase-item"><div class="fi-dot"></div>Notificação ao médico com resumo da triagem</div>
+              </div>
+            </div>
+            <div class="fase-col">
+              <h4>Raíssa executa</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div>Expandir para <strong>10 médicos</strong> na rede</div>
+                <div class="fase-item"><div class="fi-dot"></div>Primeiro contato com médicos de saúde mental para nicho piloto</div>
+                <div class="fase-item"><div class="fi-dot"></div>Documentar depoimentos dos médicos do piloto</div>
+                <div class="fase-item"><div class="fi-dot"></div>Validar posicionamento: REMMED como plataforma, não clínica</div>
+              </div>
+            </div>
+          </div>
+          <div class="fase-meta">🎯 Meta: fluxo 100% automático, zero intervenção manual por consulta</div>
+        </div>
+      </div>
+
+      <div class="fase f3">
+        <div class="fase-header">
+          <div class="fase-num">3</div>
+          <div class="fase-header-text">
+            <h3>Semanas 9–12 · Escala e dados</h3>
+            <span>Ter números que provam o modelo para o mercado</span>
+          </div>
+        </div>
+        <div class="fase-body">
+          <div class="fase-cols">
+            <div class="fase-col">
+              <h4>Nicolas constrói</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div><strong>Dashboard simples</strong> (Metabase ou Google Sheets automático): consultas/dia, conversão, receita por médico</div>
+                <div class="fase-item"><div class="fi-dot"></div>Relatório mensal automático para cada médico parceiro</div>
+                <div class="fase-item"><div class="fi-dot"></div>Avaliação pós-consulta (1 pergunta 2h depois)</div>
+                <div class="fase-item"><div class="fi-dot"></div>/reset e gerenciamento de sessões robustos</div>
+              </div>
+            </div>
+            <div class="fase-col">
+              <h4>Raíssa executa</h4>
+              <div class="fase-items">
+                <div class="fase-item"><div class="fi-dot"></div>Apresentar modelo para <strong>primeiros investidores anjo</strong></div>
+                <div class="fase-item"><div class="fi-dot"></div>Contatar grupos de médicos no WhatsApp/LinkedIn</div>
+                <div class="fase-item"><div class="fi-dot"></div>Montar pitch de 1 página com dados reais</div>
+                <div class="fase-item"><div class="fi-dot"></div>Definir se nicho inicial é saúde mental ou clínica geral</div>
+              </div>
+            </div>
+          </div>
+          <div class="fase-meta">🎯 Meta: 10+ médicos, 100+ consultas, taxa de conversão documentada, dados prontos para investidor</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJEÇÃO -->
+<section class="projecao-section" id="projecao">
+  <div class="container">
+    <div class="fi">
+      <div class="sec-tag">Projeção</div>
+      <h2 class="sec-title">O que os números<br/>podem parecer.</h2>
+      <p class="sec-sub">Conservador. Sem magia. Com o que já existe.</p>
+    </div>
+    <div class="timeline fi">
+      <div class="tcard t1">
+        <span class="tcard-period">6 meses</span>
+        <div class="tcard-receita">R$35–50k</div>
+        <div class="tcard-items">
+          <div class="tcard-item"><strong>20 médicos</strong> ativos na rede</div>
+          <div class="tcard-item"><strong>15 contratos</strong> Clara Lite (R$10.500/mês)</div>
+          <div class="tcard-item"><strong>500+ consultas/mês</strong> via marketplace</div>
+          <div class="tcard-item">Fluxo totalmente automatizado</div>
+          <div class="tcard-item">Primeiro nicho validado (saúde mental)</div>
+        </div>
+      </div>
+      <div class="tcard t2">
+        <span class="tcard-period">12 meses</span>
+        <div class="tcard-receita">R$120–180k</div>
+        <div class="tcard-items">
+          <div class="tcard-item"><strong>100 médicos</strong> na rede nacional</div>
+          <div class="tcard-item"><strong>3.000 consultas/mês</strong></div>
+          <div class="tcard-item">Presença em <strong>3 estados</strong></div>
+          <div class="tcard-item">Início desenvolvimento app mobile</div>
+          <div class="tcard-item">Apresentação para fundos seed</div>
+        </div>
+      </div>
+      <div class="tcard t3">
+        <span class="tcard-period">18–24 meses</span>
+        <div class="tcard-receita">Rodada Seed</div>
+        <div class="tcard-items">
+          <div class="tcard-item"><strong>500+ médicos</strong> ativos</div>
+          <div class="tcard-item">App mobile lançado</div>
+          <div class="tcard-item">Cobertura nacional</div>
+          <div class="tcard-item"><strong>R$2–5M</strong> para escala</div>
+          <div class="tcard-item">REMMED como referência em acesso médico digital</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POSICIONAMENTO FINAL -->
+<section class="pos-section">
+  <h2>
+    Não é telemedicina.<br/>
+    É <em>infraestrutura de acesso</em><br/>
+    à saúde.
+  </h2>
+  <p>Isso muda tudo. O valor não está na consulta. Está na disponibilidade, confiança, velocidade e distribuição.</p>
+  <div class="pos-quote">
+    <blockquote>
+      "A REMMED é a infraestrutura que conecta o paciente ao médico certo, no momento em que ele precisa, pelo canal onde ele já está."
+    </blockquote>
+    <cite>— Raíssa · Fundadora · REMMED Telemedicina</cite>
+  </div>
+  <div class="pos-pills">
+    <div class="pos-pill">Rede + Confiança + Liquidez</div>
+    <div class="pos-pill">O app não é o negócio</div>
+    <div class="pos-pill">Infraestrutura é o negócio</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">REM<span>MED</span></div>
+  <p>
+    Visão Estratégica Completa · Maio 2026<br/>
+    Uso interno: Raíssa e Nicolas · Confidencial
+  </p>
+  <p>
+    REMMED Telemedicina · CNPJ 56.069.744/0001-17<br/>
+    Tecnologia criada por médicos para médicos.
+  </p>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
