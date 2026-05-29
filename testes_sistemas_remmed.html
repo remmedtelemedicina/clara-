@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>REMMED · Testes dos Sistemas</title>
+  <style>
+    :root {
+      --azul: #0f4c81;
+      --azul-claro: #3b9eda;
+      --verde: #00b894;
+      --vermelho: #e74c3c;
+      --laranja: #f39c12;
+      --roxo: #8e44ad;
+      --cinza: #f4f7fb;
+      --borda: #e8eef6;
+      --texto: #1a202c;
+      --leve: #4a5568;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--cinza); color: var(--texto); }
+
+    .header {
+      background: linear-gradient(135deg, #071828, #0f4c81);
+      padding: 40px 24px; text-align: center;
+    }
+    .header h1 { font-size: 28px; font-weight: 900; color: white; margin-bottom: 6px; }
+    .header p { color: rgba(255,255,255,0.6); font-size: 14px; }
+    .header-tag {
+      display: inline-block; margin-bottom: 16px;
+      background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3);
+      color: #00d4aa; font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; padding: 4px 14px; border-radius: 20px;
+    }
+
+    .page { max-width: 800px; margin: 0 auto; padding: 32px 16px; }
+
+    /* PROGRESSO */
+    .progress-bar {
+      background: white; border-radius: 12px; padding: 20px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--borda);
+      margin-bottom: 28px;
+    }
+    .progress-bar h3 { font-size: 14px; color: var(--leve); margin-bottom: 10px; }
+    .bar-track {
+      background: var(--borda); border-radius: 100px; height: 10px; overflow: hidden;
+    }
+    .bar-fill {
+      background: linear-gradient(90deg, var(--verde), #00d4aa);
+      height: 100%; width: 0%; border-radius: 100px;
+      transition: width 0.4s ease;
+    }
+    .progress-nums {
+      display: flex; justify-content: space-between;
+      margin-top: 8px; font-size: 13px;
+    }
+    #count-done { font-weight: 700; color: var(--verde); }
+    #count-total { color: var(--leve); }
+
+    /* MÓDULO */
+    .modulo { margin-bottom: 28px; }
+    .modulo-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 24px;
+      border-radius: 14px 14px 0 0;
+      border: 1px solid var(--borda);
+      border-bottom: none;
+    }
+    .modulo-icon { font-size: 24px; }
+    .modulo-titulo { font-size: 17px; font-weight: 800; color: white; }
+    .modulo-sub { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+    .modulo-badge {
+      margin-left: auto; font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      background: rgba(255,255,255,0.15); color: white;
+    }
+
+    .m-triagem .modulo-header { background: linear-gradient(135deg, #0f4c81, #3b9eda); }
+    .m-guardail .modulo-header { background: linear-gradient(135deg, #16a085, #00b894); }
+    .m-faq .modulo-header { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+    .m-receita .modulo-header { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+    .m-atestado .modulo-header { background: linear-gradient(135deg, #e67e22, #f39c12); }
+    .m-alarme .modulo-header { background: linear-gradient(135deg, #922b21, #c0392b); }
+    .m-encerrado .modulo-header { background: linear-gradient(135deg, #1a5276, #2980b9); }
+    .m-reset .modulo-header { background: linear-gradient(135deg, #145a32, #1e8449); }
+    .m-rota .modulo-header { background: linear-gradient(135deg, #4a235a, #6c3483); }
+
+    /* TESTES */
+    .testes-lista {
+      background: white; border-radius: 0 0 14px 14px;
+      border: 1px solid var(--borda); border-top: none;
+      overflow: hidden;
+    }
+    .teste {
+      border-bottom: 1px solid var(--borda);
+      padding: 0;
+    }
+    .teste:last-child { border-bottom: none; }
+    .teste-header {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 18px 20px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .teste-header:hover { background: var(--cinza); }
+
+    /* CHECKBOX */
+    .checkbox {
+      width: 22px; height: 22px; min-width: 22px;
+      border: 2px solid var(--borda);
+      border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; margin-top: 1px;
+      font-size: 13px; color: transparent;
+    }
+    .teste.ok .checkbox {
+      background: var(--verde); border-color: var(--verde); color: white;
+    }
+    .teste.falhou .checkbox {
+      background: var(--vermelho); border-color: var(--vermelho); color: white;
+    }
+    .teste.parcial .checkbox {
+      background: var(--laranja); border-color: var(--laranja); color: white;
+    }
+
+    .teste-body { flex: 1; }
+    .teste-titulo {
+      font-size: 14px; font-weight: 700; color: var(--texto); margin-bottom: 4px;
+    }
+    .teste.ok .teste-titulo { color: var(--verde); text-decoration: line-through; opacity: 0.7; }
+    .teste.falhou .teste-titulo { color: var(--vermelho); }
+
+    .teste-msg {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f0f4f8; border-radius: 8px;
+      padding: 6px 12px; font-size: 13px; color: #2d3748;
+      font-family: 'Courier New', monospace; margin-bottom: 6px;
+    }
+    .teste-msg::before { content: '💬'; font-size: 12px; }
+
+    .teste-esperado {
+      font-size: 12px; color: var(--leve); line-height: 1.5;
+    }
+    .teste-esperado strong { color: var(--texto); }
+
+    .status-btns {
+      display: flex; gap: 8px; padding: 0 20px 16px 56px;
+    }
+    .btn-status {
+      font-size: 12px; font-weight: 700; padding: 5px 14px;
+      border-radius: 20px; border: 1.5px solid; cursor: pointer;
+      transition: all 0.15s; background: white;
+    }
+    .btn-ok { border-color: var(--verde); color: var(--verde); }
+    .btn-ok:hover, .teste.ok .btn-ok { background: var(--verde); color: white; }
+    .btn-falhou { border-color: var(--vermelho); color: var(--vermelho); }
+    .btn-falhou:hover, .teste.falhou .btn-falhou { background: var(--vermelho); color: white; }
+    .btn-parcial { border-color: var(--laranja); color: var(--laranja); }
+    .btn-parcial:hover, .teste.parcial .btn-parcial { background: var(--laranja); color: white; }
+
+    .nota-area {
+      padding: 0 20px 16px 56px; display: none;
+    }
+    .nota-area textarea {
+      width: 100%; border: 1.5px solid var(--borda); border-radius: 8px;
+      padding: 10px 14px; font-size: 13px; color: var(--texto);
+      font-family: inherit; resize: vertical; min-height: 60px;
+      background: var(--cinza);
+    }
+    .nota-area textarea:focus { outline: none; border-color: var(--azul-claro); }
+
+    /* LEGENDA */
+    .legenda {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      background: white; border-radius: 12px; padding: 16px 20px;
+      border: 1px solid var(--borda); margin-bottom: 28px; font-size: 13px;
+    }
+    .leg-item { display: flex; align-items: center; gap: 8px; }
+    .leg-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+    /* EXPORTAR */
+    .exportar-btn {
+      width: 100%; padding: 16px;
+      background: var(--azul); color: white;
+      border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      margin-top: 8px; transition: background 0.2s;
+    }
+    .exportar-btn:hover { background: var(--azul-claro); }
+
+    @media(max-width:600px){
+      .modulo-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">QA · Qualidade do Sistema</div>
+  <h1>Testes dos Sistemas REMMED</h1>
+  <p>Marque cada teste conforme realiza no WhatsApp · Nicolas</p>
+</div>
+
+<div class="page">
+
+  <!-- PROGRESSO -->
+  <div class="progress-bar">
+    <h3>Progresso geral dos testes</h3>
+    <div class="bar-track"><div class="bar-fill" id="bar"></div></div>
+    <div class="progress-nums">
+      <span><span id="count-done">0</span> testes concluídos</span>
+      <span id="count-total">de 0 total</span>
+    </div>
+  </div>
+
+  <!-- LEGENDA -->
+  <div class="legenda">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--verde)"></div> Passou</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--vermelho)"></div> Falhou</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--laranja)"></div> Parcial</div>
+    <div class="leg-item" style="color:var(--leve)">Clique no teste para marcar o resultado e adicionar nota</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- MÓDULO 1 — TRIAGEM -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="modulo m-triagem">
+    <div class="modulo-header">
+      <span class="modulo-icon">🩺</span>
+      <div>
+        <div class="modulo-titulo">Triagem Clínica</div>
+        <div class="modulo-sub">7 grupos de sintomas · checklist · classificação de gravidade</div>
+      </div>
+      <div class="modulo-badge">9 testes</div>
+    </div>
+    <div class="testes-lista">
+
+      <div class="teste" data-id="t1">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Grupo 1 — Sintomas respiratórios</div>
+            <div class="teste-msg">Estou com tosse há 3 dias e um pouco de falta de ar</div>
+            <div class="teste-esperado">Esperado: Clara faz checklist respiratório (febre, catarro, dor de garganta...)</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t1','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t1','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t1','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t1"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t2">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Grupo 2 — Sintomas cardíacos</div>
+            <div class="teste-msg">Tô sentindo dor no peito e coração acelerado</div>
+            <div class="teste-esperado">Esperado: Clara identifica grupo cardiovascular, faz checklist cardíaco</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t2','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t2','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t2','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t2"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t3">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Grupo 3 — Sintomas digestivos</div>
+            <div class="teste-msg">Tô com dor de barriga e diarreia desde ontem</div>
+            <div class="teste-esperado">Esperado: checklist digestivo (vômito, febre, sangue nas fezes...)</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t3','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t3','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t3','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t3"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t4">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Grupo 4 — Pressão alta / cardiovascular</div>
+            <div class="teste-msg">Minha pressão tá 17 e tô com dor de cabeça forte</div>
+            <div class="teste-esperado">Esperado: Clara entende "17" como 170 sistólica (notação brasileira), faz checklist cardiovascular</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t4','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t4','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t4','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t4"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t5">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Grupo 5 — Neurológico</div>
+            <div class="teste-msg">Tô com dor de cabeça muito forte e tontura há 2 dias</div>
+            <div class="teste-esperado">Esperado: checklist neurológico (visão turva, fraqueza, confusão...)</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t5','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t5','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t5','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t5"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t6">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Grupo 6 — Dermatológico / alérgico</div>
+            <div class="teste-msg">Apareceu uma mancha vermelha no meu braço e tá coçando muito</div>
+            <div class="teste-esperado">Esperado: Clara identifica grupo dermatológico, pergunta sobre alergia, medicamentos, febre</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t6','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t6','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t6','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t6"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t7">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Grupo 7 — Musculoesquelético (ROTA RÁPIDA)</div>
+            <div class="teste-msg">Tô com dor nas costas</div>
+            <div class="teste-esperado">Esperado: VERIFICAÇÃO DE ROTA RÁPIDA ativa → vai direto para Grupo 7 sem passar pela triagem completa</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t7','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t7','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t7','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t7"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t8">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">MOMENTO 2 — Paciente responde o checklist</div>
+            <div class="teste-msg">[após checklist aparecer] Sim, tenho febre. Não tenho falta de ar. A dor é moderada.</div>
+            <div class="teste-esperado">Esperado: Clara processa as respostas do checklist e classifica como LEVE, MODERADO ou GRAVE</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t8','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t8','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t8','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t8"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="t9">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Classificação GRAVE → orientação de urgência</div>
+            <div class="teste-msg">Tô com falta de ar muito forte, dor no peito e suor frio agora</div>
+            <div class="teste-esperado">Esperado: Clara identifica ALARME, orienta procurar pronto-socorro ou ligar 192 (SAMU), NÃO avança para agendamento</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('t9','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('t9','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('t9','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-t9"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MÓDULO 2 — GUARD-RAIL -->
+  <div class="modulo m-guardail">
+    <div class="modulo-header">
+      <span class="modulo-icon">🛡️</span>
+      <div>
+        <div class="modulo-titulo">Guard-Rail · Confirmações Curtas</div>
+        <div class="modulo-sub">Mensagens curtas de confirmação não devem ser rejeitadas</div>
+      </div>
+      <div class="modulo-badge">4 testes</div>
+    </div>
+    <div class="testes-lista">
+
+      <div class="teste" data-id="g1">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">"Sim" aceito como confirmação</div>
+            <div class="teste-msg">Sim</div>
+            <div class="teste-esperado">Esperado: Clara aceita e avança o fluxo. <strong>NÃO</strong> deve dizer "não entendi" ou pedir para repetir</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('g1','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('g1','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('g1','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-g1"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="g2">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">"Ok" aceito como confirmação</div>
+            <div class="teste-msg">Ok</div>
+            <div class="teste-esperado">Esperado: fluxo avança normalmente</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('g2','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('g2','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('g2','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-g2"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="g3">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">"Pode ser" aceito</div>
+            <div class="teste-msg">Pode ser</div>
+            <div class="teste-esperado">Esperado: Clara trata como confirmação positiva e avança</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('g3','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('g3','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('g3','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-g3"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="g4">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Guard-Rail independente da memória</div>
+            <div class="teste-msg">[segunda sessão] Sim</div>
+            <div class="teste-esperado">Esperado: mesmo que a memória esteja vazia ou antiga, "Sim" é aceito. O Guard-Rail funciona independente do que está na memória</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('g4','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('g4','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('g4','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-g4"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MÓDULO 3 — FAQ -->
+  <div class="modulo m-faq">
+    <div class="modulo-header">
+      <span class="modulo-icon">❓</span>
+      <div>
+        <div class="modulo-titulo">FAQ Automático</div>
+        <div class="modulo-sub">Respostas corretas para dúvidas frequentes · faq_tool.js</div>
+      </div>
+      <div class="modulo-badge">8 testes</div>
+    </div>
+    <div class="testes-lista">
+
+      <div class="teste" data-id="f1">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Valor da consulta</div>
+            <div class="teste-msg">Quanto custa a consulta?</div>
+            <div class="teste-esperado">Esperado: resposta com os valores corretos (R$79,90 clínico geral, R$249 saúde mental e emagrecimento)</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f1','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f1','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f1','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f1"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="f2">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Horário de atendimento</div>
+            <div class="teste-msg">Qual o horário de vocês?</div>
+            <div class="teste-esperado">Esperado: Segunda a sexta 7h–21h · Sábado e domingo 9h–18h</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f2','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f2','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f2','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f2"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="f3">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">CRM do estado — não confundir com FAQ de atestado</div>
+            <div class="teste-msg">Esse atestado tem CRM do RS?</div>
+            <div class="teste-esperado">Esperado: resposta sobre CRM (válido em todo Brasil, link CFM). <strong>NÃO</strong> deve retornar resposta genérica sobre atestado</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f3','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f3','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f3','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f3"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="f4">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Atestado — resposta correta</div>
+            <div class="teste-msg">Vocês fazem atestado?</div>
+            <div class="teste-esperado">Esperado: sim, atestado é emitido pelo médico conforme avaliação. Deve mencionar que não é garantido.</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f4','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f4','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f4','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f4"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="f5">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Receita / medicamento</div>
+            <div class="teste-msg">O médico pode me passar receita?</div>
+            <div class="teste-esperado">Esperado: resposta sobre receita médica (pode ser emitida conforme avaliação)</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f5','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f5','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f5','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f5"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="f6">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Não recebi o documento</div>
+            <div class="teste-msg">Não recebi meu atestado</div>
+            <div class="teste-esperado">Esperado: resposta específica sobre documento não recebido (não a resposta genérica de atestado)</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f6','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f6','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f6','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f6"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="f7">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Posso mandar foto de exame</div>
+            <div class="teste-msg">Posso mandar uma foto do meu exame?</div>
+            <div class="teste-esperado">Esperado: sim, pode enviar durante a consulta</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f7','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f7','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f7','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f7"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="f8">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Dúvida sem resposta no FAQ</div>
+            <div class="teste-msg">Vocês aceitam convênio do Bradesco?</div>
+            <div class="teste-esperado">Esperado: resposta padrão de "não encontrei resposta específica" — sem inventar informação</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('f8','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('f8','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('f8','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-f8"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MÓDULO 4 — RENOVAÇÃO DE RECEITA -->
+  <div class="modulo m-receita">
+    <div class="modulo-header">
+      <span class="modulo-icon">💊</span>
+      <div>
+        <div class="modulo-titulo">Renovação de Receita</div>
+        <div class="modulo-sub">Fluxo de solicitação de renovação de medicamento</div>
+      </div>
+      <div class="modulo-badge">3 testes</div>
+    </div>
+    <div class="testes-lista">
+
+      <div class="teste" data-id="r1">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Solicitação de renovação identificada</div>
+            <div class="teste-msg">Preciso renovar minha receita de losartana</div>
+            <div class="teste-esperado">Esperado: Clara identifica renovação de receita e inicia o fluxo correto (não triagem de sintomas)</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('r1','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('r1','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('r1','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-r1"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="r2">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Coleta dos dados necessários</div>
+            <div class="teste-msg">Quero renovar minha receita</div>
+            <div class="teste-esperado">Esperado: Clara coleta nome do medicamento, dosagem e tempo de uso. Orienta sobre necessidade de consulta.</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('r2','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('r2','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('r2','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-r2"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="r3">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Medicamento controlado — orientação correta</div>
+            <div class="teste-msg">Preciso renovar minha receita de rivotril</div>
+            <div class="teste-esperado">Esperado: Clara orienta que medicamento controlado requer consulta médica presencial ou online para avaliação</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('r3','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('r3','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('r3','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-r3"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MÓDULO 5 — ATESTADO -->
+  <div class="modulo m-atestado">
+    <div class="modulo-header">
+      <span class="modulo-icon">📄</span>
+      <div>
+        <div class="modulo-titulo">Solicitação de Atestado</div>
+        <div class="modulo-sub">Disclaimer antes da triagem · regra de consistência</div>
+      </div>
+      <div class="modulo-badge">3 testes</div>
+    </div>
+    <div class="testes-lista">
+
+      <div class="teste" data-id="a1">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Disclaimer aparece antes da triagem</div>
+            <div class="teste-msg">Quero um atestado médico</div>
+            <div class="teste-esperado">Esperado: Clara informa ANTES de qualquer triagem que atestado depende da avaliação do médico e não é garantido</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('a1','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('a1','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('a1','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-a1"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="a2">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Paciente relata alarme e depois diz que melhorou</div>
+            <div class="teste-msg">[após relatar dor no peito] Ah mas já passou, tô bem agora, pode marcar</div>
+            <div class="teste-esperado">Esperado: <strong>regra de consistência</strong> — Clara NÃO libera a consulta online. Mantém orientação de atendimento presencial pois alarme foi relatado</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('a2','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('a2','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('a2','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-a2"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="a3">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Atestado de acompanhante — recusa correta</div>
+            <div class="teste-msg">Preciso de atestado para acompanhar minha mãe no hospital</div>
+            <div class="teste-esperado">Esperado: Clara informa que não realizamos atestado de acompanhante</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('a3','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('a3','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('a3','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-a3"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MÓDULO 6 — ENCERRADO + REATIVAÇÃO -->
+  <div class="modulo m-encerrado">
+    <div class="modulo-header">
+      <span class="modulo-icon">🔄</span>
+      <div>
+        <div class="modulo-titulo">Encerramento e Reativação</div>
+        <div class="modulo-sub">Setor ENCERRADO · nova mensagem · timeout 4h</div>
+      </div>
+      <div class="modulo-badge">3 testes</div>
+    </div>
+    <div class="testes-lista">
+
+      <div class="teste" data-id="e1">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Atendimento encerra corretamente</div>
+            <div class="teste-msg">[após finalizar triagem completa]</div>
+            <div class="teste-esperado">Esperado: setor vai para ENCERRADO, Clara manda mensagem de encerramento. Não responde mais automaticamente nessa sessão</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('e1','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('e1','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('e1','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-e1"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="e2">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Nova mensagem após 4h reativa o atendimento</div>
+            <div class="teste-msg">[após +4h com setor ENCERRADO] Oi, preciso de ajuda</div>
+            <div class="teste-esperado">Esperado: Clara reinicia o atendimento como novo, setor volta para TRIAGEM_ATIVA</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('e2','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('e2','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('e2','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-e2"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="e3">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">Mensagem antes de 4h não reativa</div>
+            <div class="teste-msg">[após 1h com setor ENCERRADO] Oi</div>
+            <div class="teste-esperado">Esperado: Clara NÃO reinicia a triagem. Pode agradecer ou aguardar sem abrir novo fluxo</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('e3','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('e3','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('e3','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-e3"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MÓDULO 7 — /RESET -->
+  <div class="modulo m-reset">
+    <div class="modulo-header">
+      <span class="modulo-icon">🔁</span>
+      <div>
+        <div class="modulo-titulo">Comando /reset</div>
+        <div class="modulo-sub">Zera memória, reseta setor, resposta confirmada</div>
+      </div>
+      <div class="modulo-badge">3 testes</div>
+    </div>
+    <div class="testes-lista">
+
+      <div class="teste" data-id="rs1">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">/reset responde corretamente</div>
+            <div class="teste-msg">/reset</div>
+            <div class="teste-esperado">Esperado: resposta "🔁 Atendimento reiniciado! Pode começar. 🧡"</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('rs1','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('rs1','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('rs1','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-rs1"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="rs2">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">/reset limpa memória de conversa anterior</div>
+            <div class="teste-msg">/reset → [nova mensagem] Oi</div>
+            <div class="teste-esperado">Esperado: Clara não menciona nada da conversa anterior. Começa do zero como novo atendimento</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('rs2','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('rs2','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('rs2','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-rs2"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+      <div class="teste" data-id="rs3">
+        <div class="teste-header">
+          <div class="checkbox">✓</div>
+          <div class="teste-body">
+            <div class="teste-titulo">/reset reseta setor para TRIAGEM_ATIVA</div>
+            <div class="teste-msg">/reset → Tô com dor de cabeça</div>
+            <div class="teste-esperado">Esperado: triagem inicia normalmente. Setor está em TRIAGEM_ATIVA, não em ENCERRADO</div>
+          </div>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-ok" onclick="marcar('rs3','ok')">✓ Passou</button>
+          <button class="btn-status btn-falhou" onclick="marcar('rs3','falhou')">✗ Falhou</button>
+          <button class="btn-status btn-parcial" onclick="marcar('rs3','parcial')">~ Parcial</button>
+        </div>
+        <div class="nota-area" id="nota-rs3"><textarea placeholder="Anota o que aconteceu de errado..."></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EXPORTAR -->
+  <button class="exportar-btn" onclick="exportar()">📋 Copiar Resumo dos Testes para WhatsApp</button>
+
+</div>
+
+<script>
+  const estados = {};
+
+  function marcar(id, estado) {
+    const el = document.querySelector(`[data-id="${id}"]`);
+    el.className = `teste ${estado}`;
+    estados[id] = estado;
+    const checkbox = el.querySelector('.checkbox');
+    checkbox.textContent = estado === 'ok' ? '✓' : estado === 'falhou' ? '✗' : '~';
+    const nota = document.getElementById(`nota-${id}`);
+    nota.style.display = (estado === 'falhou' || estado === 'parcial') ? 'block' : 'none';
+    atualizar();
+  }
+
+  function atualizar() {
+    const todos = document.querySelectorAll('.teste');
+    const concluidos = Object.values(estados).length;
+    const passaram = Object.values(estados).filter(v => v === 'ok').length;
+    const total = todos.length;
+    document.getElementById('count-done').textContent = concluidos;
+    document.getElementById('count-total').textContent = `de ${total} total`;
+    document.getElementById('bar').style.width = `${(concluidos/total)*100}%`;
+  }
+
+  function exportar() {
+    const todos = document.querySelectorAll('.teste');
+    let texto = '📋 *RESULTADO DOS TESTES REMMED*\n\n';
+    let ok = 0, falhou = 0, parcial = 0, pendente = 0;
+
+    todos.forEach(el => {
+      const id = el.dataset.id;
+      const titulo = el.querySelector('.teste-titulo').textContent;
+      const estado = estados[id];
+      const nota = document.getElementById(`nota-${id}`)?.querySelector('textarea')?.value;
+      if (!estado) { texto += `⬜ ${titulo}\n`; pendente++; }
+      else if (estado === 'ok') { texto += `✅ ${titulo}\n`; ok++; }
+      else if (estado === 'falhou') { texto += `❌ ${titulo}${nota ? ` — ${nota}` : ''}\n`; falhou++; }
+      else if (estado === 'parcial') { texto += `⚠️ ${titulo}${nota ? ` — ${nota}` : ''}\n`; parcial++; }
+    });
+
+    texto += `\n✅ Passaram: ${ok} | ❌ Falharam: ${falhou} | ⚠️ Parcial: ${parcial} | ⬜ Pendente: ${pendente}`;
+
+    navigator.clipboard.writeText(texto).then(() => {
+      alert('✅ Resumo copiado! Cole no WhatsApp para o Nicolas.');
+    }).catch(() => {
+      prompt('Copie o texto abaixo:', texto);
+    });
+  }
+
+  // Inicializar contagem
+  document.getElementById('count-total').textContent = `de ${document.querySelectorAll('.teste').length} total`;
+</script>
+</body>
+</html>
