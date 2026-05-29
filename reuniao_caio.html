@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>REMMED · Reunião Caio</title>
+  <style>
+    :root {
+      --azul: #0f4c81;
+      --azul-claro: #3b9eda;
+      --verde: #00b894;
+      --verde-claro: #00d4aa;
+      --laranja: #f39c12;
+      --roxo: #8e44ad;
+      --cinza: #f4f7fb;
+      --cinza-borda: #e8eef6;
+      --texto: #1a202c;
+      --texto-leve: #4a5568;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--cinza);
+      color: var(--texto);
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #071828, #0f4c81);
+      padding: 48px;
+      text-align: center;
+    }
+    .header-tag {
+      display: inline-block;
+      background: rgba(0,212,170,0.15);
+      border: 1px solid rgba(0,212,170,0.3);
+      color: var(--verde-claro);
+      font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 5px 16px; border-radius: 20px; margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 36px; font-weight: 900; color: white;
+      letter-spacing: -1px; margin-bottom: 8px;
+    }
+    .header p { font-size: 16px; color: rgba(255,255,255,0.6); }
+
+    /* LAYOUT */
+    .page { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+
+    /* SECTION TITLE */
+    .sec-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--azul-claro); margin-bottom: 20px; display: block;
+    }
+
+    /* CARD BASE */
+    .card {
+      background: white; border-radius: 16px; padding: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-borda);
+      margin-bottom: 24px;
+    }
+
+    /* PRODUTOS */
+    .produtos-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 20px;
+      margin-bottom: 24px;
+    }
+    .produto {
+      background: white; border-radius: 16px; padding: 28px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 2px solid var(--cinza-borda);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .produto.p1 { border-top: 4px solid var(--roxo); }
+    .produto.p2 { border-top: 4px solid var(--verde); }
+    .produto.p3 { border-top: 4px solid var(--azul-claro); }
+    .produto-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+    .produto-nome { font-size: 16px; font-weight: 700; color: var(--texto); margin-bottom: 6px; }
+    .produto-valor { font-size: 36px; font-weight: 900; margin-bottom: 4px; }
+    .p1 .produto-valor { color: var(--roxo); }
+    .p2 .produto-valor { color: var(--verde); }
+    .p3 .produto-valor { color: var(--azul-claro); }
+    .produto-detalhe { font-size: 12px; color: var(--texto-leve); }
+    .produto-tag {
+      display: inline-block; margin-top: 12px;
+      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    }
+    .p1 .produto-tag { background: rgba(142,68,173,0.1); color: var(--roxo); }
+    .p2 .produto-tag { background: rgba(0,184,148,0.1); color: var(--verde); }
+    .p3 .produto-tag { background: rgba(59,158,218,0.1); color: var(--azul-claro); }
+
+    /* FLUXO */
+    .fluxo {
+      display: flex; align-items: center; gap: 0;
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-borda);
+      margin-bottom: 24px;
+    }
+    .fluxo-step {
+      flex: 1; padding: 28px 20px; text-align: center;
+      border-right: 1px solid var(--cinza-borda);
+      position: relative;
+    }
+    .fluxo-step:last-child { border-right: none; }
+    .fluxo-step::after {
+      content: '→';
+      position: absolute; right: -10px; top: 50%; transform: translateY(-50%);
+      font-size: 18px; color: var(--cinza-borda); z-index: 2;
+      font-weight: 700;
+    }
+    .fluxo-step:last-child::after { display: none; }
+    .fluxo-icon { font-size: 28px; display: block; margin-bottom: 10px; }
+    .fluxo-label { font-size: 13px; font-weight: 700; color: var(--texto); margin-bottom: 4px; }
+    .fluxo-sub { font-size: 11px; color: var(--texto-leve); line-height: 1.4; }
+
+    /* CANAIS */
+    .canais-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 20px;
+      margin-bottom: 24px;
+    }
+    .canal {
+      background: white; border-radius: 14px; padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-borda);
+    }
+    .canal-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    }
+    .canal-icon { font-size: 24px; }
+    .canal-nome { font-size: 15px; font-weight: 700; }
+    .canal-prioridade {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px; margin-top: 2px;
+    }
+    .pr-1 { background: rgba(231,76,60,0.1); color: #e74c3c; }
+    .pr-2 { background: rgba(243,156,18,0.1); color: var(--laranja); }
+    .pr-3 { background: rgba(0,184,148,0.1); color: var(--verde); }
+    .canal-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .canal-items li {
+      font-size: 13px; color: var(--texto-leve);
+      display: flex; align-items: flex-start; gap: 8px; line-height: 1.4;
+    }
+    .canal-items li::before { content: '→'; color: var(--azul-claro); font-weight: 700; flex-shrink: 0; }
+    .canal-items li strong { color: var(--texto); }
+
+    /* AGENDA */
+    .agenda-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+      margin-bottom: 24px;
+    }
+    .turno {
+      background: white; border-radius: 14px; padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-borda);
+    }
+    .turno-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .turno-hora {
+      background: var(--azul); color: white;
+      font-size: 13px; font-weight: 700;
+      padding: 6px 14px; border-radius: 8px;
+    }
+    .turno-nome { font-size: 14px; font-weight: 600; color: var(--texto-leve); }
+    .slots { display: flex; flex-direction: column; gap: 8px; }
+    .slot {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--cinza); border-radius: 8px; padding: 10px 14px;
+      font-size: 13px;
+    }
+    .slot-hora { font-weight: 700; color: var(--azul); }
+    .slot-tipo { color: var(--texto-leve); }
+    .slot-val { font-weight: 700; }
+    .slot.psiq .slot-val { color: var(--roxo); }
+    .slot.emag .slot-val { color: var(--verde); }
+    .slot.geral .slot-val { color: var(--azul-claro); }
+
+    /* META */
+    .meta-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 16px;
+      margin-bottom: 24px;
+    }
+    .meta-card {
+      background: white; border-radius: 14px; padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border: 1px solid var(--cinza-borda);
+      text-align: center;
+    }
+    .meta-num {
+      font-size: 32px; font-weight: 900; display: block; margin-bottom: 4px;
+    }
+    .meta-label { font-size: 12px; color: var(--texto-leve); line-height: 1.4; }
+    .meta-card.m1 .meta-num { color: var(--roxo); }
+    .meta-card.m2 .meta-num { color: var(--verde); }
+    .meta-card.m3 .meta-num { color: var(--azul); }
+    .meta-card.m4 .meta-num { color: var(--laranja); }
+
+    /* PRÓXIMOS PASSOS */
+    .passos { display: flex; flex-direction: column; gap: 12px; }
+    .passo {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: white; border-radius: 12px; padding: 20px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border: 1px solid var(--cinza-borda);
+    }
+    .passo-num {
+      width: 36px; height: 36px; min-width: 36px;
+      background: var(--azul); color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800;
+    }
+    .passo-body h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .passo-body p { font-size: 13px; color: var(--texto-leve); line-height: 1.5; }
+    .passo-resp {
+      margin-left: auto; font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+      align-self: flex-start;
+    }
+    .resp-caio { background: rgba(243,156,18,0.1); color: var(--laranja); }
+    .resp-nicolas { background: rgba(59,158,218,0.1); color: var(--azul-claro); }
+    .resp-raissa { background: rgba(0,184,148,0.1); color: var(--verde); }
+    .resp-mari { background: rgba(142,68,173,0.1); color: var(--roxo); }
+
+    /* AVISO */
+    .aviso {
+      background: linear-gradient(135deg, rgba(243,156,18,0.08), rgba(243,156,18,0.04));
+      border: 1.5px solid rgba(243,156,18,0.25);
+      border-radius: 14px; padding: 20px 24px;
+      margin-bottom: 24px;
+      font-size: 14px; color: var(--texto-leve); line-height: 1.7;
+    }
+    .aviso strong { color: var(--laranja); }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 32px; color: var(--texto-leve); font-size: 13px;
+    }
+
+    @media(max-width:700px){
+      .produtos-grid, .canais-grid, .agenda-grid, .meta-grid { grid-template-columns: 1fr; }
+      .fluxo { flex-direction: column; }
+      .fluxo-step::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Reunião Estratégica · Hoje</div>
+  <h1>REMMED + Caio — Plano de Tráfego</h1>
+  <p>Produtos, canais, fluxo e metas · Maio 2026</p>
+</div>
+
+<div class="page">
+
+  <!-- PRODUTOS -->
+  <span class="sec-label">Os 3 Produtos</span>
+  <div class="produtos-grid">
+    <div class="produto p1">
+      <span class="produto-icon">🧠</span>
+      <div class="produto-nome">Saúde Mental</div>
+      <div class="produto-valor">R$249</div>
+      <div class="produto-detalhe">Pós em Psiquiatria · Dra. Mari</div>
+      <div class="produto-tag">Alta recorrência</div>
+    </div>
+    <div class="produto p2">
+      <span class="produto-icon">⚖️</span>
+      <div class="produto-nome">Emagrecimento</div>
+      <div class="produto-valor">R$249</div>
+      <div class="produto-detalhe">RQE Medicina da Família · Dra. Mari</div>
+      <div class="produto-tag">Alto ticket</div>
+    </div>
+    <div class="produto p3">
+      <span class="produto-icon">🩺</span>
+      <div class="produto-nome">Clínico Geral</div>
+      <div class="produto-valor">R$79</div>
+      <div class="produto-detalhe">Atestado · Consulta rápida · Volume</div>
+      <div class="produto-tag">Alto volume</div>
+    </div>
+  </div>
+
+  <!-- FLUXO -->
+  <span class="sec-label">Como o Paciente Chega e Paga</span>
+  <div class="fluxo">
+    <div class="fluxo-step">
+      <span class="fluxo-icon">📣</span>
+      <div class="fluxo-label">Anúncio</div>
+      <div class="fluxo-sub">Caio roda campanha no Google ou Instagram</div>
+    </div>
+    <div class="fluxo-step">
+      <span class="fluxo-icon">💬</span>
+      <div class="fluxo-label">WhatsApp</div>
+      <div class="fluxo-sub">Paciente cai direto no WhatsApp da REMMED</div>
+    </div>
+    <div class="fluxo-step">
+      <span class="fluxo-icon">🤖</span>
+      <div class="fluxo-label">Clara triagem</div>
+      <div class="fluxo-sub">IA coleta sintomas e agenda horário disponível</div>
+    </div>
+    <div class="fluxo-step">
+      <span class="fluxo-icon">💳</span>
+      <div class="fluxo-label">Pix confirmado</div>
+      <div class="fluxo-sub">Pagamento gerado automaticamente antes da consulta</div>
+    </div>
+    <div class="fluxo-step">
+      <span class="fluxo-icon">📹</span>
+      <div class="fluxo-label">Consulta</div>
+      <div class="fluxo-sub">Link de vídeo enviado · Dra. Mari atende</div>
+    </div>
+  </div>
+
+  <!-- CANAIS -->
+  <span class="sec-label">Canais de Aquisição — O que o Caio faz</span>
+  <div class="canais-grid">
+
+    <div class="canal">
+      <div class="canal-header">
+        <span class="canal-icon">🔍</span>
+        <div>
+          <div class="canal-nome">Google Search</div>
+          <span class="canal-prioridade pr-1">Prioridade 1</span>
+        </div>
+      </div>
+      <ul class="canal-items">
+        <li><strong>Palavras-chave:</strong> "psiquiatra online", "atestado médico online", "consulta emagrecimento online"</li>
+        <li>Alta intenção de compra — quem pesquisa já quer</li>
+        <li>Menos restrição para saúde que o Meta</li>
+        <li>Custo por clique maior, mas conversão muito melhor</li>
+      </ul>
+    </div>
+
+    <div class="canal">
+      <div class="canal-header">
+        <span class="canal-icon">📸</span>
+        <div>
+          <div class="canal-nome">Instagram / Meta</div>
+          <span class="canal-prioridade pr-2">Prioridade 2</span>
+        </div>
+      </div>
+      <ul class="canal-items">
+        <li>Cuidado com restrições de saúde no Meta — evitar claims de cura ou resultado</li>
+        <li><strong>Angulação segura:</strong> "Consulta médica online · Sem sair de casa"</li>
+        <li>Melhor para clínico geral e atestado</li>
+        <li>Remarketing para quem visitou o WhatsApp</li>
+      </ul>
+    </div>
+
+    <div class="canal">
+      <div class="canal-header">
+        <span class="canal-icon">🎵</span>
+        <div>
+          <div class="canal-nome">TikTok Orgânico</div>
+          <span class="canal-prioridade pr-3">Paralelo</span>
+        </div>
+      </div>
+      <ul class="canal-items">
+        <li>Mari grava vídeos curtos sobre saúde mental e emagrecimento</li>
+        <li>Sem custo — alcance orgânico enorme para médico</li>
+        <li>Sem restrição de anúncio — é conteúdo educativo</li>
+        <li>Constrói autoridade e confiança para converter</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- AVISO IMPORTANTE -->
+  <div class="aviso">
+    ⚠️ <strong>Atenção para o Caio:</strong> Meta e Google restringem anúncios que prometem resultado de saúde ("emagrecer X kg", "tratar depressão"). A angulação correta é sempre de acesso e conveniência: <em>"Consulta médica online · rápida · sem espera · direto no WhatsApp."</em> Isso passa pela moderação e converte bem.
+  </div>
+
+  <!-- AGENDA DA MARI -->
+  <span class="sec-label">Agenda da Dra. Mari — Slots Disponíveis</span>
+  <div class="agenda-grid">
+    <div class="turno">
+      <div class="turno-header">
+        <div class="turno-hora">11h – 12h</div>
+        <div class="turno-nome">Almoço · Horário rápido</div>
+      </div>
+      <div class="slots">
+        <div class="slot geral">
+          <span class="slot-hora">11h00</span>
+          <span class="slot-tipo">Clínico Geral / Atestado</span>
+          <span class="slot-val">R$79</span>
+        </div>
+        <div class="slot geral">
+          <span class="slot-hora">11h30</span>
+          <span class="slot-tipo">Clínico Geral / Atestado</span>
+          <span class="slot-val">R$79</span>
+        </div>
+      </div>
+    </div>
+    <div class="turno">
+      <div class="turno-header">
+        <div class="turno-hora">16h30 – 20h</div>
+        <div class="turno-nome">Tarde · Consultas completas</div>
+      </div>
+      <div class="slots">
+        <div class="slot psiq">
+          <span class="slot-hora">16h30</span>
+          <span class="slot-tipo">Saúde Mental</span>
+          <span class="slot-val">R$249</span>
+        </div>
+        <div class="slot emag">
+          <span class="slot-hora">17h15</span>
+          <span class="slot-tipo">Emagrecimento</span>
+          <span class="slot-val">R$249</span>
+        </div>
+        <div class="slot psiq">
+          <span class="slot-hora">18h00</span>
+          <span class="slot-tipo">Saúde Mental</span>
+          <span class="slot-val">R$249</span>
+        </div>
+        <div class="slot emag">
+          <span class="slot-hora">18h45</span>
+          <span class="slot-tipo">Emagrecimento</span>
+          <span class="slot-val">R$249</span>
+        </div>
+        <div class="slot psiq">
+          <span class="slot-hora">19h30</span>
+          <span class="slot-tipo">Saúde Mental</span>
+          <span class="slot-val">R$249</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- METAS -->
+  <span class="sec-label">Meta do Primeiro Mês</span>
+  <div class="meta-grid">
+    <div class="meta-card m1">
+      <span class="meta-num">20</span>
+      <div class="meta-label">Consultas de saúde mental ou emagrecimento (R$249)</div>
+    </div>
+    <div class="meta-card m2">
+      <span class="meta-num">30</span>
+      <div class="meta-label">Consultas de clínico geral e atestado (R$79)</div>
+    </div>
+    <div class="meta-card m3">
+      <span class="meta-num">R$7.300</span>
+      <div class="meta-label">Receita estimada no mês 1</div>
+    </div>
+    <div class="meta-card m4">
+      <span class="meta-num">Mês 3</span>
+      <div class="meta-label">Meta: agenda da Mari cheia todos os dias</div>
+    </div>
+  </div>
+
+  <!-- PRÓXIMOS PASSOS -->
+  <span class="sec-label">O Que Precisa Acontecer Agora</span>
+  <div class="passos">
+
+    <div class="passo">
+      <div class="passo-num">1</div>
+      <div class="passo-body">
+        <h4>Definir verba inicial de tráfego</h4>
+        <p>Sugestão: R$30–50/dia no Google Search para começar. Testar keywords de saúde mental e atestado primeiro. Escalar o que converter.</p>
+      </div>
+      <div class="passo-resp resp-caio">Caio</div>
+    </div>
+
+    <div class="passo">
+      <div class="passo-num">2</div>
+      <div class="passo-body">
+        <h4>Criar as campanhas no Google Search</h4>
+        <p>Grupos separados: (1) saúde mental/psiquiatria, (2) atestado médico online, (3) emagrecimento online. Landing: direto para o WhatsApp da REMMED.</p>
+      </div>
+      <div class="passo-resp resp-caio">Caio</div>
+    </div>
+
+    <div class="passo">
+      <div class="passo-num">3</div>
+      <div class="passo-body">
+        <h4>Sistema de agenda no WhatsApp</h4>
+        <p>Clara precisa mostrar os horários disponíveis da Mari e bloquear automaticamente após confirmação de Pix. Sem isso o volume vira caos.</p>
+      </div>
+      <div class="passo-resp resp-nicolas">Nicolas</div>
+    </div>
+
+    <div class="passo">
+      <div class="passo-num">4</div>
+      <div class="passo-body">
+        <h4>Fluxo de Pix automático antes da consulta</h4>
+        <p>Pix gerado, paciente paga, confirmação automática + link de vídeo enviado no horário. Integração Asaas ou similar.</p>
+      </div>
+      <div class="passo-resp resp-nicolas">Nicolas</div>
+    </div>
+
+    <div class="passo">
+      <div class="passo-num">5</div>
+      <div class="passo-body">
+        <h4>Mari grava 2 vídeos para TikTok/Instagram</h4>
+        <p>Vídeo 1: saúde mental ("você não precisa sofrer em silêncio"). Vídeo 2: atestado/consulta rápida. Conteúdo educativo, tom de autoridade médica.</p>
+      </div>
+      <div class="passo-resp resp-mari">Mari</div>
+    </div>
+
+    <div class="passo">
+      <div class="passo-num">6</div>
+      <div class="passo-body">
+        <h4>Definir horários fixos da Mari e bloquear na agenda</h4>
+        <p>11h–12h para consultas rápidas. 16h30–20h para saúde mental e emagrecimento. O sistema não pode oferecer horário fora disso.</p>
+      </div>
+      <div class="passo-resp resp-raissa">Raíssa</div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  REMMED Telemedicina · Reunião Caio · Maio 2026 · Uso interno
+</footer>
+
+</body>
+</html>
