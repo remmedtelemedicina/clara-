@@ -89,7 +89,9 @@ const faq = {
 
   tempo_espera: "Após o pagamento, você já pode entrar na plataforma e aguardar o médico 😊 Em horários de menor movimento o atendimento começa em minutos. Em horários de pico pode haver uma pequena fila — você é atendido na ordem de chegada.",
 
-  escolher_medico: "O sistema aloca automaticamente o médico disponível no momento 😊 Não é possível escolher um profissional específico, mas todos têm CRM ativo e experiência em telemedicina."
+  escolher_medico: "O sistema aloca automaticamente o médico disponível no momento 😊 Não é possível escolher um profissional específico, mas todos têm CRM ativo e experiência em telemedicina.",
+
+  especialidades: "Atendemos com médicos clínicos gerais habilitados para telemedicina 🩺\n\nAlém da clínica geral, temos dois serviços especializados:\n🧠 Consulta de saúde mental — opção 3️⃣ — R$ 249,00\n⚖️ Consulta de emagrecimento/hábitos de saúde — opção 6️⃣ — R$ 249,00\n\nPara especialidades como cardiologia, dermatologia, ortopedia, ginecologia e outras, o médico clínico avalia, trata o que for possível por telemedicina e, quando necessário, faz o encaminhamento para o especialista presencial 😊"
 };
 
 // IMPORTANT: More specific entries MUST come before generic ones.
@@ -291,6 +293,21 @@ const mapa = {
     "escolher o médico", "escolher o medico",
     "médico de preferência", "medico de preferencia",
     "mesmo médico", "mesmo medico"
+  ],
+
+  especialidades: [
+    "especialidade", "especialidades", "especialista", "especialistas",
+    "tem especialista", "médico especialista", "medico especialista",
+    "cardiologista", "dermatologista", "ortopedista", "neurologista",
+    "ginecologista", "urologista", "endocrinologista", "reumatologista",
+    "pneumologista", "gastroenterologista", "oftalmologista",
+    "otorrinolaringologista", "otorrino", "nefrologista", "hematologista",
+    "só clínico", "so clinico", "só clínico geral", "apenas clínico",
+    "apenas clinico", "que tipo de médico", "que tipo de medico",
+    "qual especialidade", "quais especialidades", "que especialidades",
+    "atende qual especialidade", "tem psiquiatra", "tem psicólogo",
+    "tem psicologo", "tem cardiologista", "tem dermatologista",
+    "médico especializado", "medico especializado"
   ],
 
   // --- Entradas genéricas / originais ---
