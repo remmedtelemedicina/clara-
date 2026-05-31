@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>REMMED · Melhorias Clara — Maio 2026</title>
+  <style>
+    :root {
+      --azul:#0f4c81;--azul-claro:#3b9eda;--verde:#00b894;--vermelho:#e74c3c;
+      --laranja:#f39c12;--roxo:#8e44ad;--cinza:#f4f7fb;--borda:#e8eef6;
+      --texto:#1a202c;--leve:#4a5568;
+      --raissa:#1e8449;--nicolas:#1a5276;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza);color:var(--texto);}
+    .header{background:linear-gradient(135deg,#071828,#0f4c81);padding:40px 24px;text-align:center;}
+    .header h1{font-size:26px;font-weight:900;color:white;margin-bottom:6px;}
+    .header p{color:rgba(255,255,255,0.65);font-size:14px;}
+    .header-tag{display:inline-block;margin-bottom:16px;background:rgba(0,212,170,0.15);border:1px solid rgba(0,212,170,0.3);color:#00d4aa;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:20px;}
+    .page{max-width:860px;margin:0 auto;padding:32px 16px;}
+
+    /* LEGENDA */
+    .legenda{display:flex;gap:16px;flex-wrap:wrap;background:white;border-radius:12px;padding:16px 20px;border:1px solid var(--borda);margin-bottom:28px;font-size:13px;}
+    .leg{display:flex;align-items:center;gap:8px;font-weight:700;}
+    .leg-dot{width:14px;height:14px;border-radius:4px;}
+
+    /* SEÇÃO */
+    .secao{margin-bottom:32px;}
+    .secao-header{display:flex;align-items:center;gap:12px;padding:18px 24px;border-radius:14px 14px 0 0;color:white;}
+    .secao-header .ico{font-size:26px;}
+    .secao-header h2{font-size:18px;font-weight:900;}
+    .secao-header p{font-size:12px;opacity:.75;margin-top:2px;}
+    .secao-header .badge{margin-left:auto;background:rgba(255,255,255,0.2);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap;}
+    .raissa .secao-header{background:linear-gradient(135deg,#1a6b3c,#27ae60);}
+    .nicolas .secao-header{background:linear-gradient(135deg,#154360,#2980b9);}
+    .secao-body{background:white;border:1px solid var(--borda);border-top:none;border-radius:0 0 14px 14px;overflow:hidden;}
+
+    /* ITEM */
+    .item{border-bottom:1px solid var(--borda);padding:20px 24px;}
+    .item:last-child{border-bottom:none;}
+    .item-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+    .prio{font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap;margin-top:2px;}
+    .prio-critico{background:#fdecea;color:#c0392b;border:1px solid #f5c6c6;}
+    .prio-alta{background:#fff3e0;color:#e65100;border:1px solid #ffcc80;}
+    .prio-media{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;}
+    .item-titulo{font-size:15px;font-weight:800;color:var(--texto);flex:1;}
+    .item-desc{font-size:13px;color:var(--leve);line-height:1.7;margin-bottom:10px;}
+    .item-desc strong{color:var(--texto);}
+
+    /* BLOCO DE PROBLEMA/SOLUÇÃO */
+    .bloco{border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:13px;line-height:1.6;}
+    .bloco-problema{background:#fff5f5;border:1px solid #fecaca;}
+    .bloco-solucao{background:#f0fdf4;border:1px solid #bbf7d0;}
+    .bloco-tecnico{background:#eff6ff;border:1px solid #bfdbfe;}
+    .bloco-prompt{background:#faf5ff;border:1px solid #e9d5ff;}
+    .bloco label{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
+    .bloco-problema label{color:#dc2626;}
+    .bloco-solucao label{color:#16a34a;}
+    .bloco-tecnico label{color:#2563eb;}
+    .bloco-prompt label{color:#7c3aed;}
+    .bloco code{display:block;background:rgba(0,0,0,0.06);border-radius:6px;padding:10px 12px;font-family:'Courier New',monospace;font-size:12px;margin-top:8px;white-space:pre-wrap;}
+
+    /* STATUS CHECKBOX */
+    .item-footer{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--borda);}
+    .chk{display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;font-weight:600;}
+    .chk input{width:16px;height:16px;cursor:pointer;}
+    .status-label{margin-left:auto;font-size:11px;color:var(--leve);}
+
+    /* SUMÁRIO */
+    .sumario{background:white;border:1px solid var(--borda);border-radius:12px;padding:20px 24px;margin-bottom:28px;}
+    .sumario h3{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--texto);}
+    .sumario-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .sum-box{border-radius:10px;padding:14px 16px;}
+    .sum-raissa{background:#f0fdf4;border:1px solid #bbf7d0;}
+    .sum-nicolas{background:#eff6ff;border:1px solid #bfdbfe;}
+    .sum-box h4{font-size:12px;font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+    .sum-raissa h4{color:#15803d;}
+    .sum-nicolas h4{color:#1d4ed8;}
+    .sum-box ul{list-style:none;font-size:12px;color:var(--leve);line-height:2;}
+    .sum-box li::before{content:'→ ';}
+
+    @media(max-width:600px){.sumario-grid{grid-template-columns:1fr;}.secao-header .badge{display:none;}}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">📋 Documento de Melhorias · Clara</div>
+  <h1>Melhorias Clara — Maio / Junho 2026</h1>
+  <p>Baseado nas conversas reais do fim de semana · Gerado em 31/05/2026</p>
+</div>
+
+<div class="page">
+
+  <div class="legenda">
+    <div class="leg"><div class="leg-dot" style="background:#27ae60"></div> Raíssa — altera texto/prompt no n8n</div>
+    <div class="leg"><div class="leg-dot" style="background:#2980b9"></div> Nicolas — altera nó/lógica/workflow no n8n</div>
+    <div class="leg"><div class="leg-dot" style="background:#c0392b"></div> Crítico</div>
+    <div class="leg"><div class="leg-dot" style="background:#e65100"></div> Alta prioridade</div>
+    <div class="leg"><div class="leg-dot" style="background:#2e7d32"></div> Média prioridade</div>
+  </div>
+
+  <div class="sumario">
+    <h3>Resumo do que precisa ser feito</h3>
+    <div class="sumario-grid">
+      <div class="sum-box sum-raissa">
+        <h4>✍️ Raíssa — Prompts & Textos</h4>
+        <ul>
+          <li>Data explícita quando não há horário hoje</li>
+          <li>Regra de renovação por tipo de medicamento</li>
+          <li>Follow-up: não disparar após atend. recusado</li>
+          <li>FAQ de especialidades (já feito no faq_tool.js)</li>
+        </ul>
+      </div>
+      <div class="sum-box sum-nicolas">
+        <h4>⚙️ Nicolas — n8n / Técnico</h4>
+        <ul>
+          <li>IA responde após handoff → bloquear por setor</li>
+          <li>Mensagens duplicadas → debounce de 2–3 seg</li>
+          <li>Link de pagamento antigo após intervenção humana</li>
+          <li>Variável motivo_encerramento no follow-up</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SEÇÃO RAÍSSA -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="secao raissa">
+    <div class="secao-header">
+      <span class="ico">✍️</span>
+      <div>
+        <h2>Para Raíssa — Alterações de Prompt / Texto</h2>
+        <p>Tudo aqui é editado diretamente no texto do agente dentro do n8n</p>
+      </div>
+      <div class="badge">4 itens</div>
+    </div>
+    <div class="secao-body">
+
+      <!-- R1 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">R1 — Clara afirma que horários do dia seguinte são "para hoje"</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu:</strong> paciente pediu horário para 31/05. Não havia vagas. Clara mostrou horários do 01/06 e quando a paciente disse "Quero hoje", Clara respondeu <em>"Claro, todos esses horários que te enviei são para hoje 😊"</em> — o que era falso. A paciente confirmou achando que era 31/05 e só percebeu o erro na tela de confirmação.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Problema na conversa</label>
+          Paciente: "Quero hoje"<br>
+          Clara: <strong>"Claro, todos esses horários que te enviei são para hoje 😊"</strong> ← ERRADO (eram do dia seguinte)
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Texto para adicionar no prompt (agente de agendamento)</label>
+          <code>REGRA DE DATA NOS HORÁRIOS:
+Quando não houver horários disponíveis para o dia atual e você
+apresentar horários do próximo dia disponível, SEMPRE deixe a data
+explícita e nunca confirme que são "para hoje" se não forem.
+
+Formato correto quando não há vagas hoje:
+"Não temos mais horários disponíveis para hoje (DD/MM).
+Os próximos horários são para amanhã, DD/MM/AAAA:"
+
+Se o paciente disser "quero hoje" e não houver mais vagas:
+"Infelizmente não temos mais horários para hoje (DD/MM).
+Os horários que enviei são para amanhã (DD/MM). Posso agendar
+para amanhã ou prefere falar com a equipe?"
+
+NUNCA diga "esses horários são para hoje" se forem para outro dia.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <span class="status-label">Editar no prompt do agente de agendamento</span>
+        </div>
+      </div>
+
+      <!-- R2 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">R2 — Renovação de ansiedade: perguntar o medicamento antes de sugerir R$249</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu:</strong> paciente disse "Ansiedade uso contínuo". Clara foi direto para "consulta de saúde mental R$249". Mas nem toda medicação de ansiedade precisa de psiquiatra — depende do remédio. A equipe teve que intervir manualmente para oferecer a renovação simples (R$79,90).
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Problema</label>
+          Paciente mencionou ansiedade → Clara foi direto para R$249 sem saber o medicamento → pode afastar paciente que só precisava de R$79,90
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Texto para adicionar no prompt de Renovação</label>
+          <code>RENOVAÇÃO PARA ANSIEDADE / SAÚDE MENTAL:
+Quando o paciente mencionar ansiedade, depressão ou saúde mental
+sem informar o medicamento, SEMPRE perguntar primeiro:
+"Qual o nome do medicamento que você usa?"
+
+Após identificar o medicamento, seguir a lógica abaixo:
+
+🔴 NÃO PODE RENOVAR (orientar psiquiatra presencial):
+- Benzodiazepínicos → receita azul B1
+  (clonazepam, alprazolam, diazepam, bromazepam, lorazepam)
+- Psicoestimulantes → receita amarela
+  (metilfenidato/Ritalina, lisdexanfetamina/Venvanse)
+
+🟡 DEPENDE (verificar se tem receita anterior ≤ 6 meses):
+- SSRI/SNRI: sertralina, escitalopram, fluoxetina, venlafaxina,
+  paroxetina, duloxetina
+  → COM receita ≤6 meses: renovar R$79,90
+  → SEM receita anterior: sugerir consulta saúde mental R$249
+
+✅ PODE RENOVAR normalmente (R$79,90):
+- Ansiolíticos não-benzo: buspirona, propranolol, hidroxizina
+
+NUNCA sugerir R$249 sem antes saber o nome do medicamento.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <span class="status-label">Editar no prompt do agente de Renovação</span>
+        </div>
+      </div>
+
+      <!-- R3 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">R3 — Follow-up proativo: não disparar após atendimento recusado ou encerrado</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu:</strong> em algumas conversas, Clara negou o atendimento (mandou para UPA, recusou por urgência) ou o paciente encerrou. Mesmo assim, o follow-up automático disparou depois perguntando se a pessoa precisava de consulta — situação constrangedora e fora de contexto.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Situações onde o follow-up NÃO deve disparar</label>
+          ❌ Clara mandou o paciente para UPA/SAMU (bloqueio de segurança)<br>
+          ❌ Atendimento foi recusado por urgência ou situação inadequada<br>
+          ❌ Paciente encerrou voluntariamente ("obrigado, resolvi em outro lugar")<br>
+          ❌ Equipe humana assumiu a conversa<br>
+          ❌ Pagamento já foi confirmado<br><br>
+          ✅ Follow-up DEVE disparar apenas quando:<br>
+          → Paciente abandonou no meio do pagamento<br>
+          → Paciente começou o cadastro mas não finalizou<br>
+          → Paciente iniciou triagem mas parou de responder
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Instrução para o prompt (Clara Triagem / Roteamento)</label>
+          <code>CONTROLE DE FOLLOW-UP:
+Ao encerrar qualquer atendimento, defina internamente o
+motivo_encerramento conforme abaixo. O sistema de follow-up
+usa esse valor para decidir se dispara ou não.
+
+Valores possíveis:
+- "pagamento_pendente"     → follow-up DEVE disparar
+- "cadastro_incompleto"   → follow-up DEVE disparar
+- "abandonou_triagem"     → follow-up DEVE disparar
+- "bloqueado_alarme"      → NÃO disparar (foi para UPA)
+- "atendimento_recusado"  → NÃO disparar
+- "encerrado_paciente"    → NÃO disparar
+- "pagamento_confirmado"  → NÃO disparar
+- "equipe_assumiu"        → NÃO disparar</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <span class="status-label">Prompt + Nicolas implementa a lógica no nó de follow-up</span>
+        </div>
+      </div>
+
+      <!-- R4 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-media">🟢 Média</span>
+          <div class="item-titulo">R4 — FAQ de especialidades (já feito no faq_tool.js)</div>
+        </div>
+        <div class="item-desc">
+          Identificado que quando pacientes perguntavam sobre "cardiologista", "dermatologista" ou "quais especialidades têm", o FAQ não tinha resposta mapeada e retornava mensagem genérica. A entrada foi adicionada ao <code>faq_tool.js</code> com ~30 palavras-chave.
+        </div>
+        <div class="bloco bloco-solucao">
+          <label>✅ Já corrigido no faq_tool.js</label>
+          Resposta adicionada: informa que o atendimento é por clínico geral + saúde mental (opção 3) + emagrecimento (opção 6). Para outras especialidades, o clínico avalia e encaminha quando necessário.<br><br>
+          <strong>Ainda pendente:</strong> adicionar esse mesmo contexto nos prompts da Clara Triagem e Clara Roteamento, para que o agente saiba responder mesmo quando a pergunta aparecer no meio de um fluxo ativo.
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Texto para adicionar nos prompts de Triagem e Roteamento</label>
+          <code>ESPECIALIDADES DISPONÍVEIS:
+A REMMED atende exclusivamente com médicos clínicos gerais.
+Além da clínica geral (opção 1), há dois serviços especializados:
+- Saúde mental com pós em psiquiatria (opção 3) — R$ 249,00
+- Emagrecimento / hábitos de saúde (opção 6) — R$ 249,00
+
+Não temos cardiologista, dermatologista, ginecologista, neurologista
+ou outros especialistas disponíveis diretamente.
+Quando necessário, o médico clínico faz encaminhamento presencial.
+
+Se o paciente perguntar sobre especialidade específica:
+Responder com clareza que não temos esse especialista diretamente,
+mas o clínico geral pode avaliar e encaminhar se necessário.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> faq_tool.js ✅ feito</label>
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Prompt Triagem</label>
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Prompt Roteamento</label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SEÇÃO NICOLAS -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="secao nicolas">
+    <div class="secao-header">
+      <span class="ico">⚙️</span>
+      <div>
+        <h2>Para Nicolas — Alterações Técnicas no n8n</h2>
+        <p>Nós, variáveis, lógica de workflow — não envolve texto de prompt</p>
+      </div>
+      <div class="badge">4 itens</div>
+    </div>
+    <div class="secao-body">
+
+      <!-- N1 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">N1 — IA continua respondendo após handoff confirmado para humano</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu:</strong> paciente pediu "Falar com atendente". Clara confirmou a transferência. Mas quando o paciente enviou a próxima mensagem, a IA voltou a responder normalmente — como se o handoff não tivesse acontecido. A conversa ficou presa entre IA e humano ao mesmo tempo.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do bug</label>
+          Paciente: "Falar com atendente"<br>
+          Clara: "Você será encaminhado para um atendente humano agora ✅"<br>
+          Paciente: "Sim" (confirmou)<br>
+          Clara: <strong>"Você já está falando comigo, que sou a atendente virtual..." ❌</strong><br>
+          → IA não parou de responder após o handoff
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica — Nicolas</label>
+          <code>1. Quando Clara confirma o handoff para humano:
+   → Setar variável: setor = "AGUARDANDO_HUMANO"
+
+2. No início do nó principal da IA, adicionar condição:
+   SE setor = "AGUARDANDO_HUMANO"
+     → NÃO processar a mensagem com o agente IA
+     → Pode retornar apenas: "Aguarde, um atendente já foi acionado 🧡"
+     → OU simplesmente não responder (silêncio)
+
+3. Quando o humano liberar a conversa de volta para a IA:
+   → Setar setor = "MENU" (ou o estado inicial)
+   → Pode ser feito com um comando interno tipo /liberar no painel
+
+Objetivo: a IA só processa mensagens se o setor NÃO for
+"AGUARDANDO_HUMANO".</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <span class="status-label">Adicionar condição no nó principal de entrada da IA</span>
+        </div>
+      </div>
+
+      <!-- N2 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">N2 — Mensagens duplicadas: paciente envia 2 msgs rápidas → Clara responde 2 vezes</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que acontece:</strong> quando o paciente envia duas mensagens em sequência rápida (ex: "Oi" + "queria saber sobre consulta"), a Evolution API dispara dois webhooks separados para o n8n. O n8n processa cada um de forma independente e a IA responde duas vezes — duas mensagens da Clara chegam ao paciente quase ao mesmo tempo. Acontece também quando o paciente clica no link do site e envia uma mensagem junto com o texto automático do botão.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Exemplos onde acontece</label>
+          ① Paciente: "Oi" [envia] + "tudo bem, queria saber sobre consulta" [envia logo depois]<br>
+          → Clara responde duas vezes (uma para cada mensagem)<br><br>
+          ② Paciente clica no botão do site → WhatsApp abre com texto automático<br>
+          → Chega duas mensagens quase simultâneas → duas respostas<br><br>
+          ③ Paciente pede equipe + manda outra mensagem logo em seguida<br>
+          → Duas respostas da Clara ao mesmo tempo
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica — Nicolas (debounce / message aggregation)</label>
+          <code>Opção A — Debounce simples (recomendada):
+Antes do nó principal da IA, adicionar um nó de "Wait" ou
+verificação de tempo:
+
+1. Quando chega uma mensagem, registrar o timestamp no Supabase
+   (ou variável de contexto) como "ultima_mensagem_recebida"
+
+2. Aguardar 2-3 segundos antes de processar
+
+3. Antes de chamar o agente IA, verificar:
+   SE chegou outra mensagem do mesmo número nos últimos 3 seg:
+     → Ignorar a mensagem anterior (processar só a mais recente)
+     → OU concatenar as mensagens e processar uma vez só
+
+Opção B — Flag de processamento:
+1. Ao receber mensagem, setar: processando = true
+2. Se chegar nova mensagem enquanto processando = true:
+   → Guardar na fila, processar após a primeira terminar
+3. Ao finalizar resposta: processando = false, processar fila
+
+Opção C — Janela de agregação (mais sofisticada):
+Aguardar até 3 segundos após a primeira mensagem.
+Se chegarem mais mensagens nesse período, juntar tudo numa string
+e processar uma única vez com o contexto completo.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <span class="status-label">Implementar debounce antes do nó da IA no webhook de entrada</span>
+        </div>
+      </div>
+
+      <!-- N3 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N3 — Link de pagamento antigo disparado depois que a equipe gerou cobrança manual</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu:</strong> a equipe assumiu manualmente, gerou um link de Pix novo. Depois disso, o sistema de follow-up automático da Clara disparou o link antigo do Asaas. O paciente recebeu dois links de cobrança para a mesma consulta — confuso e arriscado.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do problema</label>
+          Equipe gera Pix manual → envia link novo para paciente<br>
+          Follow-up automático dispara → envia link Asaas antigo ← ❌<br>
+          Paciente recebe 2 cobranças diferentes para a mesma consulta
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica — Nicolas</label>
+          <code>1. Quando a equipe intervém e gera cobrança manual:
+   → Setar variável: pagamento_status = "manual_gerado"
+   E/OU: equipe_assumiu = true
+
+2. No nó de follow-up de pagamento, adicionar condição:
+   SE pagamento_status = "manual_gerado"
+   OU equipe_assumiu = true
+   OU pagamento_status = "confirmado"
+     → NÃO disparar o follow-up automático de cobrança
+
+3. Forma prática: criar um comando interno que a equipe usa
+   quando assume a conversa, ex: enviar "/equipe" no painel
+   interno → isso seta automaticamente equipe_assumiu = true
+   e suprime os automações.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <span class="status-label">Adicionar condição no nó de follow-up de pagamento</span>
+        </div>
+      </div>
+
+      <!-- N4 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N4 — Variável motivo_encerramento para controlar follow-up</div>
+        </div>
+        <div class="item-desc">
+          Relacionado ao R3 (Raíssa define os valores no prompt). Nicolas precisa implementar a lógica no nó de follow-up para ler essa variável antes de disparar. Esta tarefa depende do R3 estar feito primeiro.
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica — Nicolas</label>
+          <code>1. Garantir que a variável "motivo_encerramento" seja salva
+   no Supabase (tabela de sessões/contexto) cada vez que
+   um atendimento é encerrado pela IA.
+
+2. No nó que dispara o follow-up automático:
+   Buscar o motivo_encerramento do número no Supabase.
+
+   Condição para DISPARAR follow-up:
+   motivo_encerramento IN (
+     "pagamento_pendente",
+     "cadastro_incompleto",
+     "abandonou_triagem"
+   )
+
+   Condição para NÃO DISPARAR:
+   motivo_encerramento IN (
+     "bloqueado_alarme",
+     "atendimento_recusado",
+     "encerrado_paciente",
+     "pagamento_confirmado",
+     "equipe_assumiu"
+   )
+   OU motivo_encerramento IS NULL (nunca atingiu o agendamento)
+
+3. Adicionar campo "motivo_encerramento" na tabela de sessões
+   se ainda não existir.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <span class="status-label">Depende do R3 estar feito · Implementar no nó de follow-up + tabela Supabase</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div style="background:white;border:1px solid var(--borda);border-radius:12px;padding:18px 22px;font-size:13px;color:var(--leve);line-height:1.7;margin-top:4px;">
+    <strong style="color:var(--texto)">Ordem sugerida de execução:</strong><br>
+    🔴 <strong>N2 primeiro</strong> (mensagens duplicadas — afeta toda interação)<br>
+    🔴 <strong>N1 segundo</strong> (IA responde após handoff — confunde paciente e equipe)<br>
+    🟠 <strong>R1 terceiro</strong> (data errada — causa agendamentos no dia errado)<br>
+    🟠 <strong>R2 quarto</strong> (renovação ansiedade — perda de conversão)<br>
+    🟠 <strong>N3 + N4 + R3</strong> em conjunto (follow-up e flag equipe — podem ser feitos juntos)<br>
+    🟢 <strong>R4 último</strong> (especialidades — já feito no faq_tool, só falta adicionar nos prompts)
+  </div>
+
+</div>
+
+<script>
+// Salva estado dos checkboxes no localStorage
+document.querySelectorAll('input[type=checkbox]').forEach((chk, i) => {
+  const key = 'mel_' + i;
+  if (localStorage.getItem(key) === '1') {
+    chk.checked = true;
+    chk.parentElement.style.opacity = '.4';
+  }
+  chk.addEventListener('change', () => {
+    localStorage.setItem(key, chk.checked ? '1' : '0');
+  });
+});
+</script>
+</body>
+</html>
