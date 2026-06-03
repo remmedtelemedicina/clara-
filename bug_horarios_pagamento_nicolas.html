@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>REMMED · Bug — Horários e Link de Pagamento Não Enviados</title>
+  <style>
+    :root {
+      --azul:#0f4c81;--azul-claro:#3b9eda;--verde:#00b894;--vermelho:#e74c3c;
+      --laranja:#f39c12;--roxo:#8e44ad;--cinza:#f4f7fb;--borda:#e8eef6;
+      --texto:#1a202c;--leve:#4a5568;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza);color:var(--texto);}
+    .header{background:linear-gradient(135deg,#071828,#0f4c81);padding:40px 24px;text-align:center;}
+    .header h1{font-size:26px;font-weight:900;color:white;margin-bottom:6px;}
+    .header p{color:rgba(255,255,255,0.65);font-size:14px;}
+    .header-tag{display:inline-block;margin-bottom:16px;background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.4);color:#ff8a80;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:20px;}
+    .page{max-width:860px;margin:0 auto;padding:32px 16px;}
+
+    .alerta-critico{background:#fdecea;border:2px solid #e74c3c;border-radius:14px;padding:20px 24px;margin-bottom:28px;}
+    .alerta-critico h3{font-size:15px;font-weight:900;color:#c0392b;margin-bottom:8px;}
+    .alerta-critico p{font-size:13px;color:#7b241c;line-height:1.7;}
+
+    .secao{margin-bottom:32px;}
+    .secao-header{display:flex;align-items:center;gap:12px;padding:18px 24px;border-radius:14px 14px 0 0;color:white;}
+    .secao-header .ico{font-size:26px;}
+    .secao-header h2{font-size:18px;font-weight:900;}
+    .secao-header p{font-size:12px;opacity:.75;margin-top:2px;}
+    .secao-body{background:white;border:1px solid var(--borda);border-top:none;border-radius:0 0 14px 14px;overflow:hidden;}
+
+    .bg-vermelho .secao-header{background:linear-gradient(135deg,#922b21,#e74c3c);}
+    .bg-azul .secao-header{background:linear-gradient(135deg,#154360,#2980b9);}
+    .bg-verde .secao-header{background:linear-gradient(135deg,#1a6b3c,#27ae60);}
+    .bg-roxo .secao-header{background:linear-gradient(135deg,#4a235a,#8e44ad);}
+
+    .item{border-bottom:1px solid var(--borda);padding:20px 24px;}
+    .item:last-child{border-bottom:none;}
+    .item-titulo{font-size:15px;font-weight:800;color:var(--texto);margin-bottom:10px;}
+    .item-desc{font-size:13px;color:var(--leve);line-height:1.7;margin-bottom:10px;}
+    .item-desc strong{color:var(--texto);}
+
+    .bloco{border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:13px;line-height:1.6;}
+    .bloco-problema{background:#fff5f5;border:1px solid #fecaca;}
+    .bloco-solucao{background:#f0fdf4;border:1px solid #bbf7d0;}
+    .bloco-tecnico{background:#eff6ff;border:1px solid #bfdbfe;}
+    .bloco-prompt{background:#faf5ff;border:1px solid #e9d5ff;}
+    .bloco-aviso{background:#fffbeb;border:1px solid #fde68a;}
+    .bloco label{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+    .bloco-problema label{color:#dc2626;}
+    .bloco-solucao label{color:#16a34a;}
+    .bloco-tecnico label{color:#2563eb;}
+    .bloco-prompt label{color:#7c3aed;}
+    .bloco-aviso label{color:#92400e;}
+    .bloco code{display:block;background:rgba(0,0,0,0.06);border-radius:6px;padding:10px 12px;font-family:'Courier New',monospace;font-size:12px;margin-top:8px;white-space:pre-wrap;word-break:break-all;}
+
+    .fluxo{background:#1e2a3a;border-radius:10px;padding:16px 20px;margin:10px 0;font-family:'Courier New',monospace;font-size:12px;color:#e2e8f0;line-height:2;}
+    .fluxo .ok{color:#68d391;}
+    .fluxo .err{color:#fc8181;}
+    .fluxo .warn{color:#fbd38d;}
+    .fluxo .node{color:#90cdf4;font-weight:700;}
+    .fluxo .comment{color:#718096;font-style:italic;}
+
+    .checklist{list-style:none;padding:0;}
+    .checklist li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--borda);font-size:13px;line-height:1.5;}
+    .checklist li:last-child{border-bottom:none;}
+    .checklist .num{background:#2980b9;color:white;font-size:11px;font-weight:900;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+    .checklist .num.verde{background:#27ae60;}
+    .checklist .num.vermelho{background:#e74c3c;}
+    .checklist .prio-badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px;white-space:nowrap;}
+    .prio-critico{background:#fdecea;color:#c0392b;border:1px solid #f5c6c6;}
+    .prio-alta{background:#fff3e0;color:#e65100;border:1px solid #ffcc80;}
+    .prio-media{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;}
+
+    .tabela{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+    .tabela th{background:#f4f7fb;padding:10px 14px;text-align:left;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--leve);}
+    .tabela td{padding:10px 14px;border-top:1px solid var(--borda);}
+    .tabela tr:hover td{background:#f9fbff;}
+    .tag-sim{background:#d4edda;color:#155724;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+    .tag-nao{background:#f8d7da;color:#721c24;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+
+    .footer{text-align:center;padding:32px 16px;color:var(--leve);font-size:12px;}
+    .footer strong{color:var(--texto);}
+
+    .separador{border:none;border-top:2px dashed var(--borda);margin:28px 0;}
+
+    @media(max-width:600px){.fluxo{font-size:11px;}}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">🔴 Bug Crítico — Análise Técnica</div>
+  <h1>Horários e Link de Pagamento Não Chegam ao Paciente</h1>
+  <p>REMMED Telemedicina · Clara Multi-Agent · Junho 2026</p>
+</div>
+
+<div class="page">
+
+  <!-- ALERTA CRÍTICO -->
+  <div class="alerta-critico">
+    <h3>🚨 Impacto direto no faturamento</h3>
+    <p>Toda vez que a Clara promete os horários ou o link de pagamento e vai ao silêncio, <strong>a consulta não é agendada e a receita é perdida</strong>. Esse bug foi identificado em pelo menos 3 conversas reais de pacientes (conversas 1, 2 e 7 da análise de junho/2026) e possivelmente afeta muitos outros casos não registrados.</p>
+  </div>
+
+  <!-- SEÇÃO 1: O PROBLEMA SIMPLES -->
+  <div class="secao bg-vermelho">
+    <div class="secao-header">
+      <div class="ico">🔍</div>
+      <div>
+        <h2>O Problema — Explicação Simples</h2>
+        <p>Para Raíssa entender e explicar pro Nicolas</p>
+      </div>
+    </div>
+    <div class="secao-body">
+
+      <div class="item">
+        <div class="item-titulo">O que acontece na prática</div>
+        <div class="item-desc">
+          A Clara <strong>acorda apenas quando o paciente manda uma mensagem</strong>. Ela roda, faz uma coisa, manda uma resposta, e volta a dormir — esperando a próxima mensagem do paciente.<br><br>
+          O problema: quando ela manda uma mensagem do tipo <em>"Um momento, vou buscar os horários…"</em> ou <em>"Seu pagamento já foi gerado"</em>, isso é a resposta final do turno. Ela vai dormir. <strong>Os horários ou o link deveriam vir em seguida — mas nada acorda a Clara de novo</strong>, porque só o paciente pode fazer isso. E o paciente está esperando o link. <strong>Resultado: silêncio.</strong>
+        </div>
+
+        <div class="bloco bloco-problema">
+          <label>Sequência do bug — horários</label>
+          1. Paciente confirma o agendamento<br>
+          2. Clara diz: <strong>"Um momento, vou buscar os horários disponíveis..."</strong><br>
+          3. Clara vai dormir ← <strong>isso é o fim do turno</strong><br>
+          4. Horários nunca chegam<br>
+          5. Paciente espera em silêncio
+        </div>
+
+        <div class="bloco bloco-problema">
+          <label>Sequência do bug — link de pagamento</label>
+          1. Paciente escolhe PIX pela segunda vez<br>
+          2. Clara diz: <strong>"Seu pagamento via PIX já foi gerado e seu atendimento está finalizado 😊"</strong><br>
+          3. Clara vai dormir — sem ter enviado o link<br>
+          4. Paciente recebe mensagem de "sucesso" mas não sabe como pagar<br>
+          5. Consulta nunca acontece
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-titulo">Por que a Clara faz isso?</div>
+        <div class="item-desc">
+          O prompt não está proibindo mensagens de promessa. A Clara foi "treinada" (pelo prompt) a comunicar o que vai fazer — o que é educado em linguagem normal, mas <strong>tecnicamente impossível no sistema atual</strong>, porque ela não tem como agir depois de mandar a mensagem sem que o paciente envie algo primeiro.
+        </div>
+        <div class="bloco bloco-aviso">
+          <label>Analogia</label>
+          Imagina que você contrata um funcionário que só pode trabalhar quando você fala com ele. Ele responde: <em>"Já vou buscar os horários!"</em> — e aí fica parado esperando você falar de novo. Você está esperando ele trazer os horários. Impasse.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2: DIAGNÓSTICO TÉCNICO -->
+  <div class="secao bg-azul">
+    <div class="secao-header">
+      <div class="ico">⚙️</div>
+      <div>
+        <h2>Diagnóstico Técnico — Para o Nicolas</h2>
+        <p>Baseado na análise do arquivo Fluxo_Mult_Agent_Clara_12.json</p>
+      </div>
+    </div>
+    <div class="secao-body">
+
+      <div class="item">
+        <div class="item-titulo">Arquitetura: modelo de 1 turno por mensagem</div>
+        <div class="item-desc">
+          O workflow inteiro é disparado exclusivamente pelo <strong>Webhook EVO</strong> (nova mensagem WhatsApp). Não existe loop interno, auto-trigger ou timer. Cada chegada de mensagem = 1 execução do agente = 1 resposta = fim.
+        </div>
+        <div class="fluxo">
+          <span class="comment"># Caminho completo (fluxo antigo — AGENDA_CONSULTA)</span><br>
+          <span class="node">Webhook EVO</span> → Entrada de Contato → ... → Get a row → Switch3<br>
+          → <span class="node">AGENDA_CONSULTA</span> <span class="comment">(agente roda aqui)</span><br>
+          → <span class="node">mensagem_paciente</span> <span class="comment">(Set: extrai $json.output)</span><br>
+          → <span class="node">If</span> <span class="comment">(output == "ROTEAR"?)</span><br>
+          &nbsp;&nbsp;└─ FALSE → <span class="node">Switch2</span> → <span class="node ok">Enviar texto1</span> ✅ paciente recebe<br>
+          &nbsp;&nbsp;└─ TRUE → <span class="node">Espera gerente Geral</span> <span class="comment">(wait node — pausa indefinida)</span><br>
+          <br>
+          <span class="comment"># O agente executa UMA vez e PARA. Não há re-trigger automático.</span>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-titulo">Por que a mensagem de promessa quebra o fluxo</div>
+        <div class="item-desc">
+          Quando o agente produz um output como <em>"Vou te mostrar os horários..."</em>:<br><br>
+          1. <code>$json.output</code> = "Vou te mostrar os horários..."<br>
+          2. O nó <strong>If</strong> avalia: é "ROTEAR"? → NÃO<br>
+          3. <strong>Switch2</strong> avalia: contém "equipe"? → NÃO<br>
+          4. <strong>Enviar texto1</strong> envia a promessa ao WhatsApp<br>
+          5. <strong>Execução encerra</strong> — o workflow para completamente<br>
+          6. A Clara volta a rodar só quando o paciente mandar outra mensagem<br>
+          7. O paciente está esperando os horários — não manda nada — <strong>silêncio infinito</strong>
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Nós envolvidos (fluxo antigo)</label>
+          <strong>AGENDA_CONSULTA</strong> — agente LangChain com tools: listar-profissionais, listar-horarios, supabase_*, atualizar_setor, faq_remmed<br><br>
+          <strong>GERAR_PAGAMENTO</strong> — agente LangChain com tools: gerar_cobranca, supabase_get_agendamento, atualizar_setor<br><br>
+          <strong>mensagem_paciente</strong> — Set node: copia apenas <code>$json.output</code><br><br>
+          <strong>If</strong> — condição: <code>$json.output == "ROTEAR"</code><br><br>
+          <strong>Enviar texto1</strong> — Evolution API, delay 4200ms, body: <code>{{ $json.output }}</code>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-titulo">Dependência de 2 tools em sequência (listar-horarios)</div>
+        <div class="item-desc">
+          Para buscar horários, o agente precisa fazer <strong>duas chamadas em cadeia</strong> no mesmo turno:
+        </div>
+        <div class="fluxo">
+          <span class="comment"># Passo 1 — obrigatório antes do passo 2</span><br>
+          <span class="node">listar-profissionais</span> → extrai codigoProfissional<br>
+          <br>
+          <span class="comment"># Passo 2 — depende do resultado do passo 1</span><br>
+          <span class="node">listar-horarios</span><br>
+          &nbsp;&nbsp;URL: .../listar-horarios/<span class="warn">{{ $fromAI('codigoProfissional') }}</span><br>
+          &nbsp;&nbsp;dataInicial: <span class="warn">{{ $fromAI('datasDisponiveis') }}</span><br>
+          &nbsp;&nbsp;dataFinal: <span class="warn">{{ $fromAI('datasDisponiveis') }}</span><br>
+          <br>
+          <span class="comment"># Se o agente não chamar listar-profissionais primeiro,</span><br>
+          <span class="comment"># ele não tem codigoProfissional → listar-horarios falha silenciosamente</span>
+        </div>
+        <div class="item-desc">
+          Se o agente pular o passo 1 ou a chamada falhar, ele não tem o código do profissional. O <code>$fromAI()</code> tenta gerar o valor, mas sem contexto real — podendo resultar em chamada com parâmetro errado ou vazio. <strong>Nenhum erro é exibido ao paciente — o agente simplesmente não consegue montar a lista.</strong>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-titulo">Bug do link de pagamento (gerar_cobranca)</div>
+        <div class="item-desc">
+          O agente <strong>GERAR_PAGAMENTO</strong> tem a tool <code>gerar_cobranca</code> vinculada como ai_tool. O fluxo correto seria:
+        </div>
+        <div class="fluxo">
+          <span class="comment"># Fluxo correto (tudo no mesmo turno)</span><br>
+          Chamar <span class="node">supabase_get_agendamento</span> → extrair id_horario<br>
+          Chamar <span class="node">gerar_cobranca</span> com id_horario + forma_pagamento<br>
+          Receber de volta: <span class="ok">{ charge_id: "xyz", link: "https://..." }</span><br>
+          Output final: mensagem <strong>com o link embutido</strong><br>
+          <br>
+          <span class="comment"># O que está acontecendo</span><br>
+          Agente chama gerar_cobranca... OU<br>
+          Agente <span class="err">NÃO chama</span> e diz "Seu pagamento foi gerado" mesmo assim<br>
+          Output final: <span class="err">"Seu pagamento via PIX já foi gerado 😊"</span> — sem link<br>
+          Enviar texto1 manda o texto sem link → paciente não sabe como pagar
+        </div>
+        <div class="bloco bloco-aviso">
+          <label>Nota: isso já estava no prompt mas está sendo ignorado</label>
+          O prompt do GERAR_PAGAMENTO já contém:<br>
+          <em>"🔴 NUNCA emitir a mensagem da Etapa 7 sem ter chamado gerar_cobranca com sucesso."</em><br>
+          <em>"🔴 NUNCA dizer ao paciente que 'o link foi gerado' se gerar_cobranca não foi chamada."</em><br><br>
+          O agente está desobedecendo essas regras. A regra existe mas não tem força suficiente — precisa ser reformulada e reposicionada no prompt.
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-titulo">Ausência de tratamento de erro nas tools</div>
+        <table class="tabela">
+          <tr>
+            <th>Tool</th>
+            <th>Retry</th>
+            <th>Handler de erro vazio</th>
+            <th>Handler de timeout</th>
+          </tr>
+          <tr>
+            <td><strong>listar-horarios</strong></td>
+            <td><span class="tag-sim">SIM (2s)</span></td>
+            <td><span class="tag-nao">NÃO</span></td>
+            <td><span class="tag-nao">NÃO</span></td>
+          </tr>
+          <tr>
+            <td><strong>listar-profissionais</strong></td>
+            <td><span class="tag-sim">SIM</span></td>
+            <td><span class="tag-nao">NÃO</span></td>
+            <td><span class="tag-nao">NÃO</span></td>
+          </tr>
+          <tr>
+            <td><strong>gerar_cobranca</strong></td>
+            <td><span class="tag-nao">NÃO</span></td>
+            <td><span class="tag-nao">NÃO</span></td>
+            <td><span class="tag-nao">NÃO</span></td>
+          </tr>
+        </table>
+        <div class="item-desc" style="margin-top:8px;">
+          Quando qualquer uma dessas tools retorna vazio, null ou erro de API: <strong>o agente não sabe o que aconteceu e pode assumir sucesso ou travar silenciosamente</strong>. O paciente nunca é avisado.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SEÇÃO 3: SOLUÇÃO -->
+  <div class="secao bg-verde">
+    <div class="secao-header">
+      <div class="ico">🔧</div>
+      <div>
+        <h2>Solução</h2>
+        <p>Opção A (prompt) resolve imediatamente · Opção B (n8n) torna robusto</p>
+      </div>
+    </div>
+    <div class="secao-body">
+
+      <div class="item">
+        <div class="item-titulo">Opção A — Correção no Prompt (implementar agora)</div>
+        <div class="item-desc">
+          Proibir mensagens-promessa. A Clara deve sempre buscar + formatar + enviar <strong>no mesmo turno</strong>, numa mensagem só. Nunca "vou buscar" / "um momento" / "já foi gerado" sem o resultado junto.
+        </div>
+
+        <div class="bloco bloco-prompt">
+          <label>Regra anti-promessa — colar no início do prompt do AGENDA_CONSULTA e do GERAR_PAGAMENTO</label>
+          <code>🔴🔴 REGRA ANTI-PROMESSA — LEIA ANTES DE TUDO 🔴🔴
+
+Você roda UMA vez por mensagem do paciente. Quando você termina
+de responder, você para completamente e só volta a rodar quando
+o paciente mandar outra mensagem.
+
+Por isso, se você mandar uma mensagem do tipo "vou buscar" ou
+"um momento" ou "já foi gerado" sem o resultado junto, o paciente
+fica esperando para sempre — porque você não vai acordar sozinha
+para completar a ação.
+
+PROIBIDO — estas mensagens causam silêncio permanente:
+❌ "Um momento, vou buscar os horários..."
+❌ "Já vou te mostrar os horários disponíveis..."
+❌ "Vou gerar seu link de pagamento..."
+❌ "Seu pagamento já foi gerado" (sem o link na mesma mensagem)
+❌ Qualquer promessa de ação futura sem o resultado junto
+
+OBRIGATÓRIO — tudo no mesmo turno, na mesma mensagem:
+✅ Horários: chamar listar-profissionais → listar-horarios →
+   responder com a LISTA COMPLETA na mesma mensagem.
+✅ Pagamento: chamar gerar_cobranca → responder com o LINK
+   na mesma mensagem. Só dizer "gerado" se o link estiver ali.
+
+SE A TOOL FALHAR OU RETORNAR VAZIO:
+→ NÃO confirmar sucesso. NÃO inventar que funcionou.
+→ Responder: "Tive um problema técnico agora. Pode tentar
+  de novo em instantes ou falar com nossa equipe (opção 7)? 🧡"
+
+A mensagem da Clara sempre CONTÉM o resultado — nunca a promessa dele.</code>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-titulo">Opção B — Correções no n8n (tornar robusto)</div>
+        <div class="item-desc">
+          Complementa a Opção A. Mesmo com o prompt correto, erros de API podem acontecer — o n8n precisa tratá-los.
+        </div>
+
+        <ul class="checklist">
+          <li>
+            <div class="num vermelho">1</div>
+            <div>
+              <strong>Tratamento de erro no nó listar-horarios:</strong>
+              Adicionar branch de erro. Se a resposta vier vazia (<code>[]</code>) ou com erro HTTP → retornar ao agente uma mensagem de erro estruturada como:
+              <code>{ "erro": true, "mensagem": "Nenhum horário encontrado para essa data" }</code>
+              Assim o agente sabe que falhou e pode avisar o paciente corretamente.
+              <span class="prio-badge prio-critico">Crítico</span>
+            </div>
+          </li>
+          <li>
+            <div class="num vermelho">2</div>
+            <div>
+              <strong>Tratamento de erro no nó gerar_cobranca (Asaas):</strong>
+              Se a API do Asaas falhar ou retornar sem link → NÃO deixar o agente assumir sucesso. Retornar:
+              <code>{ "erro": true, "mensagem": "Falha ao gerar link de pagamento" }</code>
+              <span class="prio-badge prio-critico">Crítico</span>
+            </div>
+          </li>
+          <li>
+            <div class="num">3</div>
+            <div>
+              <strong>Verificar se o link do Asaas está sendo incluído no output do agente:</strong>
+              Confirmar que quando <code>gerar_cobranca</code> retorna com sucesso, o link (campo <code>link</code> ou <code>invoiceUrl</code>) está sendo passado de volta ao agente de forma que ele consiga incluir na mensagem. Se o agente não recebe o link, ele não pode enviá-lo.
+              <span class="prio-badge prio-alta">Alta</span>
+            </div>
+          </li>
+          <li>
+            <div class="num">4</div>
+            <div>
+              <strong>Consolidar AGENDA_CONSULTA e AGENDA_CONSULTA1:</strong>
+              O fluxo novo (AGENDA_CONSULTA1 → Tratar Saída do Agente → ROTEAR ou Texto?) tem um problema: quando o output é texto normal, ele re-roteia pelo sistema de setores e nunca chega no "Enviar texto". Se esse fluxo está sendo usado, adicionar o "Enviar texto" antes do Get a row1.
+              <span class="prio-badge prio-alta">Alta</span>
+            </div>
+          </li>
+          <li>
+            <div class="num">5</div>
+            <div>
+              <strong>Adicionar timeout explícito no listar-horarios:</strong>
+              Se a API da Amplimed demorar mais de 8s → retornar erro estruturado em vez de deixar o agente travado esperando.
+              <span class="prio-badge prio-media">Média</span>
+            </div>
+          </li>
+          <li>
+            <div class="num">6</div>
+            <div>
+              <strong>Log de erros de tool call:</strong>
+              Quando uma tool falha, registrar em log (Supabase ou console n8n) com: telefone do paciente, nome da tool, timestamp, erro recebido. Facilita diagnóstico futuro.
+              <span class="prio-badge prio-media">Média</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SEÇÃO 4: TEXTO PARA NICOLAS -->
+  <div class="secao bg-roxo">
+    <div class="secao-header">
+      <div class="ico">💬</div>
+      <div>
+        <h2>Texto Pronto — O que Falar pro Nicolas</h2>
+        <p>Copiar e enviar diretamente</p>
+      </div>
+    </div>
+    <div class="secao-body">
+      <div class="item">
+        <div class="bloco bloco-prompt">
+          <label>Mensagem completa para o Nicolas</label>
+          <code>Nicolas, analisei o workflow (Fluxo_Mult_Agent_Clara_12.json) e descobri por que a Clara promete os horários ou o link de pagamento e some sem enviar.
+
+O problema é arquitetural: a Clara só roda quando o paciente manda uma mensagem (webhook EVO). Quando ela manda "Vou te mostrar os horários..." ou "Seu pagamento foi gerado", isso é o FIM do turno — ela vai dormir. Os horários ou o link só viriam num segundo turno, mas esse turno só dispara se o paciente mandar outra mensagem. Como o paciente está esperando, ninguém fala nada. Silêncio infinito.
+
+Não é a API que não é chamada — é que a mensagem de promessa ENCERRA o turno antes da ação acontecer.
+
+Isso foi confirmado analisando o fluxo:
+AGENDA_CONSULTA → mensagem_paciente (Set: $json.output) → If (== "ROTEAR"?) → Switch2 → Enviar texto1 → FIM
+
+SOLUÇÃO IMEDIATA (prompt):
+Adicionar regra anti-promessa no início do prompt do AGENDA_CONSULTA e do GERAR_PAGAMENTO, proibindo mensagens do tipo "vou buscar" / "vou gerar" sem o resultado junto na mesma mensagem. Tenho o texto pronto pra colar.
+
+SOLUÇÃO COMPLEMENTAR (n8n):
+1. listar-horarios: adicionar handler de erro quando retorna vazio ou falha — hoje não tem nenhum
+2. gerar_cobranca (Asaas): adicionar handler de erro — se falhar, o agente precisa ser avisado para não confirmar "link gerado" sem ter o link
+3. Verificar se o campo "link" do retorno do Asaas está sendo passado de volta ao agente corretamente
+4. AGENDA_CONSULTA1 (fluxo novo): quando output é texto (não ROTEAR), a saída de "ROTEAR ou Texto?" vai pra Get a row1 sem passar por nenhum Enviar texto — precisa adicionar o sender antes do Get a row1
+
+Posso te mandar os textos prontos pra colar nos prompts. O item 1 do n8n é o mais urgente junto com o prompt.</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 5: RESUMO EXECUTIVO -->
+  <div class="secao bg-vermelho">
+    <div class="secao-header">
+      <div class="ico">📋</div>
+      <div>
+        <h2>Resumo Executivo</h2>
+        <p>O essencial em 4 linhas</p>
+      </div>
+    </div>
+    <div class="secao-body">
+      <div class="item">
+        <table class="tabela">
+          <tr>
+            <th>Causa raiz</th>
+            <td>A Clara roda 1x por mensagem. Quando ela manda uma promessa ("vou buscar"), o turno encerra. O resultado nunca chega.</td>
+          </tr>
+          <tr>
+            <th>Onde está</th>
+            <td>AGENDA_CONSULTA e GERAR_PAGAMENTO — ambos os fluxos (antigo e novo)</td>
+          </tr>
+          <tr>
+            <th>Correção rápida</th>
+            <td>Regra anti-promessa no prompt: proibir mensagens sem resultado. Tudo no mesmo turno. ← <strong>Implementar já</strong></td>
+          </tr>
+          <tr>
+            <th>Correção robusta</th>
+            <td>Tratamento de erro em listar-horarios e gerar_cobranca + verificar link Asaas + corrigir fluxo novo</td>
+          </tr>
+          <tr>
+            <th>Impacto estimado</th>
+            <td>Toda consulta onde o paciente recebe silêncio após confirmação. Perda direta de faturamento.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>REMMED Telemedicina</strong> · Análise gerada em 03/06/2026 · Bug identificado via análise de conversas reais + workflow n8n
+</div>
+
+</body>
+</html>
