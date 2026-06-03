@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>REMMED · Melhorias Clara — Maio 2026</title>
+  <title>REMMED · Melhorias Clara — Maio/Junho 2026</title>
   <style>
     :root {
       --azul:#0f4c81;--azul-claro:#3b9eda;--verde:#00b894;--vermelho:#e74c3c;
@@ -19,12 +19,10 @@
     .header-tag{display:inline-block;margin-bottom:16px;background:rgba(0,212,170,0.15);border:1px solid rgba(0,212,170,0.3);color:#00d4aa;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:20px;}
     .page{max-width:860px;margin:0 auto;padding:32px 16px;}
 
-    /* LEGENDA */
     .legenda{display:flex;gap:16px;flex-wrap:wrap;background:white;border-radius:12px;padding:16px 20px;border:1px solid var(--borda);margin-bottom:28px;font-size:13px;}
     .leg{display:flex;align-items:center;gap:8px;font-weight:700;}
     .leg-dot{width:14px;height:14px;border-radius:4px;}
 
-    /* SEÇÃO */
     .secao{margin-bottom:32px;}
     .secao-header{display:flex;align-items:center;gap:12px;padding:18px 24px;border-radius:14px 14px 0 0;color:white;}
     .secao-header .ico{font-size:26px;}
@@ -35,7 +33,6 @@
     .nicolas .secao-header{background:linear-gradient(135deg,#154360,#2980b9);}
     .secao-body{background:white;border:1px solid var(--borda);border-top:none;border-radius:0 0 14px 14px;overflow:hidden;}
 
-    /* ITEM */
     .item{border-bottom:1px solid var(--borda);padding:20px 24px;}
     .item:last-child{border-bottom:none;}
     .item-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
@@ -47,7 +44,6 @@
     .item-desc{font-size:13px;color:var(--leve);line-height:1.7;margin-bottom:10px;}
     .item-desc strong{color:var(--texto);}
 
-    /* BLOCO DE PROBLEMA/SOLUÇÃO */
     .bloco{border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:13px;line-height:1.6;}
     .bloco-problema{background:#fff5f5;border:1px solid #fecaca;}
     .bloco-solucao{background:#f0fdf4;border:1px solid #bbf7d0;}
@@ -60,13 +56,11 @@
     .bloco-prompt label{color:#7c3aed;}
     .bloco code{display:block;background:rgba(0,0,0,0.06);border-radius:6px;padding:10px 12px;font-family:'Courier New',monospace;font-size:12px;margin-top:8px;white-space:pre-wrap;}
 
-    /* STATUS CHECKBOX */
-    .item-footer{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--borda);}
+    .item-footer{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--borda);flex-wrap:wrap;}
     .chk{display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;font-weight:600;}
     .chk input{width:16px;height:16px;cursor:pointer;}
     .status-label{margin-left:auto;font-size:11px;color:var(--leve);}
 
-    /* SUMÁRIO */
     .sumario{background:white;border:1px solid var(--borda);border-radius:12px;padding:20px 24px;margin-bottom:28px;}
     .sumario h3{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--texto);}
     .sumario-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -79,6 +73,9 @@
     .sum-box ul{list-style:none;font-size:12px;color:var(--leve);line-height:2;}
     .sum-box li::before{content:'→ ';}
 
+    .rodada{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:24px;font-size:12px;color:#92400e;}
+    .rodada strong{color:#78350f;}
+
     @media(max-width:600px){.sumario-grid{grid-template-columns:1fr;}.secao-header .badge{display:none;}}
   </style>
 </head>
@@ -87,7 +84,7 @@
 <div class="header">
   <div class="header-tag">📋 Documento de Melhorias · Clara</div>
   <h1>Melhorias Clara — Maio / Junho 2026</h1>
-  <p>Baseado nas conversas reais do fim de semana · Gerado em 31/05/2026</p>
+  <p>Atualizado em 03/06/2026 · Baseado em 10 conversas reais analisadas</p>
 </div>
 
 <div class="page">
@@ -104,21 +101,29 @@
     <h3>Resumo do que precisa ser feito</h3>
     <div class="sumario-grid">
       <div class="sum-box sum-raissa">
-        <h4>✍️ Raíssa — Prompts & Textos</h4>
+        <h4>✍️ Raíssa — Prompts & Textos (9 itens)</h4>
         <ul>
-          <li>Data explícita quando não há horário hoje</li>
-          <li>Regra de renovação por tipo de medicamento</li>
-          <li>Follow-up: não disparar após atend. recusado</li>
-          <li>FAQ de especialidades (já feito no faq_tool.js)</li>
+          <li>R1 — Data explícita quando não há horário hoje</li>
+          <li>R2 — Regra de renovação por tipo de medicamento</li>
+          <li>R3 — Follow-up: não disparar após atend. recusado</li>
+          <li>R4 — FAQ de especialidades (faq_tool.js ✅ feito)</li>
+          <li>R5 — Remover "possível atestado" do fluxo</li>
+          <li>R6 — Guard-rail: não re-rotear quem já escolheu saúde mental</li>
+          <li>R7 — Otoscópio para olho: erro médico grotesco</li>
+          <li>R8 — Abscesso/ferida com pus = alarme obrigatório</li>
+          <li>R9 — "Pode confirmar" e variantes não reconhecidos como SIM</li>
         </ul>
       </div>
       <div class="sum-box sum-nicolas">
-        <h4>⚙️ Nicolas — n8n / Técnico</h4>
+        <h4>⚙️ Nicolas — n8n / Técnico (7 itens)</h4>
         <ul>
-          <li>IA responde após handoff → bloquear por setor</li>
-          <li>Mensagens duplicadas → debounce de 2–3 seg</li>
-          <li>Link de pagamento antigo após intervenção humana</li>
-          <li>Variável motivo_encerramento no follow-up</li>
+          <li>N1 — IA responde após handoff → bloquear por setor</li>
+          <li>N2 — Mensagens duplicadas → debounce de 2–3 seg</li>
+          <li>N3 — Link de pagamento antigo após intervenção humana</li>
+          <li>N4 — Variável motivo_encerramento no follow-up</li>
+          <li>N5 — Horários/link não enviados após Clara avisar que vai enviar</li>
+          <li>N6 — Mensagem de número internacional após handoff humano</li>
+          <li>N7 — Contexto de sessão anterior contamina nova sessão</li>
         </ul>
       </div>
     </div>
@@ -134,7 +139,7 @@
         <h2>Para Raíssa — Alterações de Prompt / Texto</h2>
         <p>Tudo aqui é editado diretamente no texto do agente dentro do n8n</p>
       </div>
-      <div class="badge">4 itens</div>
+      <div class="badge">9 itens</div>
     </div>
     <div class="secao-body">
 
@@ -171,7 +176,7 @@ para amanhã ou prefere falar com a equipe?"
 NUNCA diga "esses horários são para hoje" se forem para outro dia.</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
           <span class="status-label">Editar no prompt do agente de agendamento</span>
         </div>
       </div>
@@ -216,7 +221,7 @@ Após identificar o medicamento, seguir a lógica abaixo:
 NUNCA sugerir R$249 sem antes saber o nome do medicamento.</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
           <span class="status-label">Editar no prompt do agente de Renovação</span>
         </div>
       </div>
@@ -228,7 +233,7 @@ NUNCA sugerir R$249 sem antes saber o nome do medicamento.</code>
           <div class="item-titulo">R3 — Follow-up proativo: não disparar após atendimento recusado ou encerrado</div>
         </div>
         <div class="item-desc">
-          <strong>O que aconteceu:</strong> em algumas conversas, Clara negou o atendimento (mandou para UPA, recusou por urgência) ou o paciente encerrou. Mesmo assim, o follow-up automático disparou depois perguntando se a pessoa precisava de consulta — situação constrangedora e fora de contexto.
+          <strong>O que aconteceu:</strong> em algumas conversas, Clara negou o atendimento (mandou para UPA, recusou por urgência) ou o paciente encerrou. Mesmo assim, o follow-up automático disparou depois perguntando se a pessoa precisava de consulta — situação constrangedora e fora de contexto. <strong>Confirmado novamente na conversa 9 (Agda)</strong>: foi bloqueada por abscesso em 31/05, mas recebeu dois follow-ups automáticos depois.
         </div>
         <div class="bloco bloco-problema">
           <label>Situações onde o follow-up NÃO deve disparar</label>
@@ -260,7 +265,7 @@ Valores possíveis:
 - "equipe_assumiu"        → NÃO disparar</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
           <span class="status-label">Prompt + Nicolas implementa a lógica no nó de follow-up</span>
         </div>
       </div>
@@ -277,7 +282,7 @@ Valores possíveis:
         <div class="bloco bloco-solucao">
           <label>✅ Já corrigido no faq_tool.js</label>
           Resposta adicionada: informa que o atendimento é por clínico geral + saúde mental (opção 3) + emagrecimento (opção 6). Para outras especialidades, o clínico avalia e encaminha quando necessário.<br><br>
-          <strong>Ainda pendente:</strong> adicionar esse mesmo contexto nos prompts da Clara Triagem e Clara Roteamento, para que o agente saiba responder mesmo quando a pergunta aparecer no meio de um fluxo ativo.
+          <strong>Ainda pendente:</strong> adicionar esse mesmo contexto nos prompts da Clara Triagem e Clara Roteamento.
         </div>
         <div class="bloco bloco-prompt">
           <label>Texto para adicionar nos prompts de Triagem e Roteamento</label>
@@ -296,9 +301,223 @@ Responder com clareza que não temos esse especialista diretamente,
 mas o clínico geral pode avaliar e encaminhar se necessário.</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> faq_tool.js ✅ feito</label>
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Prompt Triagem</label>
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Prompt Roteamento</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> faq_tool.js ✅ feito</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Prompt Triagem</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Prompt Roteamento</label>
+        </div>
+      </div>
+
+      <!-- R5 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">R5 — Remover "possível atestado" — só falar de avaliação médica</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversas 1 e 9):</strong> Clara usa a expressão "vamos seguir com seu agendamento para <em>avaliação e possível atestado</em>". Isso é problemático em dois sentidos: (1) promete algo que só o médico decide, (2) quando o paciente quer só o atestado, Clara parece estar confirmando que vai ter. O correto é nunca prometer — só falar em consulta/avaliação médica.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Trecho problemático atual</label>
+          "Vamos seguir com seu agendamento para avaliação e <strong>possível atestado</strong>, então 🧡"<br><br>
+          Também aparece na tela de apresentação da opção 2:<br>
+          "⚠️ O atestado <strong>só pode ser emitido</strong> após avaliação médica..." — essa parte está certa, mas depois a Clara ainda diz "possível atestado" no fluxo.
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Como deve ficar em TODOS os pontos do fluxo</label>
+          <code>REGRA DE LINGUAGEM — ATESTADO:
+NUNCA use as expressões:
+- "possível atestado"
+- "seguir com agendamento para atestado"
+- "vou te encaminhar para o atestado"
+
+Use SEMPRE:
+- "consulta médica" ou "avaliação médica"
+- "o atestado é emitido pelo médico, quando indicado, após a consulta"
+
+Exemplo correto ao final da triagem de opção 2:
+"Ótimo! Vou seguir com o seu agendamento de consulta médica 🧡
+O médico fará a avaliação e, se indicado, emite o atestado após
+a consulta. Agora vou te mostrar os horários disponíveis."
+
+NUNCA prometer ou sugerir que o atestado vai ser emitido.
+É decisão exclusiva do médico após avaliar o paciente.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Revisar todos os pontos do fluxo onde "atestado" aparece como resultado prometido</span>
+        </div>
+      </div>
+
+      <!-- R6 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">R6 — Guard-rail re-roteando paciente que JÁ escolheu saúde mental</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 5):</strong> paciente escolheu explicitamente <strong>opção 3 (saúde mental)</strong>, confirmou, disse que o sintoma era "ansiedade" — e então Clara respondeu com <em>"Percebi que sua queixa está relacionada à saúde mental 🧠... O ideal é uma Consulta de Saúde Mental R$249,00"</em>. Ou seja, re-ofereceu exatamente o que o paciente já havia escolhido, como se fosse uma descoberta nova. Péssima experiência e confuso.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do problema</label>
+          Paciente: escolhe opção 3 (saúde mental) ✅<br>
+          Clara: apresenta saúde mental R$249, pede SIM/NÃO ✅<br>
+          Paciente: SIM ✅<br>
+          Clara: pergunta sintoma principal ✅<br>
+          Paciente: "Ansiedade" ✅<br>
+          Clara: <strong>"Percebi que sua queixa está relacionada à saúde mental... R$249,00. Posso te ajudar a agendar?"</strong> ← REDUNDANTE/ERRADO<br>
+          → Estava na opção 3 desde o início! O guard-rail de roteamento não deve disparar para quem já está no fluxo correto.
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Instrução para o prompt de Triagem / Roteamento</label>
+          <code>GUARD-RAIL DE ROTEAMENTO — REGRA IMPORTANTE:
+Se o paciente já escolheu uma opção do menu e está dentro desse
+fluxo, NÃO redirecione para outra opção com base nas palavras
+que ele usar para descrever o sintoma.
+
+Exemplos:
+- Paciente escolheu opção 3 (saúde mental) → mencionou "ansiedade"
+  → NÃO dizer "percebi que sua queixa é de saúde mental"
+  → Já está no fluxo certo. Seguir normalmente.
+
+- Paciente escolheu opção 1 (consulta) → mencionou "tristeza"
+  → Pode perguntar se prefere saúde mental, mas sem redirecionar
+  forçosamente.
+
+O guard-rail de roteamento só deve atuar quando o paciente:
+① Veio pelo menu geral E não escolheu opção
+② Ou descreveu sintoma que claramente não bate com a opção escolhida
+   (ex: escolheu opção 4 renovação mas quer agendar consulta nova)</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Editar no prompt do agente de Roteamento/Triagem — verificar guard-rail de saúde mental</span>
+        </div>
+      </div>
+
+      <!-- R7 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">R7 — Otoscópio para olho: erro médico grave no texto de recusa</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 3):</strong> paciente disse ter um <strong>terçol no olho</strong>. Clara respondeu: <em>"Infelizmente sintomas no olho precisam de avaliação presencial com <strong>otoscópio</strong>"</em>. Otoscópio é o instrumento para examinar <strong>ouvido</strong>. Para olho seria oftalmoscópio ou lâmpada de fenda. Esse erro, além de demonstrar desinformação médica, pode ser visto por qualquer profissional de saúde e prejudicar a credibilidade da REMMED.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Erro encontrado</label>
+          "sintomas no olho precisam de avaliação presencial com <strong>otoscópio</strong>"<br><br>
+          ❌ Otoscópio → examina OUVIDO<br>
+          ❌ O texto provavelmente foi copiado/gerado a partir da lógica de recusa de ouvido<br><br>
+          Para olho: oftalmoscópio, lâmpada de fenda, biomicroscópio
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Texto correto para cada tipo de recusa por órgão sensorial</label>
+          <code>RECUSA POR SINTOMAS NO OLHO:
+"Infelizmente sintomas no olho precisam de avaliação presencial
+com oftalmologista — não conseguimos examinar o olho por telemedicina.
+Por favor, procure um pronto-atendimento ou clínica oftalmológica. 🏥"
+
+RECUSA POR SINTOMAS NO OUVIDO:
+"Sintomas no ouvido (dor, saída de líquido, perda de audição)
+precisam de exame com otoscópio, que não conseguimos fazer
+por telemedicina. Procure um pronto-atendimento. 🏥"
+
+TERÇOL ESPECIFICAMENTE:
+Terçol (hordéolo) leve pode ser avaliado por telemedicina
+se o paciente conseguir descrever bem. Não é bloqueio automático.
+Bloqueio apenas se: olho muito vermelho + secreção + visão alterada.
+
+NUNCA use "otoscópio" em contexto de olho.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Corrigir URGENTE — erro médico que compromete credibilidade</span>
+        </div>
+      </div>
+
+      <!-- R8 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">R8 — Abscesso / ferida com pus = alarme obrigatório de segurança</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversas 8 e 9):</strong> pacientes com feridas/abscessos tentaram consulta por telemedicina. Na conversa 9, a paciente (Agda) foi corretamente bloqueada no dia 31/05, mas voltou no dia 01/06 dizendo só "inflamação" e quase conseguiu contornar o bloqueio. Na conversa 8, uma paciente com feridas íntimas passou pela triagem sem nenhuma pergunta sobre pus ou abscesso. <strong>Risco real:</strong> abscesso não tratado evolui para sepse — não pode ser atendido por telemedicina em nenhuma circunstância.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Gaps identificados</label>
+          ① "Ferida com pus" não está listada explicitamente nos alarmes → paciente pode informar só "ferida" e passar<br>
+          ② Paciente que diz "inflamação" sem mencionar pus pode não ser bloqueada<br>
+          ③ Não há pergunta de triagem sobre tipo da ferida antes de mostrar horários
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Instrução para adicionar aos alarmes e triagem</label>
+          <code>ALARME OBRIGATÓRIO — FERIDA / ABSCESSO:
+Adicionar aos sinais de alarme da lista de checagem:
+
+· Ferida com pus, abscessos ou coleção de líquido
+· Ferida profunda, ferida grande ou com bordas abertas
+· Vermelhidão intensa que se alastra ao redor da ferida
+· Febre junto com ferida/inflamação em qualquer local
+
+Se paciente mencionar: "abscesso", "pus", "inchou e está com pus",
+"ferida com secreção", "furúnculo grande", "coleção"
+→ BLOQUEAR imediatamente → orientar presencial/pronto-atendimento
+
+QUANDO O PACIENTE FALA "INFLAMAÇÃO":
+Sempre perguntar:
+"Tem saída de pus, secreção ou o local está muito inchado?"
+→ SIM: bloquear para presencial
+→ NÃO: pode seguir avaliação por telemedicina
+
+TERÇOL / FERIDA PEQUENA SEM PUS:
+→ Pode tentar telemedicina com avaliação clínica descritiva
+
+ABSCESSO EM QUALQUER LOCALIZAÇÃO:
+→ SEMPRE presencial — risco de progressão para celulite/sepse</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Adicionar nos alarmes de triagem E como pergunta de follow-up para "ferida" / "inflamação"</span>
+        </div>
+      </div>
+
+      <!-- R9 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">R9 — "Pode confirmar" e outras variantes afirmativas não reconhecidas como SIM</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 7):</strong> paciente enviou "Vcs mando link pra pagar no cartão" + "Pode confirmar" — Clara travou e não processou como confirmação. O sistema espera literalmente "SIM" ou "NÃO", mas pacientes brasileiros usam dezenas de variações. Isso causa interrupções desnecessárias no fluxo.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Respostas que o paciente usa mas Clara não reconhece</label>
+          "pode confirmar", "pode", "pode sim", "confirma", "confirmo", "claro",
+          "ok", "tá bom", "tudo bem", "manda", "pode mandar", "isso", "exato",
+          "quero", "quero sim", "com certeza", "vai", "bora", "vamos", "s" (abreviação de sim)
+        </div>
+        <div class="bloco bloco-prompt">
+          <label>Instrução para o prompt</label>
+          <code>RECONHECIMENTO DE CONFIRMAÇÃO:
+Quando você pedir "responda SIM ou NÃO", interpretar como SIM:
+- sim, s, pode, pode ser, pode confirmar, confirma, confirmo
+- claro, ok, tá bom, tudo bem, certo, combinado
+- quero, quero sim, quero isso, com certeza, isso mesmo
+- manda, pode mandar, vai, vamos, bora
+- qualquer resposta claramente positiva no contexto da pergunta
+
+Interpretar como NÃO:
+- não, n, nao, não quero, não tenho, nunca, de jeito nenhum
+- cancela, cancelar, desisti, mudei de ideia, deixa pra lá
+
+Se a resposta for ambígua ou for uma pergunta nova
+(ex: "aceita cartão?"), responder a dúvida e então perguntar
+novamente a confirmação de forma clara.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Adicionar em todos os pontos do prompt onde SIM/NÃO é esperado</span>
         </div>
       </div>
 
@@ -315,7 +534,7 @@ mas o clínico geral pode avaliar e encaminhar se necessário.</code>
         <h2>Para Nicolas — Alterações Técnicas no n8n</h2>
         <p>Nós, variáveis, lógica de workflow — não envolve texto de prompt</p>
       </div>
-      <div class="badge">4 itens</div>
+      <div class="badge">7 itens</div>
     </div>
     <div class="secao-body">
 
@@ -326,15 +545,20 @@ mas o clínico geral pode avaliar e encaminhar se necessário.</code>
           <div class="item-titulo">N1 — IA continua respondendo após handoff confirmado para humano</div>
         </div>
         <div class="item-desc">
-          <strong>O que aconteceu:</strong> paciente pediu "Falar com atendente". Clara confirmou a transferência. Mas quando o paciente enviou a próxima mensagem, a IA voltou a responder normalmente — como se o handoff não tivesse acontecido. A conversa ficou presa entre IA e humano ao mesmo tempo.
+          <strong>O que aconteceu:</strong> paciente pediu "Falar com atendente". Clara confirmou a transferência. Mas quando o paciente enviou a próxima mensagem, a IA voltou a responder normalmente. Confirmado também na <strong>conversa 10</strong>: após Raíssa encerrar manualmente, Clara enviou mensagem genérica de "conversa encerrada" — quando deveria estar silenciosa.
         </div>
         <div class="bloco bloco-problema">
-          <label>Sequência do bug</label>
+          <label>Sequência do bug (N1a — handoff)</label>
           Paciente: "Falar com atendente"<br>
           Clara: "Você será encaminhado para um atendente humano agora ✅"<br>
           Paciente: "Sim" (confirmou)<br>
-          Clara: <strong>"Você já está falando comigo, que sou a atendente virtual..." ❌</strong><br>
-          → IA não parou de responder após o handoff
+          Clara: <strong>"Você já está falando comigo, que sou a atendente virtual..." ❌</strong>
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Variação do bug (N1b — encerramento manual)</label>
+          Raíssa assumiu conversa e encerrou manualmente<br>
+          Clara: <strong>Enviou mensagem automática de "conversa encerrada" ❌</strong><br>
+          → Depois de handoff, qualquer automação deve estar silenciada
         </div>
         <div class="bloco bloco-tecnico">
           <label>Solução técnica — Nicolas</label>
@@ -343,20 +567,21 @@ mas o clínico geral pode avaliar e encaminhar se necessário.</code>
 
 2. No início do nó principal da IA, adicionar condição:
    SE setor = "AGUARDANDO_HUMANO"
-     → NÃO processar a mensagem com o agente IA
-     → Pode retornar apenas: "Aguarde, um atendente já foi acionado 🧡"
-     → OU simplesmente não responder (silêncio)
+     → NÃO processar mensagem com agente IA
+     → NÃO disparar follow-up automático
+     → NÃO disparar mensagem de encerramento
+     → Silêncio total da IA
 
 3. Quando o humano liberar a conversa de volta para a IA:
-   → Setar setor = "MENU" (ou o estado inicial)
-   → Pode ser feito com um comando interno tipo /liberar no painel
+   → Setar setor = "MENU" (ou estado inicial)
+   → Pode ser feito com comando /liberar no painel interno
 
-Objetivo: a IA só processa mensagens se o setor NÃO for
-"AGUARDANDO_HUMANO".</code>
+Objetivo: qualquer nó automático deve verificar
+setor != "AGUARDANDO_HUMANO" antes de executar.</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
-          <span class="status-label">Adicionar condição no nó principal de entrada da IA</span>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Condição no nó principal de entrada da IA + todos os nós de automação</span>
         </div>
       </div>
 
@@ -367,46 +592,30 @@ Objetivo: a IA só processa mensagens se o setor NÃO for
           <div class="item-titulo">N2 — Mensagens duplicadas: paciente envia 2 msgs rápidas → Clara responde 2 vezes</div>
         </div>
         <div class="item-desc">
-          <strong>O que acontece:</strong> quando o paciente envia duas mensagens em sequência rápida (ex: "Oi" + "queria saber sobre consulta"), a Evolution API dispara dois webhooks separados para o n8n. O n8n processa cada um de forma independente e a IA responde duas vezes — duas mensagens da Clara chegam ao paciente quase ao mesmo tempo. Acontece também quando o paciente clica no link do site e envia uma mensagem junto com o texto automático do botão.
-        </div>
-        <div class="bloco bloco-problema">
-          <label>Exemplos onde acontece</label>
-          ① Paciente: "Oi" [envia] + "tudo bem, queria saber sobre consulta" [envia logo depois]<br>
-          → Clara responde duas vezes (uma para cada mensagem)<br><br>
-          ② Paciente clica no botão do site → WhatsApp abre com texto automático<br>
-          → Chega duas mensagens quase simultâneas → duas respostas<br><br>
-          ③ Paciente pede equipe + manda outra mensagem logo em seguida<br>
-          → Duas respostas da Clara ao mesmo tempo
+          <strong>O que acontece:</strong> quando o paciente envia duas mensagens em sequência rápida, a Evolution API dispara dois webhooks separados. O n8n processa cada um e a IA responde duas vezes. <strong>Confirmado nas conversas 4 e 6</strong>: endereço pedido em duplicata, e mensagem de número internacional disparando múltiplas vezes.
         </div>
         <div class="bloco bloco-tecnico">
           <label>Solução técnica — Nicolas (debounce / message aggregation)</label>
           <code>Opção A — Debounce simples (recomendada):
-Antes do nó principal da IA, adicionar um nó de "Wait" ou
-verificação de tempo:
-
 1. Quando chega uma mensagem, registrar o timestamp no Supabase
-   (ou variável de contexto) como "ultima_mensagem_recebida"
-
+   como "ultima_mensagem_recebida"
 2. Aguardar 2-3 segundos antes de processar
-
 3. Antes de chamar o agente IA, verificar:
    SE chegou outra mensagem do mesmo número nos últimos 3 seg:
-     → Ignorar a mensagem anterior (processar só a mais recente)
+     → Ignorar a anterior (processar só a mais recente)
      → OU concatenar as mensagens e processar uma vez só
 
 Opção B — Flag de processamento:
-1. Ao receber mensagem, setar: processando = true
+1. Ao receber mensagem: processando = true
 2. Se chegar nova mensagem enquanto processando = true:
    → Guardar na fila, processar após a primeira terminar
-3. Ao finalizar resposta: processando = false, processar fila
+3. Ao finalizar resposta: processando = false
 
-Opção C — Janela de agregação (mais sofisticada):
-Aguardar até 3 segundos após a primeira mensagem.
-Se chegarem mais mensagens nesse período, juntar tudo numa string
-e processar uma única vez com o contexto completo.</code>
+Este debounce também resolve o problema da mensagem de número
+internacional disparando em loop (N6).</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
           <span class="status-label">Implementar debounce antes do nó da IA no webhook de entrada</span>
         </div>
       </div>
@@ -418,18 +627,12 @@ e processar uma única vez com o contexto completo.</code>
           <div class="item-titulo">N3 — Link de pagamento antigo disparado depois que a equipe gerou cobrança manual</div>
         </div>
         <div class="item-desc">
-          <strong>O que aconteceu:</strong> a equipe assumiu manualmente, gerou um link de Pix novo. Depois disso, o sistema de follow-up automático da Clara disparou o link antigo do Asaas. O paciente recebeu dois links de cobrança para a mesma consulta — confuso e arriscado.
-        </div>
-        <div class="bloco bloco-problema">
-          <label>Sequência do problema</label>
-          Equipe gera Pix manual → envia link novo para paciente<br>
-          Follow-up automático dispara → envia link Asaas antigo ← ❌<br>
-          Paciente recebe 2 cobranças diferentes para a mesma consulta
+          <strong>O que aconteceu:</strong> a equipe assumiu manualmente, gerou um link de Pix novo. Depois disso, o sistema de follow-up automático da Clara disparou o link antigo do Asaas. O paciente recebeu dois links de cobrança para a mesma consulta.
         </div>
         <div class="bloco bloco-tecnico">
           <label>Solução técnica — Nicolas</label>
           <code>1. Quando a equipe intervém e gera cobrança manual:
-   → Setar variável: pagamento_status = "manual_gerado"
+   → Setar: pagamento_status = "manual_gerado"
    E/OU: equipe_assumiu = true
 
 2. No nó de follow-up de pagamento, adicionar condição:
@@ -438,13 +641,12 @@ e processar uma única vez com o contexto completo.</code>
    OU pagamento_status = "confirmado"
      → NÃO disparar o follow-up automático de cobrança
 
-3. Forma prática: criar um comando interno que a equipe usa
-   quando assume a conversa, ex: enviar "/equipe" no painel
-   interno → isso seta automaticamente equipe_assumiu = true
-   e suprime os automações.</code>
+3. Comando interno: ao equipe enviar "/equipe" no painel
+   → seta automaticamente equipe_assumiu = true
+   → suprime todas as automações</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
           <span class="status-label">Adicionar condição no nó de follow-up de pagamento</span>
         </div>
       </div>
@@ -482,14 +684,153 @@ e processar uma única vez com o contexto completo.</code>
      "pagamento_confirmado",
      "equipe_assumiu"
    )
-   OU motivo_encerramento IS NULL (nunca atingiu o agendamento)
+   OU motivo_encerramento IS NULL
 
 3. Adicionar campo "motivo_encerramento" na tabela de sessões
    se ainda não existir.</code>
         </div>
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="this.parentElement.style.opacity=this.checked?'.4':'1'"> Concluído</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
           <span class="status-label">Depende do R3 estar feito · Implementar no nó de follow-up + tabela Supabase</span>
+        </div>
+      </div>
+
+      <!-- N5 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">N5 — Clara avisa que vai enviar os horários / link de pagamento, mas não envia</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 1 e conversa 2):</strong><br>
+          — Conversa 1: Clara disse <em>"Agora vou te mostrar os horários disponíveis com o médico"</em> mas os horários nunca chegaram. A conversa terminou ali.<br>
+          — Conversa 2: após paciente escolher PIX, sistema disse "Tive um problema ao gerar o link" → pediu para escolher de novo → paciente escolheu PIX de novo → Clara disse "Seu pagamento via PIX já foi gerado" mas <strong>nunca enviou o link</strong>. O paciente ficou sem saber como pagar.<br><br>
+          Esses são os casos mais críticos de <strong>silêncio pós-confirmação</strong>: o fluxo quebra após a IA confirmar que vai fazer algo.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do problema — conversa 1</label>
+          Clara: "Agora vou te mostrar os horários disponíveis..." → <strong>silêncio ❌</strong><br>
+          Possíveis causas: tool call falhou, timeout na API de agenda, resposta truncada
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do problema — conversa 2</label>
+          Paciente: escolhe PIX pela 2a vez<br>
+          Clara: "Seu pagamento via PIX já foi gerado e seu atendimento está finalizado 😊"<br>
+          → <strong>Nunca enviou o link de pagamento ❌</strong><br>
+          → Paciente não sabe como pagar
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica — Nicolas</label>
+          <code>1. Adicionar tratamento de erro nos nós de tool call:
+   - Busca de horários: se retornar vazio ou erro → responder
+     "Tive um problema ao buscar os horários. Tente novamente
+     ou fale com a equipe (opção 7)."
+   - Geração de link Asaas: se retornar erro → NÃO confirmar
+     que o pagamento foi gerado. Informar o erro ao paciente.
+
+2. Verificar se a mensagem de sucesso do Asaas está:
+   ① Enviando o link junto com a mensagem de confirmação
+   ② Não assumindo sucesso antes de receber o link de volta
+
+3. Adicionar log de erros de tool call para facilitar diagnóstico
+   (quando a IA diz "vou enviar" mas não envia).
+
+4. Timeout: se busca de horários demorar mais de 8s →
+   enviar mensagem de espera e tentar novamente.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Verificar nós de busca de horários e geração de link Asaas — adicionar tratamento de erro</span>
+        </div>
+      </div>
+
+      <!-- N6 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N6 — Mensagem de número internacional continua disparando após handoff humano</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 6):</strong> número estrangeiro (+58 Venezuela) → sistema enviou corretamente "Para atendimento internacional, nossa equipe entrará em contato em breve". Raíssa assumiu e começou a atender manualmente. Mas a mensagem automática continuou disparando após <strong>cada mensagem</strong> enviada pela equipe e pelo paciente — o paciente via a resposta manual da equipe seguida imediatamente pela mensagem automática internacional, repetindo em loop.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do loop</label>
+          Sistema: "Para atendimento internacional, nossa equipe entrará em contato em breve. 🧡"<br>
+          Raíssa: "Boa noite! Tudo bem? Como posso te ajudar hoje?"<br>
+          Sistema: "Para atendimento internacional, nossa equipe entrará em contato em breve. 🧡" ← dispara de novo<br>
+          Paciente: "Atestado"<br>
+          Sistema: "Para atendimento internacional..." ← dispara de novo ❌<br>
+          → Disparou em loop durante toda a conversa
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica — Nicolas</label>
+          <code>1. A mensagem de número internacional deve disparar APENAS uma
+   vez — no primeiro contato do número estrangeiro.
+
+2. Após disparar, setar: internacional_notificado = true
+   → Não disparar novamente para o mesmo número na mesma sessão.
+
+3. Quando a equipe assumir (setor = "AGUARDANDO_HUMANO"):
+   → Suprimir completamente a mensagem internacional também
+   → Qualquer automação que não seja iniciada pelo humano
+      deve ser silenciada.
+
+4. Forma mais simples: mover a verificação de número internacional
+   para ANTES do nó de entrada geral. Se for internacional:
+   → Disparar mensagem uma vez
+   → Setar setor = "AGUARDANDO_HUMANO" imediatamente
+   → Não processar mais nada até equipe liberar</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Setar setor = AGUARDANDO_HUMANO após primeira mensagem internacional + suprimir repetição</span>
+        </div>
+      </div>
+
+      <!-- N7 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N7 — Contexto de sessão anterior contamina nova sessão do mesmo paciente</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 9 — Agda, dia 2):</strong> paciente foi bloqueada no dia 31/05 por relatar "abscesso com pus" → mandada para pronto-atendimento. No dia seguinte (01/06), voltou, escolheu opção 1, disse que sintomas eram leves — mas o checklist que apareceu foi o de <strong>TRAUMA</strong> (dor após trauma, incapacidade de mover membro, deformidade visível, dormência). Agda nunca mencionou nenhum sintoma musculoesquelético. O sistema parece ter "lembrado" algo da sessão anterior que a roteou para o grupo errado.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Evidência do bug</label>
+          Agda (01/06): escolhe opção 1, confirma sintomas leves<br>
+          Clara exibe checklist de TRAUMA:<br>
+          "· Dor muito intensa e súbita após trauma, queda ou pancada<br>
+           · Incapacidade total de mover o membro<br>
+           · Deformidade visível (osso deslocado)..." ← sem contexto para isso<br><br>
+          Hipótese: a variável de grupo/rota da sessão anterior (abscesso = grupo dermatológico/infeccioso) não foi limpa e influenciou a sessão nova, ou o sistema fez cache de contexto entre conversas.
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica — Nicolas</label>
+          <code>1. Verificar: ao iniciar nova sessão (paciente envia "Bom dia"
+   ou qualquer mensagem após > X horas de inatividade),
+   garantir que o estado da sessão anterior seja completamente
+   resetado no Supabase:
+   - grupo_roteado = null
+   - checklist_atual = null
+   - estado_fluxo = "MENU"
+   - queixa_principal = null
+   - motivo_encerramento = null (ou manter para follow-up)
+
+2. Definir "nova sessão" como:
+   → Inatividade > 4 horas OU
+   → Paciente envia saudação nova (oi, olá, bom dia, etc.) OU
+   → Conversa foi encerrada formalmente
+
+3. Nunca usar variáveis de roteamento da sessão anterior para
+   influenciar a nova triagem — cada sessão começa do zero.
+
+4. Opcional: log de qual grupo foi atribuído e por quê,
+   para facilitar diagnóstico quando acontecer de novo.</code>
+        </div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Garantir reset completo de estado ao iniciar nova sessão — verificar lógica de sessão no Supabase</span>
         </div>
       </div>
 
@@ -497,22 +838,27 @@ e processar uma única vez com o contexto completo.</code>
   </div>
 
   <!-- RODAPÉ -->
-  <div style="background:white;border:1px solid var(--borda);border-radius:12px;padding:18px 22px;font-size:13px;color:var(--leve);line-height:1.7;margin-top:4px;">
+  <div style="background:white;border:1px solid var(--borda);border-radius:12px;padding:18px 22px;font-size:13px;color:var(--leve);line-height:1.9;margin-top:4px;">
     <strong style="color:var(--texto)">Ordem sugerida de execução:</strong><br>
-    🔴 <strong>N2 primeiro</strong> (mensagens duplicadas — afeta toda interação)<br>
-    🔴 <strong>N1 segundo</strong> (IA responde após handoff — confunde paciente e equipe)<br>
-    🟠 <strong>R1 terceiro</strong> (data errada — causa agendamentos no dia errado)<br>
-    🟠 <strong>R2 quarto</strong> (renovação ansiedade — perda de conversão)<br>
-    🟠 <strong>N3 + N4 + R3</strong> em conjunto (follow-up e flag equipe — podem ser feitos juntos)<br>
-    🟢 <strong>R4 último</strong> (especialidades — já feito no faq_tool, só falta adicionar nos prompts)
+    🔴 <strong>N2 primeiro</strong> — mensagens duplicadas afetam toda interação<br>
+    🔴 <strong>N1 segundo</strong> — IA respondendo após handoff confunde paciente e equipe<br>
+    🔴 <strong>N5 terceiro</strong> — horários/pagamento não chegando = perda direta de venda<br>
+    🔴 <strong>R7 quarto</strong> — otoscópio para olho é erro médico urgente de corrigir<br>
+    🔴 <strong>R8 quinto</strong> — abscesso/pus deve bloquear sempre — risco de sepse<br>
+    🟠 <strong>R6 sexto</strong> — guard-rail re-roteando quem já escolheu saúde mental perde conversão<br>
+    🟠 <strong>R1 sétimo</strong> — data errada causa agendamento no dia errado<br>
+    🟠 <strong>R2 oitavo</strong> — renovação ansiedade sem perguntar medicamento perde R$79,90<br>
+    🟠 <strong>R5 + R9</strong> em conjunto — atestado e confirmações: simples de ajustar no prompt<br>
+    🟠 <strong>N3 + N4 + R3</strong> em conjunto — follow-up e flag equipe<br>
+    🟠 <strong>N6 + N7</strong> em conjunto — internacional e sessão anterior: técnicos mas menos urgentes<br>
+    🟢 <strong>R4 por último</strong> — especialidades: faq_tool.js ✅ feito, falta só adicionar nos prompts
   </div>
 
 </div>
 
 <script>
-// Salva estado dos checkboxes no localStorage
 document.querySelectorAll('input[type=checkbox]').forEach((chk, i) => {
-  const key = 'mel_' + i;
+  const key = 'mel2_' + i;
   if (localStorage.getItem(key) === '1') {
     chk.checked = true;
     chk.parentElement.style.opacity = '.4';
@@ -521,6 +867,11 @@ document.querySelectorAll('input[type=checkbox]').forEach((chk, i) => {
     localStorage.setItem(key, chk.checked ? '1' : '0');
   });
 });
+function save(chk) {
+  const all = document.querySelectorAll('input[type=checkbox]');
+  const i = [...all].indexOf(chk);
+  localStorage.setItem('mel2_' + i, chk.checked ? '1' : '0');
+}
 </script>
 </body>
 </html>
