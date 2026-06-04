@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clara · Bugs para Nicolas</title>
+  <style>
+    :root{
+      --azul-escuro:#0b1f35;
+      --azul-medio:#1a3a5c;
+      --azul-vivo:#2271b3;
+      --acento:#00c2a8;
+      --critico:#e8304a;
+      --critico-bg:#fff1f3;
+      --critico-borda:#ffc5cd;
+      --alta:#f5811f;
+      --alta-bg:#fff8f1;
+      --alta-borda:#ffd4a8;
+      --verde:#12b76a;
+      --verde-bg:#f0fdf6;
+      --verde-borda:#a7f0c6;
+      --cinza-claro:#f4f7fb;
+      --borda:#dde5f0;
+      --texto:#1a202c;
+      --leve:#5a6880;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza-claro);color:var(--texto);}
+
+    /* ── HEADER ── */
+    .header{
+      background:linear-gradient(140deg,#071525 0%,#0f2d4e 50%,#1a4a78 100%);
+      padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden;
+    }
+    .header::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 30% 50%,rgba(0,194,168,0.12) 0%,transparent 60%),
+                 radial-gradient(ellipse at 70% 30%,rgba(34,113,179,0.18) 0%,transparent 55%);
+    }
+    .header-inner{position:relative;z-index:1;}
+    .header-pill{
+      display:inline-flex;align-items:center;gap:7px;
+      background:rgba(0,194,168,0.15);border:1px solid rgba(0,194,168,0.4);
+      color:#00e6cc;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+      padding:5px 16px;border-radius:20px;margin-bottom:18px;
+    }
+    .header h1{font-size:28px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;}
+    .header h1 span{color:var(--acento);}
+    .header-sub{color:rgba(255,255,255,0.55);font-size:13.5px;margin-bottom:24px;}
+    .header-meta{
+      display:inline-flex;gap:20px;flex-wrap:wrap;justify-content:center;
+    }
+    .meta-chip{
+      display:flex;align-items:center;gap:6px;
+      background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.75);font-size:12px;padding:5px 14px;border-radius:20px;
+    }
+    .meta-chip .dot{width:8px;height:8px;border-radius:50%;}
+    .dot-red{background:#e8304a;}
+    .dot-ora{background:#f5811f;}
+    .dot-grn{background:#12b76a;}
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap{
+      background:white;border:1px solid var(--borda);border-radius:14px;
+      padding:20px 24px;margin:0 auto 26px;max-width:860px;
+    }
+    .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+    .progress-header h3{font-size:14px;font-weight:800;color:var(--texto);}
+    .progress-pct{font-size:22px;font-weight:900;color:var(--azul-vivo);}
+    .progress-bar-bg{background:#e8eef7;border-radius:99px;height:10px;overflow:hidden;}
+    .progress-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#00c2a8,#2271b3);width:0%;transition:width .5s ease;}
+    .progress-labels{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
+    .plabel{font-size:12px;color:var(--leve);display:flex;align-items:center;gap:5px;}
+    .plabel .badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;}
+
+    /* ── PAGE LAYOUT ── */
+    .page{max-width:860px;margin:0 auto;padding:28px 16px;}
+
+    /* ── AVISO EDITÁVEL ── */
+    .aviso-edit{
+      display:flex;align-items:flex-start;gap:12px;
+      background:linear-gradient(135deg,#fffbf0,#fff9e8);
+      border:1px solid #fde68a;border-radius:12px;
+      padding:14px 18px;margin-bottom:26px;font-size:13px;color:#78350f;line-height:1.6;
+    }
+    .aviso-edit .ico{font-size:22px;flex-shrink:0;margin-top:1px;}
+
+    /* ── CARD ── */
+    .card{margin-bottom:24px;border-radius:16px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.06);}
+    .card-bar{height:5px;}
+    .bar-critico{background:linear-gradient(90deg,#e8304a,#ff6b6b);}
+    .bar-alta{background:linear-gradient(90deg,#f5811f,#ffb347);}
+    .card-head{
+      display:flex;align-items:flex-start;gap:16px;
+      padding:22px 24px 18px;background:white;border:1px solid var(--borda);border-top:none;
+    }
+    .card-icon-wrap{
+      width:48px;height:48px;border-radius:12px;display:flex;align-items:center;
+      justify-content:center;font-size:22px;flex-shrink:0;
+    }
+    .icon-critico{background:var(--critico-bg);}
+    .icon-alta{background:var(--alta-bg);}
+    .card-head-info{flex:1;}
+    .card-number{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+    .num-critico{color:var(--critico);}
+    .num-alta{color:var(--alta);}
+    .card-title{font-size:17px;font-weight:900;color:var(--texto);line-height:1.3;}
+    .card-badge{
+      display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+      padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+    }
+    .badge-critico{background:var(--critico-bg);color:var(--critico);border:1px solid var(--critico-borda);}
+    .badge-alta{background:var(--alta-bg);color:var(--alta);border:1px solid var(--alta-borda);}
+    .badge-dot{width:7px;height:7px;border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
+    .badge-critico .badge-dot{background:var(--critico);}
+    .badge-alta .badge-dot{background:var(--alta);}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+    .card-body{background:white;border:1px solid var(--borda);border-top:none;}
+
+    /* ── BLOCOS INTERNOS ── */
+    .bloco{margin:0 24px 14px;border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.7;}
+    .bloco:first-child{margin-top:18px;}
+    .bloco-label{
+      font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+      margin-bottom:8px;display:flex;align-items:center;gap:6px;
+    }
+    .bloco-prob{background:var(--critico-bg);border:1px solid var(--critico-borda);}
+    .bloco-prob .bloco-label{color:var(--critico);}
+    .bloco-tec{background:#eff6ff;border:1px solid #bfdbfe;}
+    .bloco-tec .bloco-label{color:#2563eb;}
+    .bloco-ok{background:var(--verde-bg);border:1px solid var(--verde-borda);}
+    .bloco-ok .bloco-label{color:#15803d;}
+
+    pre{
+      background:rgba(10,20,40,0.06);border-radius:8px;
+      padding:12px 14px;font-family:'Courier New',monospace;font-size:12px;
+      white-space:pre-wrap;word-break:break-word;margin-top:8px;line-height:1.6;
+      border:1px solid rgba(0,0,0,0.06);
+    }
+
+    /* ── TABELA ── */
+    .tbl-wrap{overflow-x:auto;margin:0 24px 14px;}
+    table{width:100%;border-collapse:collapse;font-size:12.5px;border-radius:10px;overflow:hidden;}
+    thead tr{background:#1a3a5c;color:white;}
+    th{padding:10px 12px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.5px;}
+    tbody tr:nth-child(even){background:#f8fafc;}
+    tbody tr:hover{background:#edf4ff;}
+    td{padding:9px 12px;border-bottom:1px solid #eef2f8;color:var(--leve);vertical-align:top;}
+    td code{background:#e8eef8;padding:2px 6px;border-radius:5px;font-family:monospace;font-size:11.5px;color:#1a3a5c;font-weight:700;}
+    .sim{color:#15803d;font-weight:800;}
+    .nao{color:#b91c1c;font-weight:800;}
+
+    /* ── SUBTAREFAS ── */
+    .subtarefas{padding:16px 24px;border-top:1px dashed var(--borda);background:#fcfdff;}
+    .subtarefas h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--leve);margin-bottom:10px;}
+    .subtarefa-linha{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:9px 0;border-bottom:1px solid var(--borda);
+    }
+    .subtarefa-linha:last-child{border-bottom:none;}
+    .subtarefa-chk{width:18px;height:18px;cursor:pointer;flex-shrink:0;margin-top:1px;accent-color:var(--azul-vivo);}
+    .subtarefa-texto{font-size:13px;flex:1;line-height:1.5;}
+    .subtarefa-texto strong{display:block;font-weight:700;color:var(--texto);}
+    .subtarefa-texto span{font-size:12px;color:var(--leve);}
+
+    /* ── NOTA ── */
+    .nota-wrap{padding:14px 24px 0;border-top:1px dashed var(--borda);}
+    .nota-wrap label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--leve);margin-bottom:5px;display:block;}
+    textarea{
+      width:100%;min-height:60px;border:1px dashed #c8d6e8;border-radius:8px;
+      padding:10px 12px;font-family:'Segoe UI',sans-serif;font-size:13px;
+      color:var(--texto);resize:vertical;background:#fdfdff;
+      transition:border-color .2s;outline:none;
+    }
+    textarea:focus{border-color:var(--azul-vivo);background:#fff;}
+
+    /* ── FOOTER DO CARD ── */
+    .card-footer{
+      padding:14px 24px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      background:white;border:1px solid var(--borda);border-top:none;
+      border-radius:0 0 16px 16px;
+    }
+    .chk-main{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;font-weight:700;color:var(--texto);}
+    .chk-main input{width:17px;height:17px;cursor:pointer;accent-color:var(--verde);}
+    .footer-dica{margin-left:auto;font-size:11px;color:var(--leve);text-align:right;}
+
+    /* ── RODAPÉ GERAL ── */
+    .rodape-geral{
+      background:linear-gradient(135deg,var(--azul-escuro),var(--azul-medio));
+      color:rgba(255,255,255,0.8);border-radius:16px;padding:26px 28px;
+      font-size:13.5px;line-height:2;margin-top:8px;
+    }
+    .rodape-geral h3{color:#fff;font-size:15px;margin-bottom:10px;}
+    .rodape-geral .linha{display:flex;align-items:flex-start;gap:8px;padding:4px 0;}
+    .rodape-geral .linha .n{font-weight:900;color:#fff;min-width:30px;}
+    .rodape-geral .linha .t{flex:1;}
+    .lembrete{background:rgba(0,194,168,0.12);border:1px solid rgba(0,194,168,0.3);color:rgba(255,255,255,0.7);border-radius:10px;padding:12px 16px;margin-top:14px;font-size:13px;}
+
+    /* ── DIVISOR DE SUBTAREFAS N4 ── */
+    .n4-tasks-header{
+      background:linear-gradient(90deg,#1a3a5c,#2271b3);
+      color:white;font-size:11px;font-weight:800;letter-spacing:1.5px;
+      text-transform:uppercase;padding:8px 24px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-pill">⚙️ n8n · Clara Triagem</div>
+    <h1>Bugs para <span>Nicolas</span> resolver</h1>
+    <p class="header-sub">Problemas confirmados em conversas reais · Atualizado em 04/06/2026</p>
+    <div class="header-meta">
+      <div class="meta-chip"><div class="dot dot-red"></div> 2 críticos (N2, N5)</div>
+      <div class="meta-chip"><div class="dot dot-ora"></div> 3 alta prioridade (N4, N6, N7)</div>
+      <div class="meta-chip"><div class="dot dot-grn"></div> 5 itens no total</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PÁGINA ── -->
+<div class="page">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-header">
+      <h3>📊 Progresso geral</h3>
+      <div class="progress-pct" id="pct">0%</div>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar"></div></div>
+    <div class="progress-labels">
+      <div class="plabel"><span class="badge" style="background:#fff1f3;color:#e8304a;border:1px solid #ffc5cd;">🔴 Crítico</span> N2 — Mensagens duplicadas · N5 — Horários/link não enviado</div>
+      <div class="plabel"><span class="badge" style="background:#fff8f1;color:#f5811f;border:1px solid #ffd4a8;">🟠 Alta</span> N4 — Follow-up cego · N6 — Internacional em loop · N7 — Sessão contaminada</div>
+    </div>
+  </div>
+
+  <!-- AVISO EDITÁVEL -->
+  <div class="aviso-edit">
+    <div class="ico">✏️</div>
+    <div>
+      <strong>Documento interativo:</strong> marque cada checkbox ao concluir — o progresso fica salvo no seu navegador.
+      Use o campo de <strong>anotações</strong> para registrar o que foi feito, dúvidas ou mudanças de abordagem. Tudo salvo automaticamente (localStorage).
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N2 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-critico"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-critico">💬</div>
+      <div class="card-head-info">
+        <div class="card-number num-critico">N2 · Crítico</div>
+        <div class="card-title">Mensagens duplicadas — paciente envia 2 msgs rápidas, Clara responde 2 vezes</div>
+      </div>
+      <div class="card-badge badge-critico"><div class="badge-dot"></div> Crítico</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ O que está acontecendo</div>
+        Quando o paciente envia duas mensagens em sequência rápida, a <strong>Evolution API dispara dois webhooks separados</strong>. O n8n processa os dois e a IA responde duas vezes — duplicando a conversa.<br><br>
+        <strong>Confirmado nas conversas 4 e 6:</strong> endereço pedido em duplicata, e mensagem de número internacional disparando múltiplas vezes para o mesmo evento.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Opção A — Debounce simples (recomendada)</div>
+        <pre>1. Quando chega mensagem: registrar timestamp no Supabase
+   como "ultima_mensagem_recebida"
+
+2. Aguardar 2–3 segundos antes de processar
+
+3. Antes de chamar o agente IA, verificar:
+   SE chegou outra mensagem do mesmo número nos últimos 3 seg:
+     → Ignorar a anterior (processar só a mais recente)
+     → OU concatenar e processar uma vez só</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Opção B — Flag de processamento</div>
+        <pre>1. Ao receber mensagem: processando = true
+2. Se chegar nova mensagem enquanto processando = true:
+   → Guardar na fila, processar após a primeira terminar
+3. Ao finalizar resposta: processando = false
+
+⚡ Obs: o debounce (opção A) também resolve parcialmente o N6
+   (número internacional em loop), então resolve dois bugs de vez.</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="O que foi implementado, qual opção escolhida, dúvidas..." oninput="saveNota(this,'n2')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n2')"> Concluído</label>
+      <div class="footer-dica">Implementar debounce antes do nó da IA no webhook de entrada</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N4 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🔔</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N4 · Alta prioridade</div>
+        <div class="card-title">Follow-up cego — dispara para todo mundo, inclusive quem foi mandado para a UPA</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Alta</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Problema central descoberto</div>
+        A variável <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">motivo_encerramento</code> já está <strong>descrita no prompt da Clara</strong> com 8 valores possíveis — mas <strong>nenhuma etapa do prompt realmente grava esse valor</strong>. É só documentação flutuando no ar.<br><br>
+        O follow-up está <strong>cego</strong> e dispara para todos. <strong>Caso real:</strong> paciente Agda foi bloqueada por abscesso (31/05) e recebeu dois follow-ups automáticos no dia seguinte — uma mensagem completamente inadequada para alguém que foi mandada à UPA.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">📋 Tabela de referência — quem deve receber follow-up</div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>motivo_encerramento</th>
+              <th>Quando acontece</th>
+              <th>Dispara follow-up?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>pagamento_pendente</code></td><td>Recebeu o link mas não pagou</td><td class="sim">✅ SIM</td></tr>
+            <tr><td><code>cadastro_incompleto</code></td><td>Começou o cadastro e não terminou</td><td class="sim">✅ SIM</td></tr>
+            <tr><td><code>abandonou_triagem</code></td><td>Iniciou triagem e parou de responder</td><td class="sim">✅ SIM</td></tr>
+            <tr><td><code>bloqueado_alarme</code></td><td>Mandado para UPA/SAMU — sinal de alarme</td><td class="nao">❌ NÃO</td></tr>
+            <tr><td><code>atendimento_recusado</code></td><td>Recusado por urgência / caso inadequado</td><td class="nao">❌ NÃO</td></tr>
+            <tr><td><code>encerrado_paciente</code></td><td>Paciente disse que não quer continuar</td><td class="nao">❌ NÃO</td></tr>
+            <tr><td><code>pagamento_confirmado</code></td><td>Já pagou — atendimento seguiu normalmente</td><td class="nao">❌ NÃO</td></tr>
+            <tr><td><code>equipe_assumiu</code></td><td>Atendente humano assumiu a conversa</td><td class="nao">❌ NÃO</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="n4-tasks-header">4 Tarefas técnicas para implementar</div>
+
+    <div class="card-body">
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">📦 Tarefa 1 — Criar campo no Supabase</div>
+        <pre>Tabela: mesma tabela do "setor" (sessoes / contexto)
+Campo novo: motivo_encerramento  (tipo: text, pode ser null)
+
+Se já existir, confirmar que está acessível nos nós
+"Get a row" e "Update row".</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">📦 Tarefa 2 — Gravar o motivo em cada encerramento</div>
+        <pre>Opção A — adicionar parâmetro na tool atualizar_setor (recomendada):
+  atualizar_setor(setor, motivo_encerramento)
+  → quando setor = "ENCERRADO", Clara envia o motivo junto
+  → nó Update row grava os dois campos de uma vez
+
+Opção B — derivar pelo setor (sem mexer na tool):
+  Nó Set/Function que deduz o motivo:
+  setor = "HUMANO" / "HUMANO_VOLUNTARIO" → "equipe_assumiu"
+  setor = "AGUARDANDO_PAGAMENTO"         → "pagamento_pendente"
+  ⚠️ "ENCERRADO" sozinho NÃO distingue UPA de recusa voluntária
+     → Opção A é mais segura para esses casos</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">⚡ Tarefa 3 — IF no nó de follow-up (pode ser feita AGORA, antes das outras)</div>
+        <pre>DISPARAR follow-up SOMENTE SE:
+  motivo_encerramento IN (
+    "pagamento_pendente",
+    "cadastro_incompleto",
+    "abandonou_triagem"
+  )
+
+NÃO DISPARAR SE:
+  motivo_encerramento IN (
+    "bloqueado_alarme", "atendimento_recusado",
+    "encerrado_paciente", "pagamento_confirmado", "equipe_assumiu"
+  )
+  OU motivo_encerramento IS NULL  ← por segurança: NULL = não dispara
+
+⚡ Esta tarefa sozinha já resolve os disparos constrangedores —
+   implementar primeiro mesmo antes das outras estarem prontas.</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">📦 Tarefa 4 — Cruzar com equipe_assumiu e pagamento manual</div>
+        <pre>Quando a equipe assume ou gera cobrança manual:
+  → setar equipe_assumiu = true
+  → motivo_encerramento = "equipe_assumiu"
+
+No nó de follow-up, além da condição acima:
+  SE equipe_assumiu = true            → NÃO disparar
+  SE pagamento_status = "manual_gerado" → NÃO disparar
+  SE pagamento_status = "confirmado"    → NÃO disparar</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">🗺️ Mapa de motivos por ponto de encerramento (alinhar com Raíssa)</div>
+        VER. 0 sinal de alarme / MOMENTO 2 reprovado → <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">bloqueado_alarme</code><br>
+        VER. 1 gestante / VER. 2 criança / VER. 4 drogas / VER. 11 benzo / VER. 12 medicamentos / VER. 9 acompanhante → <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">atendimento_recusado</code><br>
+        Paciente disse "não quero" em qualquer etapa → <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">encerrado_paciente</code><br>
+        Paciente parou de responder (timeout do n8n) → <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">abandonou_triagem</code><br>
+        Recebeu link e não pagou → <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">pagamento_pendente</code><br><br>
+        <strong>Obs:</strong> <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">abandonou_triagem</code> não é gravado pela Clara — é o timeout do n8n que detecta inatividade. Alinhar como registrar isso.
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">✅ Checklist de testes após implementar</div>
+        <pre>1. Simular "dor no peito" (sinal de alarme)
+   → motivo = "bloqueado_alarme" → follow-up NÃO dispara ✓
+
+2. Paciente recebeu link e não pagou
+   → motivo = "pagamento_pendente" → follow-up DISPARA ✓
+
+3. Paciente disse "não quero, obrigado"
+   → motivo = "encerrado_paciente" → follow-up NÃO dispara ✓
+
+4. Equipe assumiu a conversa
+   → motivo = "equipe_assumiu" → follow-up NÃO dispara ✓
+
+5. Sessão sem motivo gravado (NULL)
+   → follow-up NÃO dispara (regra de segurança) ✓</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Qual tarefa foi feita primeiro, abordagem escolhida, problemas encontrados..." oninput="saveNota(this,'n4')"></textarea>
+      </div>
+    </div>
+
+    <div class="subtarefas">
+      <h4>Marcar progresso por tarefa</h4>
+      <div class="subtarefa-linha">
+        <input class="subtarefa-chk" type="checkbox" onchange="saveChk(this,'n4t1')">
+        <div class="subtarefa-texto">
+          <strong>Tarefa 1 — Campo motivo_encerramento no Supabase</strong>
+          <span>Criar campo text nullable na tabela de sessões</span>
+        </div>
+      </div>
+      <div class="subtarefa-linha">
+        <input class="subtarefa-chk" type="checkbox" onchange="saveChk(this,'n4t2')">
+        <div class="subtarefa-texto">
+          <strong>Tarefa 2 — Gravação do motivo em cada encerramento</strong>
+          <span>tool atualizar_setor aceita motivo, ou nó Set que deriva pelo setor</span>
+        </div>
+      </div>
+      <div class="subtarefa-linha">
+        <input class="subtarefa-chk" type="checkbox" onchange="saveChk(this,'n4t3')">
+        <div class="subtarefa-texto">
+          <strong>Tarefa 3 — IF no nó de follow-up ⚡ (pode fazer antes das outras)</strong>
+          <span>NULL = não dispara. Lista de motivos recuperáveis vs. irreversíveis</span>
+        </div>
+      </div>
+      <div class="subtarefa-linha">
+        <input class="subtarefa-chk" type="checkbox" onchange="saveChk(this,'n4t4')">
+        <div class="subtarefa-texto">
+          <strong>Tarefa 4 — Cruzar equipe_assumiu e pagamento manual</strong>
+          <span>Flag equipe_assumiu suprime follow-up de cobrança também</span>
+        </div>
+      </div>
+      <div class="subtarefa-linha">
+        <input class="subtarefa-chk" type="checkbox" onchange="saveChk(this,'n4test')">
+        <div class="subtarefa-texto">
+          <strong>Testes dos 5 cenários passaram</strong>
+          <span>UPA não recebe follow-up · pagamento pendente recebe · NULL não dispara</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n4')"> Concluído (todas as tarefas)</label>
+      <div class="footer-dica">Tarefa 3 pode ser feita agora mesmo — já estanca os disparos errados</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N5 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-critico"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-critico">📅</div>
+      <div class="card-head-info">
+        <div class="card-number num-critico">N5 · Crítico</div>
+        <div class="card-title">Clara avisa que vai enviar os horários / link de pagamento — e não envia</div>
+      </div>
+      <div class="card-badge badge-critico"><div class="badge-dot"></div> Crítico</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Conversa 1 — horários que nunca chegaram</div>
+        Clara disse: <em>"Agora vou te mostrar os horários disponíveis com o médico"</em><br>
+        → <strong>Silêncio total. A conversa terminou ali.</strong><br><br>
+        Possíveis causas: tool call falhou silenciosamente, timeout na API de agenda, resposta truncada pelo n8n.
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Conversa 2 — link de pagamento nunca enviado</div>
+        Paciente escolhe PIX pela 2ª vez (após erro na 1ª tentativa)<br>
+        Clara: <em>"Seu pagamento via PIX já foi gerado e seu atendimento está finalizado 😊"</em><br>
+        → <strong>Nunca enviou o link de pagamento. Paciente não sabe como pagar. ❌</strong>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Solução técnica</div>
+        <pre>1. Tratamento de erro nos nós de tool call:
+   - Busca de horários: se retornar vazio ou erro →
+     "Tive um problema ao buscar os horários. Tente novamente
+      ou fale com a equipe (opção 7)."
+   - Geração de link Asaas: se retornar erro →
+     NÃO confirmar que o pagamento foi gerado.
+     Informar o erro antes de concluir.
+
+2. Verificar na resposta do Asaas:
+   ① O link está sendo enviado junto com a mensagem de confirmação?
+   ② A IA não está assumindo sucesso antes de receber o link de volta?
+
+3. Adicionar log de tool calls com erro (quando a IA diz "vou enviar"
+   mas o nó falhou silenciosamente).
+
+4. Timeout de horários: se busca demorar mais de 8s →
+   enviar mensagem de espera + tentar novamente.</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Onde estava o erro, como foi resolvido, qual a causa raiz..." oninput="saveNota(this,'n5')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n5')"> Concluído</label>
+      <div class="footer-dica">Verificar nós de busca de horários e geração de link Asaas — tratamento de erro</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N6 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🌐</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N6 · Alta prioridade</div>
+        <div class="card-title">Mensagem de número internacional em loop após handoff humano</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Alta</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ O que aconteceu (conversa 6 — número +58 Venezuela)</div>
+        <pre>Sistema: "Para atendimento internacional, nossa equipe entrará em contato em breve. 🧡"
+Raíssa:  "Boa noite! Tudo bem? Como posso te ajudar hoje?"
+Sistema: "Para atendimento internacional..." ← dispara de novo ❌
+Paciente: "Atestado"
+Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
+        A mensagem continuou disparando a cada mensagem enviada — tanto pela equipe quanto pelo paciente.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Solução técnica</div>
+        <pre>1. A mensagem de número internacional deve disparar APENAS UMA VEZ
+   — no primeiro contato do número estrangeiro.
+
+2. Após disparar: setar internacional_notificado = true
+   → Não disparar novamente para o mesmo número na sessão.
+
+3. Quando a equipe assumir (setor = "AGUARDANDO_HUMANO"):
+   → Suprimir completamente a mensagem internacional também
+   → Toda automação não iniciada pelo humano deve ser silenciada.
+
+4. Forma mais simples: mover verificação de número internacional
+   para ANTES do nó de entrada geral.
+   Se for internacional:
+     → Disparar mensagem UMA vez
+     → Setar setor = "AGUARDANDO_HUMANO" imediatamente
+     → Não processar mais nada até equipe liberar</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Como foi identificado onde o nó dispara, solução aplicada..." oninput="saveNota(this,'n6')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n6')"> Concluído</label>
+      <div class="footer-dica">Setar AGUARDANDO_HUMANO após 1ª msg internacional + flag internacional_notificado</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N7 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🔄</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N7 · Alta prioridade</div>
+        <div class="card-title">Contexto de sessão anterior contamina nova sessão do mesmo paciente</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Alta</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Caso real — Agda, dia 2 (01/06/2026)</div>
+        Agda foi bloqueada na sessão anterior (31/05) por relatar <em>"abscesso com pus"</em>.<br>
+        No dia seguinte, voltou, escolheu opção 1, disse que sintomas eram <strong>leves</strong>.<br>
+        Clara exibiu o checklist de <strong>TRAUMA</strong> (dor após impacto, deformidade, dormência).<br>
+        Agda nunca mencionou nenhum sintoma musculoesquelético.<br><br>
+        <strong>Hipótese:</strong> variável de grupo/rota da sessão anterior não foi limpa e influenciou a nova triagem, ou houve cache de contexto entre conversas.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Solução técnica</div>
+        <pre>1. Ao iniciar nova sessão (mensagem após >X horas de inatividade),
+   resetar completamente o estado da sessão anterior no Supabase:
+   - grupo_roteado       = null
+   - checklist_atual     = null
+   - estado_fluxo        = "MENU"
+   - queixa_principal    = null
+   - motivo_encerramento = null  (ou manter para follow-up — decidir)
+
+2. Definir "nova sessão" como qualquer um de:
+   → Inatividade > 4 horas  OU
+   → Paciente envia saudação nova (oi, olá, bom dia, etc.)  OU
+   → Conversa foi encerrada formalmente
+
+3. Nunca usar variáveis de roteamento da sessão anterior para
+   influenciar a nova triagem — cada sessão começa do zero.
+
+4. Opcional: log de qual grupo foi atribuído e por quê,
+   para facilitar diagnóstico quando acontecer de novo.</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Quais variáveis foram identificadas como não resetadas, solução aplicada..." oninput="saveNota(this,'n7')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n7')"> Concluído</label>
+      <div class="footer-dica">Reset completo das variáveis de sessão ao detectar nova sessão no Supabase</div>
+    </div>
+  </div>
+
+  <!-- ── RODAPÉ GERAL ── -->
+  <div class="rodape-geral">
+    <h3>⚡ Ordem sugerida de execução</h3>
+    <div class="linha"><div class="n">🔴 1º</div><div class="t"><strong>N2 — Debounce</strong> · Mensagens duplicadas afetam toda interação. Resolver primeiro.</div></div>
+    <div class="linha"><div class="n">🔴 2º</div><div class="t"><strong>N5 — Horários/link</strong> · Falha silenciosa = perda direta de agendamento e pagamento.</div></div>
+    <div class="linha"><div class="n">🟠 3º</div><div class="t"><strong>N4 Tarefa 3 — IF no follow-up</strong> · Só o IF (NULL = não dispara) já estanca os disparos constrangedores agora.</div></div>
+    <div class="linha"><div class="n">🟠 4º</div><div class="t"><strong>N6 — Internacional</strong> · Loop de mensagens pode ser resolvido junto com N2 (debounce ajuda).</div></div>
+    <div class="linha"><div class="n">🟠 5º</div><div class="t"><strong>N7 — Sessão anterior</strong> · Reset de variáveis + N4 completo em seguida.</div></div>
+    <div class="lembrete">
+      💡 <strong>N4 Tarefa 3</strong> pode ser feita antes de qualquer outra coisa: adicionar <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">SE motivo IS NULL → não disparar</code> no nó de follow-up já protege os casos urgentes enquanto o resto é implementado.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Persistência ──
+  function saveChk(el, key) {
+    localStorage.setItem('nic5_chk_' + key, el.checked ? '1' : '0');
+    atualizarProgresso();
+  }
+  function saveNota(el, key) {
+    localStorage.setItem('nic5_nota_' + key, el.value);
+  }
+
+  // ── Restaurar estado ──
+  function restaurar() {
+    const chkKeys = ['n2','n4','n4t1','n4t2','n4t3','n4t4','n4test','n5','n6','n7'];
+    document.querySelectorAll('input[type=checkbox]').forEach(el => {
+      const attr = el.getAttribute('onchange');
+      if (!attr) return;
+      const match = attr.match(/'([^']+)'\)/);
+      if (!match) return;
+      const k = match[1];
+      if (localStorage.getItem('nic5_chk_' + k) === '1') el.checked = true;
+    });
+
+    const notaKeys = ['n2','n4','n5','n6','n7'];
+    document.querySelectorAll('textarea').forEach(el => {
+      const attr = el.getAttribute('oninput');
+      if (!attr) return;
+      const match = attr.match(/'([^']+)'\)/);
+      if (!match) return;
+      const k = match[1];
+      const val = localStorage.getItem('nic5_nota_' + k);
+      if (val) el.value = val;
+    });
+  }
+
+  // ── Progresso ──
+  function atualizarProgresso() {
+    const todos = document.querySelectorAll('input[type=checkbox]');
+    const feitos = [...todos].filter(c => c.checked).length;
+    const pct = todos.length ? Math.round((feitos / todos.length) * 100) : 0;
+    document.getElementById('pct').textContent = pct + '%';
+    document.getElementById('bar').style.width = pct + '%';
+  }
+
+  // ── Init ──
+  restaurar();
+  atualizarProgresso();
+  document.querySelectorAll('input[type=checkbox]').forEach(el => {
+    el.addEventListener('change', atualizarProgresso);
+  });
+</script>
+</body>
+</html>
