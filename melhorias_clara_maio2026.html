@@ -655,43 +655,130 @@ internacional disparando em loop (N6).</code>
       <div class="item">
         <div class="item-header">
           <span class="prio prio-alta">🟠 Alta</span>
-          <div class="item-titulo">N4 — Variável motivo_encerramento para controlar follow-up</div>
+          <div class="item-titulo">N4 — Sistema de follow-up inteligente com motivo_encerramento</div>
         </div>
         <div class="item-desc">
-          Relacionado ao R3 (Raíssa define os valores no prompt). Nicolas precisa implementar a lógica no nó de follow-up para ler essa variável antes de disparar. Esta tarefa depende do R3 estar feito primeiro.
+          Hoje o follow-up dispara para <strong>todo mundo</strong> — incluindo quem foi mandado para a UPA, quem foi recusado por urgência e quem a equipe já assumiu. Isso gera mensagens constrangedoras. A solução é uma variável <code>motivo_encerramento</code> que diz <em>por que</em> a conversa terminou — e o follow-up só dispara para os abandonos recuperáveis.<br><br>
+          <strong>Depende do R3:</strong> Raíssa precisa ajustar o prompt para gravar o motivo. Nicolas implementa a leitura no nó de follow-up.
         </div>
+
+        <div class="bloco bloco-problema">
+          <label>⚠️ Problema central descoberto</label>
+          A variável <code>motivo_encerramento</code> já está <strong>descrita no prompt da Clara</strong> com os 8 valores possíveis — mas <strong>nenhuma etapa do prompt realmente grava esse valor</strong>. É só documentação que não conecta a nada. O follow-up está "cego" e dispara para todos.
+          Confirmado: paciente Agda foi bloqueada por abscesso (31/05) e recebeu dois follow-ups automáticos no dia seguinte.
+        </div>
+
         <div class="bloco bloco-tecnico">
-          <label>Solução técnica — Nicolas</label>
-          <code>1. Garantir que a variável "motivo_encerramento" seja salva
-   no Supabase (tabela de sessões/contexto) cada vez que
-   um atendimento é encerrado pela IA.
-
-2. No nó que dispara o follow-up automático:
-   Buscar o motivo_encerramento do número no Supabase.
-
-   Condição para DISPARAR follow-up:
-   motivo_encerramento IN (
-     "pagamento_pendente",
-     "cadastro_incompleto",
-     "abandonou_triagem"
-   )
-
-   Condição para NÃO DISPARAR:
-   motivo_encerramento IN (
-     "bloqueado_alarme",
-     "atendimento_recusado",
-     "encerrado_paciente",
-     "pagamento_confirmado",
-     "equipe_assumiu"
-   )
-   OU motivo_encerramento IS NULL
-
-3. Adicionar campo "motivo_encerramento" na tabela de sessões
-   se ainda não existir.</code>
+          <label>Tabela de referência — motivos e se disparam follow-up</label>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;">
+            <tr style="background:#f1f5f9;">
+              <th style="padding:7px 8px;text-align:left;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e2e8f0;">motivo_encerramento</th>
+              <th style="padding:7px 8px;text-align:left;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e2e8f0;">Quando acontece</th>
+              <th style="padding:7px 8px;text-align:left;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e2e8f0;">Follow-up?</th>
+            </tr>
+            <tr><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">pagamento_pendente</code></td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;">Recebeu o link mas não pagou</td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#15803d;font-weight:800;font-size:12px;">✅ DISPARAR</td></tr>
+            <tr><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">cadastro_incompleto</code></td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;">Começou cadastro e não terminou</td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#15803d;font-weight:800;font-size:12px;">✅ DISPARAR</td></tr>
+            <tr><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">abandonou_triagem</code></td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;">Iniciou triagem e parou de responder (timeout)</td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#15803d;font-weight:800;font-size:12px;">✅ DISPARAR</td></tr>
+            <tr><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">bloqueado_alarme</code></td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;">Foi mandado para UPA/SAMU (sinal de alarme)</td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#b91c1c;font-weight:800;font-size:12px;">❌ NÃO</td></tr>
+            <tr><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">atendimento_recusado</code></td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;">Recusado por urgência / caso inadequado</td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#b91c1c;font-weight:800;font-size:12px;">❌ NÃO</td></tr>
+            <tr><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">encerrado_paciente</code></td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;">Paciente disse que não quer continuar</td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#b91c1c;font-weight:800;font-size:12px;">❌ NÃO</td></tr>
+            <tr><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">pagamento_confirmado</code></td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;">Já pagou — atendimento seguiu</td><td style="padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#b91c1c;font-weight:800;font-size:12px;">❌ NÃO</td></tr>
+            <tr><td style="padding:7px 8px;"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;">equipe_assumiu</code></td><td style="padding:7px 8px;color:#4a5568;font-size:12px;">Atendente humano assumiu a conversa</td><td style="padding:7px 8px;color:#b91c1c;font-weight:800;font-size:12px;">❌ NÃO</td></tr>
+          </table>
         </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 1 — Criar campo no Supabase</label>
+          <code>Tabela: mesma tabela do "setor" (sessoes / contexto)
+Campo novo: motivo_encerramento  (tipo: text, pode ser null)
+
+Se já existir, confirmar que está acessível nos nós
+"Get a row" e "Update row".</code>
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 2 — Gravar o motivo em cada encerramento (duas opções)</label>
+          <code>Opção A — adicionar parâmetro na tool atualizar_setor (recomendada):
+  atualizar_setor(setor, motivo_encerramento)
+  → quando setor = "ENCERRADO", Clara envia o motivo junto
+  → nó Update row grava os dois campos de uma vez
+
+Opção B — derivar pelo setor (sem mexer na tool):
+  Nó Set/Function que deduz o motivo:
+  setor = "HUMANO" / "HUMANO_VOLUNTARIO" → "equipe_assumiu"
+  setor = "AGUARDANDO_PAGAMENTO"         → "pagamento_pendente"
+  ⚠️ "ENCERRADO" sozinho NÃO distingue UPA de recusa voluntária
+     → Opção A é mais segura para este caso</code>
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 3 — Condição de disparo no nó de follow-up</label>
+          <code>DISPARAR follow-up SOMENTE SE:
+  motivo_encerramento IN (
+    "pagamento_pendente",
+    "cadastro_incompleto",
+    "abandonou_triagem"
+  )
+
+NÃO DISPARAR SE:
+  motivo_encerramento IN (
+    "bloqueado_alarme", "atendimento_recusado",
+    "encerrado_paciente", "pagamento_confirmado", "equipe_assumiu"
+  )
+  OU motivo_encerramento IS NULL  ← por segurança: NULL = não dispara
+
+⚡ Esta tarefa sozinha já resolve os disparos constrangedores —
+   implementar primeiro mesmo antes da gravação estar completa.</code>
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 4 — Cruzar com equipe_assumiu / pagamento manual</label>
+          <code>Quando a equipe assume ou gera cobrança manual:
+  → setar equipe_assumiu = true
+  → motivo_encerramento = "equipe_assumiu"
+
+No nó de follow-up, além da condição acima:
+  SE equipe_assumiu = true        → NÃO disparar
+  SE pagamento_status = "manual_gerado" → NÃO disparar
+  SE pagamento_status = "confirmado"    → NÃO disparar</code>
+        </div>
+
+        <div class="bloco bloco-solucao">
+          <label>Mapa de motivos por ponto de encerramento do prompt (referência para Raíssa)</label>
+          VER. 0 sinal de alarme / MOMENTO 2 reprovado → <code>bloqueado_alarme</code><br>
+          VER. 1 gestante / VER. 2 criança / VER. 4 drogas / VER. 11 benzo / VER. 12 medicamentos / VER. 13 laudo / VER. 14 anticoncepcional / VER. 9 acompanhante / Grupo 14 ouvido → <code>atendimento_recusado</code><br>
+          ETAPA 3/3A/3C/3D/3E/4D/4E → NÃO (paciente recusou) → <code>encerrado_paciente</code><br>
+          Paciente parou de responder (timeout do n8n) → <code>abandonou_triagem</code><br>
+          Recebeu link e não pagou → <code>pagamento_pendente</code><br>
+          Começou cadastro e não terminou → <code>cadastro_incompleto</code><br><br>
+          <strong>Observação:</strong> <code>abandonou_triagem</code> não é gravado pela Clara — é o timeout do n8n que detecta inatividade. Alinhar com a Raíssa.
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Checklist de teste após implementação</label>
+          <code>1. Simular paciente bloqueado por alarme (ex: "dor no peito")
+   → motivo = "bloqueado_alarme" → follow-up NÃO dispara ✓
+
+2. Simular paciente que recebeu link e não pagou
+   → motivo = "pagamento_pendente" → follow-up DISPARA ✓
+
+3. Simular paciente que disse "não quero, obrigado"
+   → motivo = "encerrado_paciente" → follow-up NÃO dispara ✓
+
+4. Simular equipe assumindo a conversa
+   → motivo = "equipe_assumiu" → follow-up NÃO dispara ✓
+
+5. Simular sessão sem motivo (NULL)
+   → follow-up NÃO dispara (regra de segurança) ✓</code>
+        </div>
+
         <div class="item-footer">
-          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
-          <span class="status-label">Depende do R3 estar feito · Implementar no nó de follow-up + tabela Supabase</span>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 1 — Campo Supabase</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 2 — Gravação do motivo</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 3 — IF no nó de follow-up</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 4 — Cruzar com equipe_assumiu</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Testes passaram</label>
+          <span class="status-label">Depende do R3 estar feito (Raíssa) · Tarefa 3 pode ser feita antes</span>
         </div>
       </div>
 
