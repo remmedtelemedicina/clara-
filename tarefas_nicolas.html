@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>REMMED · Tarefas Técnicas — Nicolas</title>
+  <style>
+    :root{
+      --azul:#0f4c81;--nicolas:#1a5276;--cinza:#f4f7fb;--borda:#e8eef6;
+      --texto:#1a202c;--leve:#4a5568;--verde:#00b894;--vermelho:#e74c3c;--laranja:#f39c12;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza);color:var(--texto);}
+    .header{background:linear-gradient(135deg,#0b2230,#154360,#2980b9);padding:40px 24px;text-align:center;}
+    .header h1{font-size:25px;font-weight:900;color:white;margin-bottom:6px;}
+    .header p{color:rgba(255,255,255,0.7);font-size:14px;}
+    .header-tag{display:inline-block;margin-bottom:16px;background:rgba(41,128,185,0.25);border:1px solid rgba(120,200,255,0.4);color:#add8ff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:20px;}
+    .page{max-width:880px;margin:0 auto;padding:32px 16px;}
+
+    .intro{background:white;border:1px solid var(--borda);border-radius:12px;padding:18px 22px;margin-bottom:22px;font-size:13.5px;line-height:1.7;color:var(--leve);}
+    .intro strong{color:var(--texto);}
+
+    .sumario{background:white;border:1px solid var(--borda);border-radius:12px;padding:20px 24px;margin-bottom:26px;}
+    .sumario h3{font-size:14px;font-weight:800;margin-bottom:12px;color:var(--texto);}
+    .sumario ul{list-style:none;font-size:13px;color:var(--leve);line-height:2;}
+    .sumario li::before{content:'→ ';color:var(--nicolas);font-weight:800;}
+
+    .secao{margin-bottom:28px;}
+    .secao-header{display:flex;align-items:center;gap:12px;padding:18px 24px;border-radius:14px 14px 0 0;color:white;background:linear-gradient(135deg,#154360,#2980b9);}
+    .secao-header .ico{font-size:24px;}
+    .secao-header h2{font-size:17px;font-weight:900;}
+    .secao-header p{font-size:12px;opacity:.8;margin-top:2px;}
+    .secao-header .badge{margin-left:auto;background:rgba(255,255,255,0.2);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap;}
+    .secao-body{background:white;border:1px solid var(--borda);border-top:none;border-radius:0 0 14px 14px;overflow:hidden;}
+
+    .item{border-bottom:1px solid var(--borda);padding:20px 24px;}
+    .item:last-child{border-bottom:none;}
+    .item-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+    .prio{font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap;margin-top:2px;}
+    .prio-critico{background:#fdecea;color:#c0392b;border:1px solid #f5c6c6;}
+    .prio-alta{background:#fff3e0;color:#e65100;border:1px solid #ffcc80;}
+    .item-titulo{font-size:15px;font-weight:800;color:var(--texto);flex:1;}
+    .item-desc{font-size:13px;color:var(--leve);line-height:1.7;margin-bottom:10px;}
+    .item-desc strong{color:var(--texto);}
+
+    .bloco{border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:13px;line-height:1.6;}
+    .bloco-problema{background:#fff5f5;border:1px solid #fecaca;}
+    .bloco-tecnico{background:#eff6ff;border:1px solid #bfdbfe;}
+    .bloco-solucao{background:#f0fdf4;border:1px solid #bbf7d0;}
+    .bloco label{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
+    .bloco-problema label{color:#dc2626;}
+    .bloco-tecnico label{color:#2563eb;}
+    .bloco-solucao label{color:#16a34a;}
+    .bloco code{display:block;background:rgba(0,0,0,0.06);border-radius:6px;padding:10px 12px;font-family:'Courier New',monospace;font-size:12px;margin-top:8px;white-space:pre-wrap;}
+
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;}
+    th{padding:7px 8px;text-align:left;font-size:11px;text-transform:uppercase;border-bottom:1px solid #e2e8f0;background:#f1f5f9;}
+    td{padding:7px 8px;border-bottom:1px solid #f1f5f9;color:#4a5568;font-size:12px;vertical-align:top;}
+    td code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;}
+    .tag-sim{color:#15803d;font-weight:800;}
+    .tag-nao{color:#b91c1c;font-weight:800;}
+
+    .item-footer{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--borda);flex-wrap:wrap;}
+    .chk{display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;font-weight:600;}
+    .chk input{width:16px;height:16px;cursor:pointer;}
+    .status-label{margin-left:auto;font-size:11px;color:var(--leve);}
+
+    .editavel{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:22px;font-size:12.5px;color:#92400e;line-height:1.6;}
+    .editavel strong{color:#78350f;}
+
+    .nota{margin-top:10px;}
+    .nota textarea{width:100%;min-height:54px;border:1px dashed #cbd5e1;border-radius:8px;padding:8px 10px;font-family:'Segoe UI',sans-serif;font-size:12.5px;color:var(--texto);resize:vertical;background:#fcfcfd;}
+    .nota label{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--leve);margin-bottom:4px;}
+
+    .rodape{background:white;border:1px solid var(--borda);border-radius:12px;padding:18px 22px;font-size:13px;color:var(--leve);line-height:1.9;margin-top:4px;}
+    .rodape strong{color:var(--texto);}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">⚙️ Documento Técnico · n8n</div>
+  <h1>Tarefas Técnicas da Clara — Nicolas</h1>
+  <p>Nós, variáveis e lógica de workflow · Atualizado em 03/06/2026</p>
+</div>
+
+<div class="page">
+
+  <div class="intro">
+    Este documento reúne <strong>apenas as tarefas técnicas do n8n</strong> (parte do Nicolas).
+    Os ajustes de texto/prompt (parte da Raíssa) estão em documento separado. Cada item tem
+    o problema, a causa e a solução técnica pronta para implementar.
+  </div>
+
+  <div class="editavel">
+    ✏️ <strong>Documento editável:</strong> marque os checkboxes conforme for concluindo (o progresso
+    fica salvo no seu navegador). Cada item também tem um campo de <strong>anotações</strong> onde você
+    pode escrever observações, dúvidas ou o que mudou — também salvo automaticamente.
+  </div>
+
+  <div class="sumario">
+    <h3>⚙️ Resumo — 7 tarefas técnicas</h3>
+    <ul>
+      <li>N1 — IA responde após handoff → bloquear por setor</li>
+      <li>N2 — Mensagens duplicadas → debounce de 2–3 seg</li>
+      <li>N3 — Link de pagamento antigo após intervenção humana</li>
+      <li>N4 — Sistema de follow-up com motivo_encerramento (detalhado)</li>
+      <li>N5 — Horários/link não enviados após Clara avisar que vai enviar</li>
+      <li>N6 — Mensagem de número internacional em loop após handoff</li>
+      <li>N7 — Contexto de sessão anterior contamina nova sessão</li>
+    </ul>
+  </div>
+
+  <div class="secao">
+    <div class="secao-header">
+      <span class="ico">⚙️</span>
+      <div>
+        <h2>Alterações Técnicas no n8n</h2>
+        <p>Nós, variáveis, lógica de workflow — não envolve texto de prompt</p>
+      </div>
+      <div class="badge">7 itens</div>
+    </div>
+    <div class="secao-body">
+
+      <!-- N1 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">N1 — IA continua respondendo após handoff confirmado para humano</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu:</strong> paciente pediu "Falar com atendente". Clara confirmou a transferência. Mas quando o paciente enviou a próxima mensagem, a IA voltou a responder normalmente. Confirmado também na <strong>conversa 10</strong>: após Raíssa encerrar manualmente, Clara enviou mensagem genérica de "conversa encerrada" — quando deveria estar silenciosa.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do bug (N1a — handoff)</label>
+          Paciente: "Falar com atendente"<br>
+          Clara: "Você será encaminhado para um atendente humano agora ✅"<br>
+          Paciente: "Sim" (confirmou)<br>
+          Clara: <strong>"Você já está falando comigo, que sou a atendente virtual..." ❌</strong>
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Variação do bug (N1b — encerramento manual)</label>
+          Raíssa assumiu conversa e encerrou manualmente<br>
+          Clara: <strong>Enviou mensagem automática de "conversa encerrada" ❌</strong><br>
+          → Depois de handoff, qualquer automação deve estar silenciada
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica</label>
+          <code>1. Quando Clara confirma o handoff para humano:
+   → Setar variável: setor = "AGUARDANDO_HUMANO"
+
+2. No início do nó principal da IA, adicionar condição:
+   SE setor = "AGUARDANDO_HUMANO"
+     → NÃO processar mensagem com agente IA
+     → NÃO disparar follow-up automático
+     → NÃO disparar mensagem de encerramento
+     → Silêncio total da IA
+
+3. Quando o humano liberar a conversa de volta para a IA:
+   → Setar setor = "MENU" (ou estado inicial)
+   → Pode ser feito com comando /liberar no painel interno
+
+Objetivo: qualquer nó automático deve verificar
+setor != "AGUARDANDO_HUMANO" antes de executar.</code>
+        </div>
+        <div class="nota"><label>📝 Anotações do Nicolas</label><textarea onchange="saveNota(this)" placeholder="Observações, dúvidas, o que foi feito..."></textarea></div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Condição no nó principal de entrada da IA + todos os nós de automação</span>
+        </div>
+      </div>
+
+      <!-- N2 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">N2 — Mensagens duplicadas: paciente envia 2 msgs rápidas → Clara responde 2 vezes</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que acontece:</strong> quando o paciente envia duas mensagens em sequência rápida, a Evolution API dispara dois webhooks separados. O n8n processa cada um e a IA responde duas vezes. <strong>Confirmado nas conversas 4 e 6</strong>: endereço pedido em duplicata, e mensagem de número internacional disparando múltiplas vezes.
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica (debounce / message aggregation)</label>
+          <code>Opção A — Debounce simples (recomendada):
+1. Quando chega uma mensagem, registrar o timestamp no Supabase
+   como "ultima_mensagem_recebida"
+2. Aguardar 2-3 segundos antes de processar
+3. Antes de chamar o agente IA, verificar:
+   SE chegou outra mensagem do mesmo número nos últimos 3 seg:
+     → Ignorar a anterior (processar só a mais recente)
+     → OU concatenar as mensagens e processar uma vez só
+
+Opção B — Flag de processamento:
+1. Ao receber mensagem: processando = true
+2. Se chegar nova mensagem enquanto processando = true:
+   → Guardar na fila, processar após a primeira terminar
+3. Ao finalizar resposta: processando = false
+
+Este debounce também resolve o problema da mensagem de número
+internacional disparando em loop (N6).</code>
+        </div>
+        <div class="nota"><label>📝 Anotações do Nicolas</label><textarea onchange="saveNota(this)" placeholder="Observações, dúvidas, o que foi feito..."></textarea></div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Implementar debounce antes do nó da IA no webhook de entrada</span>
+        </div>
+      </div>
+
+      <!-- N3 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N3 — Link de pagamento antigo disparado depois que a equipe gerou cobrança manual</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu:</strong> a equipe assumiu manualmente, gerou um link de Pix novo. Depois disso, o sistema de follow-up automático da Clara disparou o link antigo do Asaas. O paciente recebeu dois links de cobrança para a mesma consulta.
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica</label>
+          <code>1. Quando a equipe intervém e gera cobrança manual:
+   → Setar: pagamento_status = "manual_gerado"
+   E/OU: equipe_assumiu = true
+
+2. No nó de follow-up de pagamento, adicionar condição:
+   SE pagamento_status = "manual_gerado"
+   OU equipe_assumiu = true
+   OU pagamento_status = "confirmado"
+     → NÃO disparar o follow-up automático de cobrança
+
+3. Comando interno: ao equipe enviar "/equipe" no painel
+   → seta automaticamente equipe_assumiu = true
+   → suprime todas as automações</code>
+        </div>
+        <div class="nota"><label>📝 Anotações do Nicolas</label><textarea onchange="saveNota(this)" placeholder="Observações, dúvidas, o que foi feito..."></textarea></div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Adicionar condição no nó de follow-up de pagamento</span>
+        </div>
+      </div>
+
+      <!-- N4 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N4 — Sistema de follow-up inteligente com motivo_encerramento</div>
+        </div>
+        <div class="item-desc">
+          Hoje o follow-up dispara para <strong>todo mundo</strong> — incluindo quem foi mandado para a UPA, quem foi recusado por urgência e quem a equipe já assumiu. Isso gera mensagens constrangedoras. A solução é uma variável <code>motivo_encerramento</code> que diz <em>por que</em> a conversa terminou — e o follow-up só dispara para os abandonos recuperáveis.<br><br>
+          <strong>Depende do R3:</strong> Raíssa ajusta o prompt para gravar o motivo. Nicolas implementa a leitura no nó de follow-up.
+        </div>
+
+        <div class="bloco bloco-problema">
+          <label>⚠️ Problema central descoberto</label>
+          A variável <code>motivo_encerramento</code> já está <strong>descrita no prompt da Clara</strong> com os 8 valores possíveis — mas <strong>nenhuma etapa do prompt realmente grava esse valor</strong>. É só documentação que não conecta a nada. O follow-up está "cego" e dispara para todos. Confirmado: paciente Agda foi bloqueada por abscesso (31/05) e recebeu dois follow-ups automáticos no dia seguinte.
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tabela de referência — motivos e se disparam follow-up</label>
+          <table>
+            <tr><th>motivo_encerramento</th><th>Quando acontece</th><th>Follow-up?</th></tr>
+            <tr><td><code>pagamento_pendente</code></td><td>Recebeu o link mas não pagou</td><td class="tag-sim">✅ DISPARAR</td></tr>
+            <tr><td><code>cadastro_incompleto</code></td><td>Começou cadastro e não terminou</td><td class="tag-sim">✅ DISPARAR</td></tr>
+            <tr><td><code>abandonou_triagem</code></td><td>Iniciou triagem e parou de responder (timeout)</td><td class="tag-sim">✅ DISPARAR</td></tr>
+            <tr><td><code>bloqueado_alarme</code></td><td>Foi mandado para UPA/SAMU (sinal de alarme)</td><td class="tag-nao">❌ NÃO</td></tr>
+            <tr><td><code>atendimento_recusado</code></td><td>Recusado por urgência / caso inadequado</td><td class="tag-nao">❌ NÃO</td></tr>
+            <tr><td><code>encerrado_paciente</code></td><td>Paciente disse que não quer continuar</td><td class="tag-nao">❌ NÃO</td></tr>
+            <tr><td><code>pagamento_confirmado</code></td><td>Já pagou — atendimento seguiu</td><td class="tag-nao">❌ NÃO</td></tr>
+            <tr><td><code>equipe_assumiu</code></td><td>Atendente humano assumiu a conversa</td><td class="tag-nao">❌ NÃO</td></tr>
+          </table>
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 1 — Criar campo no Supabase</label>
+          <code>Tabela: mesma tabela do "setor" (sessoes / contexto)
+Campo novo: motivo_encerramento  (tipo: text, pode ser null)
+
+Se já existir, confirmar que está acessível nos nós
+"Get a row" e "Update row".</code>
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 2 — Gravar o motivo em cada encerramento (duas opções)</label>
+          <code>Opção A — adicionar parâmetro na tool atualizar_setor (recomendada):
+  atualizar_setor(setor, motivo_encerramento)
+  → quando setor = "ENCERRADO", Clara envia o motivo junto
+  → nó Update row grava os dois campos de uma vez
+
+Opção B — derivar pelo setor (sem mexer na tool):
+  Nó Set/Function que deduz o motivo:
+  setor = "HUMANO" / "HUMANO_VOLUNTARIO" → "equipe_assumiu"
+  setor = "AGUARDANDO_PAGAMENTO"         → "pagamento_pendente"
+  ⚠️ "ENCERRADO" sozinho NÃO distingue UPA de recusa voluntária
+     → Opção A é mais segura para este caso</code>
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 3 — Condição de disparo no nó de follow-up</label>
+          <code>DISPARAR follow-up SOMENTE SE:
+  motivo_encerramento IN (
+    "pagamento_pendente",
+    "cadastro_incompleto",
+    "abandonou_triagem"
+  )
+
+NÃO DISPARAR SE:
+  motivo_encerramento IN (
+    "bloqueado_alarme", "atendimento_recusado",
+    "encerrado_paciente", "pagamento_confirmado", "equipe_assumiu"
+  )
+  OU motivo_encerramento IS NULL  ← por segurança: NULL = não dispara
+
+⚡ Esta tarefa sozinha já resolve os disparos constrangedores —
+   implementar primeiro mesmo antes da gravação estar completa.</code>
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Tarefa 4 — Cruzar com equipe_assumiu / pagamento manual</label>
+          <code>Quando a equipe assume ou gera cobrança manual:
+  → setar equipe_assumiu = true
+  → motivo_encerramento = "equipe_assumiu"
+
+No nó de follow-up, além da condição acima:
+  SE equipe_assumiu = true        → NÃO disparar
+  SE pagamento_status = "manual_gerado" → NÃO disparar
+  SE pagamento_status = "confirmado"    → NÃO disparar</code>
+        </div>
+
+        <div class="bloco bloco-solucao">
+          <label>Mapa de motivos por ponto de encerramento (referência — alinhar com Raíssa)</label>
+          VER. 0 sinal de alarme / MOMENTO 2 reprovado → <code>bloqueado_alarme</code><br>
+          VER. 1 gestante / VER. 2 criança / VER. 4 drogas / VER. 11 benzo / VER. 12 medicamentos / VER. 13 laudo / VER. 14 anticoncepcional / VER. 9 acompanhante / Grupo 14 ouvido → <code>atendimento_recusado</code><br>
+          ETAPA 3/3A/3C/3D/3E/4D/4E → NÃO (paciente recusou) → <code>encerrado_paciente</code><br>
+          Paciente parou de responder (timeout do n8n) → <code>abandonou_triagem</code><br>
+          Recebeu link e não pagou → <code>pagamento_pendente</code><br>
+          Começou cadastro e não terminou → <code>cadastro_incompleto</code><br><br>
+          <strong>Observação:</strong> <code>abandonou_triagem</code> não é gravado pela Clara — é o timeout do n8n que detecta inatividade. Alinhar com a Raíssa.
+        </div>
+
+        <div class="bloco bloco-tecnico">
+          <label>Checklist de teste após implementação</label>
+          <code>1. Simular paciente bloqueado por alarme (ex: "dor no peito")
+   → motivo = "bloqueado_alarme" → follow-up NÃO dispara ✓
+
+2. Simular paciente que recebeu link e não pagou
+   → motivo = "pagamento_pendente" → follow-up DISPARA ✓
+
+3. Simular paciente que disse "não quero, obrigado"
+   → motivo = "encerrado_paciente" → follow-up NÃO dispara ✓
+
+4. Simular equipe assumindo a conversa
+   → motivo = "equipe_assumiu" → follow-up NÃO dispara ✓
+
+5. Simular sessão sem motivo (NULL)
+   → follow-up NÃO dispara (regra de segurança) ✓</code>
+        </div>
+
+        <div class="nota"><label>📝 Anotações do Nicolas</label><textarea onchange="saveNota(this)" placeholder="Observações, dúvidas, o que foi feito..."></textarea></div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 1 — Campo Supabase</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 2 — Gravação do motivo</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 3 — IF no follow-up</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Tarefa 4 — Cruzar equipe_assumiu</label>
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Testes passaram</label>
+          <span class="status-label">Tarefa 3 pode ser feita antes (já estanca os disparos errados)</span>
+        </div>
+      </div>
+
+      <!-- N5 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-critico">🔴 Crítico</span>
+          <div class="item-titulo">N5 — Clara avisa que vai enviar os horários / link de pagamento, mas não envia</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 1 e conversa 2):</strong><br>
+          — Conversa 1: Clara disse <em>"Agora vou te mostrar os horários disponíveis com o médico"</em> mas os horários nunca chegaram. A conversa terminou ali.<br>
+          — Conversa 2: após paciente escolher PIX, sistema disse "Tive um problema ao gerar o link" → pediu para escolher de novo → paciente escolheu PIX de novo → Clara disse "Seu pagamento via PIX já foi gerado" mas <strong>nunca enviou o link</strong>.<br><br>
+          Esses são os casos mais críticos de <strong>silêncio pós-confirmação</strong>: o fluxo quebra após a IA confirmar que vai fazer algo.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do problema — conversa 1</label>
+          Clara: "Agora vou te mostrar os horários disponíveis..." → <strong>silêncio ❌</strong><br>
+          Possíveis causas: tool call falhou, timeout na API de agenda, resposta truncada
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do problema — conversa 2</label>
+          Paciente: escolhe PIX pela 2a vez<br>
+          Clara: "Seu pagamento via PIX já foi gerado e seu atendimento está finalizado 😊"<br>
+          → <strong>Nunca enviou o link de pagamento ❌</strong> → paciente não sabe como pagar
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica</label>
+          <code>1. Adicionar tratamento de erro nos nós de tool call:
+   - Busca de horários: se retornar vazio ou erro → responder
+     "Tive um problema ao buscar os horários. Tente novamente
+     ou fale com a equipe (opção 7)."
+   - Geração de link Asaas: se retornar erro → NÃO confirmar
+     que o pagamento foi gerado. Informar o erro ao paciente.
+
+2. Verificar se a mensagem de sucesso do Asaas está:
+   ① Enviando o link junto com a mensagem de confirmação
+   ② Não assumindo sucesso antes de receber o link de volta
+
+3. Adicionar log de erros de tool call para facilitar diagnóstico
+   (quando a IA diz "vou enviar" mas não envia).
+
+4. Timeout: se busca de horários demorar mais de 8s →
+   enviar mensagem de espera e tentar novamente.</code>
+        </div>
+        <div class="nota"><label>📝 Anotações do Nicolas</label><textarea onchange="saveNota(this)" placeholder="Observações, dúvidas, o que foi feito..."></textarea></div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Verificar nós de busca de horários e geração de link Asaas — tratamento de erro</span>
+        </div>
+      </div>
+
+      <!-- N6 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N6 — Mensagem de número internacional continua disparando após handoff humano</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 6):</strong> número estrangeiro (+58 Venezuela) → sistema enviou corretamente "Para atendimento internacional, nossa equipe entrará em contato em breve". Raíssa assumiu e começou a atender manualmente. Mas a mensagem automática continuou disparando após <strong>cada mensagem</strong> enviada pela equipe e pelo paciente — repetindo em loop.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Sequência do loop</label>
+          Sistema: "Para atendimento internacional, nossa equipe entrará em contato em breve. 🧡"<br>
+          Raíssa: "Boa noite! Tudo bem? Como posso te ajudar hoje?"<br>
+          Sistema: "Para atendimento internacional..." ← dispara de novo<br>
+          Paciente: "Atestado"<br>
+          Sistema: "Para atendimento internacional..." ← dispara de novo ❌
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica</label>
+          <code>1. A mensagem de número internacional deve disparar APENAS uma
+   vez — no primeiro contato do número estrangeiro.
+
+2. Após disparar, setar: internacional_notificado = true
+   → Não disparar novamente para o mesmo número na mesma sessão.
+
+3. Quando a equipe assumir (setor = "AGUARDANDO_HUMANO"):
+   → Suprimir completamente a mensagem internacional também
+   → Qualquer automação que não seja iniciada pelo humano
+      deve ser silenciada.
+
+4. Forma mais simples: mover a verificação de número internacional
+   para ANTES do nó de entrada geral. Se for internacional:
+   → Disparar mensagem uma vez
+   → Setar setor = "AGUARDANDO_HUMANO" imediatamente
+   → Não processar mais nada até equipe liberar</code>
+        </div>
+        <div class="nota"><label>📝 Anotações do Nicolas</label><textarea onchange="saveNota(this)" placeholder="Observações, dúvidas, o que foi feito..."></textarea></div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Setar AGUARDANDO_HUMANO após primeira msg internacional + suprimir repetição</span>
+        </div>
+      </div>
+
+      <!-- N7 -->
+      <div class="item">
+        <div class="item-header">
+          <span class="prio prio-alta">🟠 Alta</span>
+          <div class="item-titulo">N7 — Contexto de sessão anterior contamina nova sessão do mesmo paciente</div>
+        </div>
+        <div class="item-desc">
+          <strong>O que aconteceu (conversa 9 — Agda, dia 2):</strong> paciente foi bloqueada no dia 31/05 por relatar "abscesso com pus". No dia seguinte (01/06), voltou, escolheu opção 1, disse que sintomas eram leves — mas o checklist que apareceu foi o de <strong>TRAUMA</strong> (dor após trauma, deformidade, dormência). Agda nunca mencionou sintoma musculoesquelético. O sistema parece ter "lembrado" algo da sessão anterior.
+        </div>
+        <div class="bloco bloco-problema">
+          <label>Evidência do bug</label>
+          Agda (01/06): escolhe opção 1, confirma sintomas leves<br>
+          Clara exibe checklist de TRAUMA sem nenhum contexto para isso<br><br>
+          Hipótese: a variável de grupo/rota da sessão anterior não foi limpa e influenciou a sessão nova, ou houve cache de contexto entre conversas.
+        </div>
+        <div class="bloco bloco-tecnico">
+          <label>Solução técnica</label>
+          <code>1. Ao iniciar nova sessão (mensagem após > X horas de inatividade),
+   resetar completamente o estado da sessão anterior no Supabase:
+   - grupo_roteado = null
+   - checklist_atual = null
+   - estado_fluxo = "MENU"
+   - queixa_principal = null
+   - motivo_encerramento = null (ou manter para follow-up)
+
+2. Definir "nova sessão" como:
+   → Inatividade > 4 horas OU
+   → Paciente envia saudação nova (oi, olá, bom dia, etc.) OU
+   → Conversa foi encerrada formalmente
+
+3. Nunca usar variáveis de roteamento da sessão anterior para
+   influenciar a nova triagem — cada sessão começa do zero.
+
+4. Opcional: log de qual grupo foi atribuído e por quê,
+   para facilitar diagnóstico quando acontecer de novo.</code>
+        </div>
+        <div class="nota"><label>📝 Anotações do Nicolas</label><textarea onchange="saveNota(this)" placeholder="Observações, dúvidas, o que foi feito..."></textarea></div>
+        <div class="item-footer">
+          <label class="chk"><input type="checkbox" onchange="save(this)"> Concluído</label>
+          <span class="status-label">Garantir reset completo de estado ao iniciar nova sessão no Supabase</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rodape">
+    <strong>Ordem sugerida de execução:</strong><br>
+    🔴 <strong>N2 primeiro</strong> — mensagens duplicadas afetam toda interação<br>
+    🔴 <strong>N1 segundo</strong> — IA respondendo após handoff confunde paciente e equipe<br>
+    🔴 <strong>N5 terceiro</strong> — horários/pagamento não chegando = perda direta de venda<br>
+    🟠 <strong>N4 (Tarefa 3)</strong> — colocar o IF com NULL = não disparar já estanca os follow-ups errados<br>
+    🟠 <strong>N3 + N4 completo</strong> — follow-up e flag equipe em conjunto<br>
+    🟠 <strong>N6 + N7</strong> — internacional e sessão anterior: técnicos, menos urgentes<br><br>
+    <strong>Lembrete:</strong> o follow-up (N4) é um sistema separado. A Tarefa 3 sozinha (IF lendo o motivo, com NULL = não dispara) já resolve os disparos constrangedores na hora.
+  </div>
+
+</div>
+
+<script>
+// Checkboxes
+document.querySelectorAll('input[type=checkbox]').forEach((chk, i) => {
+  const key = 'nic_chk_' + i;
+  if (localStorage.getItem(key) === '1') {
+    chk.checked = true;
+    chk.parentElement.style.opacity = '.4';
+  }
+  chk.addEventListener('change', () => {
+    localStorage.setItem(key, chk.checked ? '1' : '0');
+    chk.parentElement.style.opacity = chk.checked ? '.4' : '1';
+  });
+});
+function save(chk) {
+  const all = document.querySelectorAll('input[type=checkbox]');
+  const i = [...all].indexOf(chk);
+  localStorage.setItem('nic_chk_' + i, chk.checked ? '1' : '0');
+  chk.parentElement.style.opacity = chk.checked ? '.4' : '1';
+}
+// Notas (textarea)
+document.querySelectorAll('textarea').forEach((ta, i) => {
+  const key = 'nic_nota_' + i;
+  const saved = localStorage.getItem(key);
+  if (saved) ta.value = saved;
+});
+function saveNota(ta) {
+  const all = document.querySelectorAll('textarea');
+  const i = [...all].indexOf(ta);
+  localStorage.setItem('nic_nota_' + i, ta.value);
+}
+</script>
+</body>
+</html>
