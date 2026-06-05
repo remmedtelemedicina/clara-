@@ -297,36 +297,28 @@
   <!-- ══════════════════════════════════════════════ -->
   <div style="background:linear-gradient(135deg,#0b1f35,#1a3a5c);border-radius:16px;padding:26px 28px;margin-bottom:26px;color:white;box-shadow:0 2px 16px rgba(0,0,0,0.08);">
     <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#00e6cc;margin-bottom:6px;">Leia antes de começar</div>
-    <h2 style="font-size:20px;font-weight:900;margin-bottom:8px;">🧩 Os 7 padrões que se repetem nos bugs</h2>
-    <p style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:20px;">A maioria dos bugs abaixo vem de 7 problemas estruturais. Corrigir a raiz resolve vários bugs de uma vez — não são erros isolados, são sintomas dos mesmos 7 buracos.</p>
+    <h2 style="font-size:20px;font-weight:900;margin-bottom:8px;">🧩 Os 5 padrões que se repetem nos bugs</h2>
+    <p style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:20px;">A maioria dos bugs abaixo vem de 5 problemas estruturais. Corrigir a raiz resolve vários bugs de uma vez — não são erros isolados, são sintomas dos mesmos 5 buracos.</p>
 
     <div style="display:grid;gap:12px;">
       <div style="background:rgba(255,255,255,0.06);border-left:3px solid #e8304a;border-radius:8px;padding:13px 16px;">
-        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 1 — Não existe um porteiro na entrada</strong>
-        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">A IA dispara sempre que chega mensagem, e o único freio é a variável <code style="background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;font-family:monospace;color:#9fd6ff;">setor</code> — que falha, trava ou é sobrescrita por execuções paralelas. <strong>N2, N6, N8, N10 são o mesmo bug com roupas diferentes.</strong> A correção é o fluxograma de verificação do N13: um único nó de entrada que decide antes da IA.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
-        <strong style="color:#ffb877;font-size:13.5px;">Padrão 2 — O prompt descreve estados que nenhum nó grava</strong>
-        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">O <code style="background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;font-family:monospace;color:#9fd6ff;">motivo_encerramento</code> está documentado com 8 valores no prompt, mas nada escreve esse valor. É documentação que não conecta a nada (N4). Regra: todo estado citado no prompt precisa ter um nó que realmente o grava.</p>
-      </div>
-      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #e8304a;border-radius:8px;padding:13px 16px;">
-        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 3 — A Clara confirma ações antes de verificar se funcionaram</strong>
+        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 1 — A Clara confirma ações antes de verificar se funcionaram</strong>
         <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">"Vou te mostrar os horários" (e não mostra). "Seu pagamento foi gerado" (sem enviar o link). A IA narra sucesso que não verificou — perda direta de venda (N5). Regra: a IA nunca confirma sucesso antes da tool retornar o dado concreto.</p>
       </div>
       <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
-        <strong style="color:#ffb877;font-size:13.5px;">Padrão 4 — Rígido demais com linguagem natural</strong>
+        <strong style="color:#ffb877;font-size:13.5px;">Padrão 2 — Rígido demais com linguagem natural</strong>
         <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">Brasileiro não responde "SIM" — responde "pode mandar", "bora", "blz", "pode confirmar". Cada vez que a Clara não entende, ela trava ou joga para humano. Fricção invisível que custa conversão.</p>
       </div>
       <div style="background:rgba(255,255,255,0.06);border-left:3px solid #e8304a;border-radius:8px;padding:13px 16px;">
-        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 5 — Erros de conteúdo médico (o mais caro de todos)</strong>
+        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 3 — Erros de conteúdo médico (o mais caro de todos)</strong>
         <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">"Otoscópio para o olho" (instrumento de ouvido). Abscesso não bloqueado. Sugerir R$249 sem saber o remédio. Risco real ao paciente e à credibilidade. <em>(Lado da Raíssa, no prompt — mas afeta a confiança em tudo.)</em></p>
       </div>
       <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
-        <strong style="color:#ffb877;font-size:13.5px;">Padrão 6 — Falta controle operacional em tempo real</strong>
+        <strong style="color:#ffb877;font-size:13.5px;">Padrão 4 — Falta controle operacional em tempo real</strong>
         <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">Hoje, se a Clara surta em produção, não há como desligá-la sem abrir o n8n. Falta volante: kill switch, bloqueio, comandos (N11, N12, N13).</p>
       </div>
       <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
-        <strong style="color:#ffb877;font-size:13.5px;">Padrão 7 — Estado vaza entre sessões</strong>
+        <strong style="color:#ffb877;font-size:13.5px;">Padrão 5 — Estado vaza entre sessões</strong>
         <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">A sessão velha contamina a nova — Agda recebeu checklist de trauma sem nunca ter falado disso (N7). Falta higiene de reset ao iniciar nova sessão.</p>
       </div>
     </div>
