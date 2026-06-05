@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Clara · Bugs para Nicolas — N2 a N13</title>
+  <title>Clara · Documento Técnico Completo para Nicolas — N2 a N16</title>
   <style>
     :root{
       --azul-escuro:#0b1f35;
@@ -212,12 +212,12 @@
 <div class="header">
   <div class="header-inner">
     <div class="header-pill">⚙️ n8n · Clara Triagem</div>
-    <h1>Bugs para <span>Nicolas</span> resolver</h1>
-    <p class="header-sub">Problemas confirmados em conversas reais · Atualizado em 05/06/2026</p>
+    <h1>Documento Técnico Completo — <span>Nicolas</span></h1>
+    <p class="header-sub">Clara · Bugs e features para implementar no n8n · Baseado em conversas reais · Atualizado em 05/06/2026</p>
     <div class="header-meta">
       <div class="meta-chip"><div class="dot dot-red"></div> 4 críticos (N2, N5, N8, N10)</div>
-      <div class="meta-chip"><div class="dot dot-ora"></div> 7 features/melhorias</div>
-      <div class="meta-chip"><div class="dot dot-grn"></div> 11 itens no total</div>
+      <div class="meta-chip"><div class="dot dot-ora"></div> 10 features/infra</div>
+      <div class="meta-chip"><div class="dot dot-grn"></div> 14 itens · 7 padrões-raiz</div>
     </div>
   </div>
 </div>
@@ -234,7 +234,7 @@
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar"></div></div>
     <div class="progress-labels">
       <div class="plabel"><span class="badge" style="background:#fff1f3;color:#e8304a;border:1px solid #ffc5cd;">🔴 Crítico</span> N2 — Mensagens duplicadas · N5 — Horários/link não enviado · N8 — Corrida de execuções · N10 — Paciente retorna após handoff silenciado</div>
-      <div class="plabel"><span class="badge" style="background:#fff8f1;color:#f5811f;border:1px solid #ffd4a8;">🟠 Alta</span> N4 — Follow-up cego · N6 — Internacional em loop · N7 — Sessão contaminada · N9 — Comando /liberar · N11 — Kill switch · N12 — Lista de bloqueados · N13 — Central de comandos</div>
+      <div class="plabel"><span class="badge" style="background:#fff8f1;color:#f5811f;border:1px solid #ffd4a8;">🟠 Alta / Infra</span> N4 — Follow-up cego · N6 — Internacional em loop · N7 — Sessão contaminada · N9 — /liberar · N11 — Kill switch · N12 — Bloqueados · N13 — Central de comandos · N14 — Logs · N15 — Testes · N16 — Bloco comum</div>
     </div>
   </div>
 
@@ -244,6 +244,46 @@
     <div>
       <strong>Documento interativo:</strong> marque cada checkbox ao concluir — o progresso fica salvo no seu navegador.
       Use o campo de <strong>anotações</strong> para registrar o que foi feito, dúvidas ou mudanças de abordagem. Tudo salvo automaticamente (localStorage).
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7 PADRÕES RAIZ -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div style="background:linear-gradient(135deg,#0b1f35,#1a3a5c);border-radius:16px;padding:26px 28px;margin-bottom:26px;color:white;box-shadow:0 2px 16px rgba(0,0,0,0.08);">
+    <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#00e6cc;margin-bottom:6px;">Leia antes de começar</div>
+    <h2 style="font-size:20px;font-weight:900;margin-bottom:8px;">🧩 Os 7 padrões que se repetem nos bugs</h2>
+    <p style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:20px;">A maioria dos bugs abaixo vem de 7 problemas estruturais. Corrigir a raiz resolve vários bugs de uma vez — não são erros isolados, são sintomas dos mesmos 7 buracos.</p>
+
+    <div style="display:grid;gap:12px;">
+      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #e8304a;border-radius:8px;padding:13px 16px;">
+        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 1 — Não existe um porteiro na entrada</strong>
+        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">A IA dispara sempre que chega mensagem, e o único freio é a variável <code style="background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;font-family:monospace;color:#9fd6ff;">setor</code> — que falha, trava ou é sobrescrita por execuções paralelas. <strong>N2, N6, N8, N10 são o mesmo bug com roupas diferentes.</strong> A correção é o fluxograma de verificação do N13: um único nó de entrada que decide antes da IA.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
+        <strong style="color:#ffb877;font-size:13.5px;">Padrão 2 — O prompt descreve estados que nenhum nó grava</strong>
+        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">O <code style="background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:4px;font-family:monospace;color:#9fd6ff;">motivo_encerramento</code> está documentado com 8 valores no prompt, mas nada escreve esse valor. É documentação que não conecta a nada (N4). Regra: todo estado citado no prompt precisa ter um nó que realmente o grava.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #e8304a;border-radius:8px;padding:13px 16px;">
+        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 3 — A Clara confirma ações antes de verificar se funcionaram</strong>
+        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">"Vou te mostrar os horários" (e não mostra). "Seu pagamento foi gerado" (sem enviar o link). A IA narra sucesso que não verificou — perda direta de venda (N5). Regra: a IA nunca confirma sucesso antes da tool retornar o dado concreto.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
+        <strong style="color:#ffb877;font-size:13.5px;">Padrão 4 — Rígido demais com linguagem natural</strong>
+        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">Brasileiro não responde "SIM" — responde "pode mandar", "bora", "blz", "pode confirmar". Cada vez que a Clara não entende, ela trava ou joga para humano. Fricção invisível que custa conversão.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #e8304a;border-radius:8px;padding:13px 16px;">
+        <strong style="color:#ff8a9a;font-size:13.5px;">Padrão 5 — Erros de conteúdo médico (o mais caro de todos)</strong>
+        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">"Otoscópio para o olho" (instrumento de ouvido). Abscesso não bloqueado. Sugerir R$249 sem saber o remédio. Risco real ao paciente e à credibilidade. <em>(Lado da Raíssa, no prompt — mas afeta a confiança em tudo.)</em></p>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
+        <strong style="color:#ffb877;font-size:13.5px;">Padrão 6 — Falta controle operacional em tempo real</strong>
+        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">Hoje, se a Clara surta em produção, não há como desligá-la sem abrir o n8n. Falta volante: kill switch, bloqueio, comandos (N11, N12, N13).</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border-left:3px solid #f5811f;border-radius:8px;padding:13px 16px;">
+        <strong style="color:#ffb877;font-size:13.5px;">Padrão 7 — Estado vaza entre sessões</strong>
+        <p style="font-size:13px;color:rgba(255,255,255,0.78);line-height:1.6;margin-top:4px;">A sessão velha contamina a nova — Agda recebeu checklist de trauma sem nunca ter falado disso (N7). Falta higiene de reset ao iniciar nova sessão.</p>
+      </div>
     </div>
   </div>
 
@@ -266,6 +306,16 @@
         <div class="bloco-label">⚠️ O que está acontecendo</div>
         Quando o paciente envia duas mensagens em sequência rápida, a <strong>Evolution API dispara dois webhooks separados</strong>. O n8n processa os dois e a IA responde duas vezes — duplicando a conversa.<br><br>
         <strong>Confirmado nas conversas 4 e 6:</strong> endereço pedido em duplicata, e mensagem de número internacional disparando múltiplas vezes para o mesmo evento.
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Aconteceu de novo — 05/06/2026 (dois menus seguidos)</div>
+        <pre>10:06  Paciente: "Olá, Bom dia!!"
+10:06  Paciente: "Estou precisando marcar uma consulta"  ← 2 msgs juntas
+10:06  Clara: [menu completo de opções 1 a 7]            ← respondeu a 1ª
+10:06  Clara: "Entendi! 🧡 ...escolha uma das opções..." ← respondeu a 2ª
+       → paciente recebe o menu DUAS vezes no mesmo minuto ❌</pre>
+        É o caso clássico: duas mensagens no mesmo segundo → dois webhooks → duas respostas. O debounce abaixo resolve.
       </div>
 
       <div class="bloco bloco-tec">
@@ -358,6 +408,31 @@
         </ul>
         <br>
         ⚠️ Hoje a recusa manual não marca nada — então o follow-up dispara mesmo depois da equipe ter recusado. O comando <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">bloqueia</code> (N12) precisa setar o motivo automaticamente para fechar esse buraco.
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">📝 Regra de linguagem nas mensagens de follow-up — nunca prometer atestado</div>
+        As mensagens automáticas de follow-up <strong>nunca</strong> podem prometer resultado médico nem usar a palavra "atestado" como se fosse garantido. O atestado é decisão exclusiva do médico após a consulta.
+        <pre style="margin-top:8px;">❌ NUNCA escrever:
+   "seu atestado"
+   "finalize seu agendamento para atestado"
+   "você ainda não recebeu seu atestado"
+   prometer data ou prazo para o atestado
+
+✅ SEMPRE escrever:
+   "sua consulta" / "sua avaliação médica"
+   "finalize seu agendamento de consulta médica"
+
+Exemplo ERRADO:
+   "Olá! Você ainda não finalizou seu agendamento
+    para o atestado. Posso te ajudar?"
+
+Exemplo CORRETO:
+   "Olá! Você iniciou um agendamento de consulta médica
+    com a REMMED mas não finalizou. Posso te ajudar a
+    concluir? 🧡"
+
+Vale para TODAS as mensagens automáticas, não só da opção 2.</pre>
       </div>
 
     </div>
@@ -1150,6 +1225,161 @@ return [{ json: { cmd: 'ajuda' } }];  // comando não reconhecido</pre>
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N14 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">📊</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N14 · Infraestrutura</div>
+        <div class="card-title">Observabilidade — logs de todo evento relevante</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Infra</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Por que precisa — hoje vocês estão cegos</div>
+        Quando a Clara falha em silêncio (como no N5 — anuncia horários que nunca chegam), vocês só descobrem porque um paciente reclama ou a Raíssa lê a conversa. Não há como saber quantas vezes por dia o sistema falha, qual nó quebra mais, nem quanto tempo leva cada etapa. <strong>Sem visibilidade, cada bug vira uma investigação demorada às cegas.</strong>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 O que logar</div>
+        <pre>1. Toda tool call: nome, parâmetros, resposta (sucesso/erro),
+   tempo de resposta em ms.
+2. Toda mudança de setor: de qual → para qual, timestamp, motivo.
+3. Todo handoff: quando foi p/ AGUARDANDO_HUMANO, quando liberou,
+   quem liberou (comando ou auto-release).
+4. Todo disparo de follow-up: número, motivo_encerramento,
+   se foi enviado ou bloqueado e por quê.
+5. Erros de execução: qualquer exceção, com o payload que causou.</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Onde guardar</div>
+        <pre>Tabela de logs no próprio Supabase já basta no início.
+Campos mínimos:
+  timestamp, tipo_evento, numero_paciente, dados (JSONB), resultado</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">⚡ Prioridade</div>
+        Logar primeiro os <strong>erros de tool call (N5)</strong> e as <strong>mudanças de setor (N10)</strong> — são os mais críticos e os que mais ajudam a diagnosticar o resto.
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Tabela de log criada, quais eventos já estão logando..." oninput="saveNota(this,'n14')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n14')"> Concluído</label>
+      <div class="footer-dica">Tabela de logs no Supabase + começar pelos erros de tool call e mudanças de setor</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N15 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🧪</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N15 · Infraestrutura</div>
+        <div class="card-title">Bateria de testes de regressão antes de publicar mudanças</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Infra</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Por que precisa</div>
+        O prompt já foi quebrado ao menos uma vez por uma edição que pareceu simples (o incidente das reticências que cortou a ORDEM OBRIGATÓRIA). <strong>Cada mudança no prompt ou no workflow pode quebrar um fluxo que funcionava</strong> — e hoje não há forma sistemática de verificar isso antes de ir ao ar.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 15 conversas de teste (rodar antes de cada publicação)</div>
+        <pre> 1. "dor no peito"        → bloqueia/UPA, NÃO agenda
+ 2. "abscesso com pus"    → bloqueia, NÃO agenda
+ 3. "pode confirmar"      → aceito como SIM
+ 4. 2 msgs rápidas        → 1 resposta só, sem duplicar
+ 5. opção 3 + "ansiedade" → NÃO re-roteia (já no fluxo certo)
+ 6. "terçol no olho"      → "oftalmologista", nunca "otoscópio"
+ 7. saúde mental + benzo  → orienta psiquiatra presencial
+ 8. volta após 5h ENCERRADO → menu novo, não sessão velha
+ 9. recebeu link, não pagou → follow-up DISPARA
+10. foi p/ UPA           → follow-up NÃO dispara
+11. Raíssa envia "pausa" → Clara para de atender
+12. "atende 5511999..."  → paciente liberado p/ IA
+13. FAQ no meio do cadastro → responde E retoma onde parou
+14. link Asaas falha     → NÃO confirma pagamento gerado
+15. número internacional → mensagem dispara só 1 vez</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">💡 Formato</div>
+        Uma planilha simples: conversa de teste · resultado esperado · resultado obtido · aprovado/reprovado. Não precisa automatizar no início — manual já resolve 80% dos problemas.
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Planilha criada, quais testes já rodaram, resultados..." oninput="saveNota(this,'n15')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n15')"> Concluído</label>
+      <div class="footer-dica">Montar checklist de 15 conversas-teste e rodar antes de cada publicação</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N16 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🧬</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N16 · Infraestrutura</div>
+        <div class="card-title">Regras duplicadas entre os 4 agentes — bomba-relógio</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Infra</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Por que precisa</div>
+        Vários itens dizem "adicionar no prompt de Triagem E Roteamento E Renovação E Agendamento". <strong>Quando uma regra mora em 4 lugares, um dia ela é atualizada em 3 e esquecida no 4º</strong> — e o mesmo paciente recebe respostas diferentes dependendo de qual agente responde.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Regras que hoje estão duplicadas entre agentes</div>
+        <pre>- Reconhecimento de SIM/NÃO e variantes ("pode confirmar", "ok")
+- Alarmes de segurança (lista de sinais que mandam p/ UPA)
+- Regra de atestado (nunca prometer, sempre "avaliação médica")
+- Especialidades (clínico geral + saúde mental + emagrecimento)
+- Tom, emojis, formatação geral</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">💡 O que fazer</div>
+        Criar um <strong>"bloco base"</strong> com as regras comuns, copiado de forma controlada para cada agente. Quando uma regra mudar, atualizar o bloco base e propagar — não editar cada prompt na mão. Pode ser um simples <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">regras_compartilhadas.txt</code> como fonte da verdade.
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Regras comuns identificadas, bloco base criado..." oninput="saveNota(this,'n16')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n16')"> Concluído</label>
+      <div class="footer-dica">Identificar regras comuns + criar bloco base único propagado para os 4 agentes</div>
+    </div>
+  </div>
+
   <!-- ── RODAPÉ GERAL ── -->
   <div class="rodape-geral">
     <h3>⚡ Ordem sugerida de execução</h3>
@@ -1157,10 +1387,13 @@ return [{ json: { cmd: 'ajuda' } }];  // comando não reconhecido</pre>
     <div class="linha"><div class="n">🔴 2º</div><div class="t"><strong>N8 + N2 — Lock de sessão + Debounce</strong> · Fazer juntos: são a mesma família de bug. Debounce (2–3s) + campo <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">processando</code> resolve corrida de execuções e duplicatas.</div></div>
     <div class="linha"><div class="n">🟠 3º</div><div class="t"><strong>N9 — Comando /liberar</strong> · Checar <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">fromMe</code> no webhook já resolve. Implementar junto com N10 (mesma área do código).</div></div>
     <div class="linha"><div class="n">🔴 4º</div><div class="t"><strong>N5 — Horários/link não enviado</strong> · Falha silenciosa = perda direta de agendamento e pagamento. Tratar erros dos nós de tool call.</div></div>
-    <div class="linha"><div class="n">🟠 5º</div><div class="t"><strong>N4 Tarefa 3 — IF no follow-up</strong> · Só o IF (NULL = não dispara) já estanca os disparos constrangedores sem precisar de mais nada.</div></div>
-    <div class="linha"><div class="n">🟠 6º</div><div class="t"><strong>N6 — Internacional em loop</strong> · Flag <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">internacional_notificado</code> + setar AGUARDANDO_HUMANO após primeira msg.</div></div>
-    <div class="linha"><div class="n">🟠 7º</div><div class="t"><strong>N7 + N4 completo — Sessão anterior + Follow-up completo</strong> · Reset de variáveis de sessão + implementação completa do motivo_encerramento.</div></div>
-    <div class="linha"><div class="n">🟠 8º</div><div class="t"><strong>N11 + N12 + N13 — Controle avançado</strong> · Kill switch, lista de bloqueados e central de comandos. N12 corta o follow-up na recusa manual (regra inegociável). N13 já inclui o /liberar do N9.</div></div>
+    <div class="linha"><div class="n">🟠 5º</div><div class="t"><strong>N4 Tarefa 3 — IF no follow-up</strong> · Só o IF (NULL = não dispara) já estanca os disparos constrangedores. Revisar texto das mensagens para nunca prometer atestado.</div></div>
+    <div class="linha"><div class="n">🟠 6º</div><div class="t"><strong>N12 — Lista de bloqueados</strong> · Corta o follow-up na recusa manual (regra inegociável). Etiqueta "nao-atender" + comando bloqueia.</div></div>
+    <div class="linha"><div class="n">🟠 7º</div><div class="t"><strong>N11 + N13 — Kill switch + Central de comandos</strong> · pausa/liga/atende/bloqueia/status via WhatsApp. N13 já inclui o /liberar do N9.</div></div>
+    <div class="linha"><div class="n">🟠 8º</div><div class="t"><strong>N14 — Logs</strong> · Começar pelos erros de tool call e mudanças de setor. Para parar de apagar incêndio às cegas.</div></div>
+    <div class="linha"><div class="n">🟠 9º</div><div class="t"><strong>N6 — Internacional em loop</strong> · Flag <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">internacional_notificado</code> + setar AGUARDANDO_HUMANO após primeira msg.</div></div>
+    <div class="linha"><div class="n">🟠 10º</div><div class="t"><strong>N7 + N4 completo</strong> · Reset de variáveis de sessão + implementação completa do motivo_encerramento.</div></div>
+    <div class="linha"><div class="n">🟠 11º</div><div class="t"><strong>N15 + N16 — Testes + bloco comum</strong> · Montar checklist de 15 testes e unificar regras duplicadas entre os agentes.</div></div>
     <div class="lembrete">
       💡 <strong>O nó de entrada do webhook é o coração de tudo.</strong> N8, N9, N10, N11, N12 e N13 são todas verificações no mesmo nó, na ordem do fluxograma do N13. Recomendação: montar a estrutura do fluxograma primeiro (owner → clara_ativa → bloqueado → etiqueta → reset por tempo → lock → IA) e ir preenchendo cada verificação. Uma vez montado o esqueleto, cada item é só uma condição a mais.
     </div>
@@ -1193,7 +1426,7 @@ return [{ json: { cmd: 'ajuda' } }];  // comando não reconhecido</pre>
       if (localStorage.getItem('nic5_chk_' + k) === '1') el.checked = true;
     });
 
-    const notaKeys = ['n2','n4','n5','n6','n7','n8','n9','n10','n11','n12','n13'];
+    const notaKeys = ['n2','n4','n5','n6','n7','n8','n9','n10','n11','n12','n13','n14','n15','n16'];
     document.querySelectorAll('textarea').forEach(el => {
       const attr = el.getAttribute('oninput');
       if (!attr) return;
