@@ -766,14 +766,14 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
       <div class="card-icon-wrap icon-critico">⚡</div>
       <div class="card-head-info">
         <div class="card-number num-critico">N8 · Crítico</div>
-        <div class="card-title">Corrida de execuções — duas msgs simultâneas corrompem o estado da sessão</div>
+        <div class="card-title">Corrida de execuções — duas msgs simultâneas corrompem estado e disparam decisões clínicas sem contexto</div>
       </div>
       <div class="card-badge badge-critico"><div class="badge-dot"></div> Crítico</div>
     </div>
     <div class="card-body">
 
       <div class="bloco bloco-prob">
-        <div class="bloco-label">⚠️ O que aconteceu — conversa analisada em 04/06/2026</div>
+        <div class="bloco-label">⚠️ Caso 1 — conversa analisada em 04/06/2026 · Corrida de estado (CPF pedido duas vezes)</div>
         O paciente escolheu o horário e <strong>no mesmo segundo</strong> fez uma pergunta ("a consulta é por chat?"). São duas mensagens separadas em milissegundos. A Evolution API disparou <strong>dois webhooks</strong> e o n8n abriu <strong>duas execuções paralelas</strong>. As duas leram o mesmo estado da sessão ao mesmo tempo e começaram a se atropelar:
         <ul style="margin:8px 0 0 16px;font-size:13px;color:#5a6880;line-height:1.9;">
           <li>Execução A leu estado = "escolha horário" → processou o "1" → avançou para "pedir CPF" → gravou novo estado</li>
@@ -784,7 +784,7 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
       </div>
 
       <div class="bloco bloco-prob">
-        <div class="bloco-label">⚠️ Sequência real da conversa</div>
+        <div class="bloco-label">⚠️ Sequência real — Caso 1</div>
         <pre>09:09  Clara: mostra horários disponíveis
 09:10  Paciente: "1"                              ← escolheu
 09:10  Paciente: "A consulta é por chat? Ou vídeo?" ← SIMULTÂNEO → dois webhooks
@@ -793,6 +793,44 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
        ⏳ 5 MINUTOS DE SILÊNCIO                    ← execuções em conflito
 09:16  Clara: [responde chat/vídeo] + "preciso do CPF" ← pediu CPF DE NOVO ❌
 09:16  Clara: "Tive um problema técnico..."         ← desistiu</pre>
+      </div>
+
+      <div class="bloco" style="background:#fff1f3;border:1.5px solid #ffc5cd;border-radius:10px;padding:14px 16px;">
+        <div class="bloco-label" style="color:#c0392b;">🚨 Caso 2 — conversa analisada em 05/06/2026 · Cancelamento indevido por execução antecipada</div>
+        <strong>Mais grave que o Caso 1.</strong> A paciente enviou duas mensagens quase simultâneas: <em>"Cólica menstrual"</em> e <em>"É fraqueza nas pernas"</em>. Dois webhooks separados → duas execuções paralelas. Uma execução mostrou a checklist de alarme (correto). A outra, processando <em>só</em> "fraqueza nas pernas" isoladamente, já concluiu que era necessário atendimento presencial — e <strong>enviou o cancelamento da consulta sem esperar a paciente responder à checklist</strong>.
+        <ul style="margin:10px 0 0 16px;font-size:13px;color:#5a6880;line-height:1.9;">
+          <li>Paciente <strong>nunca confirmou</strong> nenhum sinal de alarme — a checklist sequer foi respondida</li>
+          <li>A execução "fraqueza nas pernas" foi mais rápida que a checklist e tomou a decisão sozinha</li>
+          <li>Resultado: consulta cancelada à toa, paciente confusa e angustiada, atendimento perdido</li>
+        </ul>
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Sequência real — Caso 2</div>
+        <pre>Paciente envia (quasi-simultâneas):
+  MSG-A: "Cólica menstrual"
+  MSG-B: "É fraqueza nas pernas"
+          ↓               ↓
+    Webhook-A          Webhook-B
+    n8n exec-A         n8n exec-B
+          ↓               ↓
+  Checklist         Processa "fraqueza" ISOLADA
+  de alarme         → conclui: precisa presencial
+          ↓               ↓
+  Aguarda resp...   ENVIA CANCELAMENTO ❌
+                    (sem esperar checklist)
+
+Paciente vê: checklist + aviso de cancelamento ao mesmo tempo
+→ Nunca respondeu a checklist
+→ Consulta cancelada sem motivo real
+→ Atendimento perdido + paciente angustiada</pre>
+      </div>
+
+      <div class="bloco" style="background:#fff8f1;border:1.5px solid #ffd4a8;border-radius:10px;padding:14px 16px;">
+        <div class="bloco-label" style="color:#c05800;">🔍 Por que o Caso 2 é mais perigoso que o Caso 1</div>
+        No Caso 1, o resultado foi <em>lentidão e frustração</em> — mas a consulta não foi perdida. No Caso 2, uma decisão clínica crítica (cancelar atendimento) foi tomada <strong>antes</strong> da coleta das informações necessárias. Isso é iatrogênico: a IA agiu como se tivesse contexto completo quando tinha contexto parcial. Se a checklist de alarme serve exatamente para avaliar antes de decidir, processá-la em paralelo com outra execução invalida completamente a proteção.
+        <br><br>
+        <strong>O lock por número (solução abaixo) resolve os dois casos</strong>, porque serializa as mensagens: exec-A termina, exec-B começa — com estado já atualizado pela exec-A.
       </div>
 
       <div class="bloco bloco-tec">
