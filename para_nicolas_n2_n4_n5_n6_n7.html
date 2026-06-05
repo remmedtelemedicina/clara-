@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Clara · Bugs para Nicolas — N2 N4 N5 N6 N7 N8 N9 N10</title>
+  <title>Clara · Bugs para Nicolas — N2 a N13</title>
   <style>
     :root{
       --azul-escuro:#0b1f35;
@@ -216,8 +216,8 @@
     <p class="header-sub">Problemas confirmados em conversas reais · Atualizado em 05/06/2026</p>
     <div class="header-meta">
       <div class="meta-chip"><div class="dot dot-red"></div> 4 críticos (N2, N5, N8, N10)</div>
-      <div class="meta-chip"><div class="dot dot-ora"></div> 4 alta prioridade (N4, N6, N7, N9)</div>
-      <div class="meta-chip"><div class="dot dot-grn"></div> 8 itens no total</div>
+      <div class="meta-chip"><div class="dot dot-ora"></div> 7 features/melhorias</div>
+      <div class="meta-chip"><div class="dot dot-grn"></div> 11 itens no total</div>
     </div>
   </div>
 </div>
@@ -234,7 +234,7 @@
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar"></div></div>
     <div class="progress-labels">
       <div class="plabel"><span class="badge" style="background:#fff1f3;color:#e8304a;border:1px solid #ffc5cd;">🔴 Crítico</span> N2 — Mensagens duplicadas · N5 — Horários/link não enviado · N8 — Corrida de execuções · N10 — Paciente retorna após handoff silenciado</div>
-      <div class="plabel"><span class="badge" style="background:#fff8f1;color:#f5811f;border:1px solid #ffd4a8;">🟠 Alta</span> N4 — Follow-up cego · N6 — Internacional em loop · N7 — Sessão contaminada · N9 — Comando /liberar para devolver paciente à IA</div>
+      <div class="plabel"><span class="badge" style="background:#fff8f1;color:#f5811f;border:1px solid #ffd4a8;">🟠 Alta</span> N4 — Follow-up cego · N6 — Internacional em loop · N7 — Sessão contaminada · N9 — Comando /liberar · N11 — Kill switch · N12 — Lista de bloqueados · N13 — Central de comandos</div>
     </div>
   </div>
 
@@ -347,6 +347,17 @@
             <tr><td><code>equipe_assumiu</code></td><td>Atendente humano assumiu a conversa</td><td class="nao">❌ NÃO</td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">🛑 Regra inegociável — recusa NUNCA dispara follow-up</div>
+        Essa é a regra mais importante do follow-up, e vale para os <strong>dois tipos de recusa</strong>:
+        <ul style="margin:8px 0 0 16px;font-size:13px;color:#5a6880;line-height:1.9;">
+          <li><strong>Recusa automática</strong> (a Clara recusa) → sinal de alarme, urgência, caso inadequado, gestante, criança, etc. → <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">bloqueado_alarme</code> ou <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">atendimento_recusado</code> → <strong>NÃO dispara</strong></li>
+          <li><strong>Recusa manual</strong> (a equipe/Raíssa recusa ou bloqueia o paciente na mão) → tem que setar <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">motivo_encerramento = "atendimento_recusado"</code> E adicionar à lista de bloqueados (ver N12) → <strong>NÃO dispara, nunca mais</strong></li>
+        </ul>
+        <br>
+        ⚠️ Hoje a recusa manual não marca nada — então o follow-up dispara mesmo depois da equipe ter recusado. O comando <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">bloqueia</code> (N12) precisa setar o motivo automaticamente para fechar esse buraco.
       </div>
 
     </div>
@@ -473,6 +484,13 @@ No nó de follow-up, além da condição acima:
         <div class="subtarefa-texto">
           <strong>Tarefa 4 — Cruzar equipe_assumiu e pagamento manual</strong>
           <span>Flag equipe_assumiu suprime follow-up de cobrança também</span>
+        </div>
+      </div>
+      <div class="subtarefa-linha">
+        <input class="subtarefa-chk" type="checkbox" onchange="saveChk(this,'n4t5')">
+        <div class="subtarefa-texto">
+          <strong>Tarefa 5 — Recusa manual seta motivo_encerramento</strong>
+          <span>Comando bloqueia (N12) e recusa manual gravam "atendimento_recusado" → nunca dispara follow-up</span>
         </div>
       </div>
       <div class="subtarefa-linha">
@@ -761,6 +779,11 @@ lock de sessão para garantir serialização mesmo com delay:
     </div>
     <div class="card-body">
 
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">📌 N9 foi absorvido pelo N13</div>
+        Este item virou o comando <code style="background:#d1fae5;color:#166534;padding:1px 5px;border-radius:4px;font-family:monospace;">atende 5511999...</code> da Central de Comandos (N13). <strong>Ao implementar o N13, o N9 já está resolvido</strong> — mantido aqui só para referência do problema original.
+      </div>
+
       <div class="bloco bloco-prob">
         <div class="bloco-label">⚠️ Situação atual</div>
         Quando a equipe assume uma conversa, o <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">setor</code> vai para <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">AGUARDANDO_HUMANO</code> e a IA fica silenciosa. <strong>Não existe nenhuma forma de dizer ao sistema "ok, pode voltar a atender este paciente".</strong><br><br>
@@ -864,17 +887,21 @@ Paciente ficou sem atendimento por horas.</pre>
 3. No nó de entrada do webhook (antes de silenciar a IA),
    verificar se o handoff ainda está "ativo":
 
-   SE setor = "AGUARDANDO_HUMANO"
-   E (now() - ultima_atividade_humana) > 4 horas
-     → Auto-liberar: setor = "MENU"
+   SE setor = "AGUARDANDO_HUMANO" (handoff ativo)
+   E (now() - ultima_atividade_humana) > 30 minutos
+     → Auto-liberar: setor = "TRIAGEM_ATIVA"
      → Clara retoma o atendimento normalmente
 
-   SE setor = "AGUARDANDO_HUMANO"
-   E ultima_atividade_humana recente (< 4h)
-     → Manter silêncio (handoff ativo)
+   SE setor = "ENCERRADO"
+   E (now() - ultimo_contato) > 4 horas
+     → Auto-liberar: setor = "TRIAGEM_ATIVA"
+     → Nova sessão começa do zero (ver N7)
 
-4. O threshold de 4h é configurável — pode ser 2h, 6h, 8h.
-   Sugestão: 4h em horário comercial, 8h fora do horário.</pre>
+4. Thresholds configuráveis e alinhados com o Controle Avançado:
+   - HUMANO    → 30 min sem resposta da equipe → libera
+   - ENCERRADO → 4 h após encerramento → libera (nova sessão)
+   No caso real (equipe assumiu domingo, paciente voltou quinta),
+   os 30 min já teriam liberado muito antes — paciente atendido.</pre>
       </div>
 
       <div class="bloco bloco-ok">
@@ -896,6 +923,233 @@ Paciente ficou sem atendimento por horas.</pre>
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N11 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🔴</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N11 · Nova feature</div>
+        <div class="card-title">Kill Switch — desligar e ligar a Clara na hora via WhatsApp</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Nova feature</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Por que precisa</div>
+        Hoje, se a Clara começa a fazer algo errado (um bug em produção, uma resposta inadequada em loop, um problema na agenda), <strong>não há como desligá-la sem entrar no n8n</strong>. Em uma emergência isso custa tempo precioso e o paciente continua recebendo respostas erradas. O kill switch resolve: a Raíssa manda <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">pausa</code> do próprio WhatsApp e a Clara para na hora.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Tabela config_sistema no Supabase</div>
+        <pre>CREATE TABLE config_sistema (
+  chave         TEXT PRIMARY KEY,
+  valor         TEXT,
+  atualizado_em TIMESTAMPTZ DEFAULT NOW()
+);
+
+INSERT INTO config_sistema VALUES
+  ('clara_ativa',    'true',          NOW()),
+  ('owner_telefone', '5511XXXXXXXXX', NOW()),
+  ('msg_fora_do_ar', 'Estamos com atendimento pausado. Retornamos em breve! 🧡', NOW());</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Lógica no nó de entrada</div>
+        <pre>1. Raíssa envia "pausa" do número dela (owner_telefone)
+   → UPDATE config_sistema SET valor='false' WHERE chave='clara_ativa'
+   → Responde: "🔴 Clara pausada. Nenhum paciente será atendido."
+
+2. Raíssa envia "liga"
+   → UPDATE config_sistema SET valor='true' WHERE chave='clara_ativa'
+   → Responde: "✅ Clara ativa. Atendimento retomado!"
+
+3. A cada mensagem de paciente, ANTES do agente IA:
+   SE clara_ativa = false
+     → responder msg_fora_do_ar (ou silêncio, a definir) → parar
+     → NÃO processar com a IA</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Comando escolhido (pausa/liga), se manda msg de fora do ar ou silêncio..." oninput="saveNota(this,'n11')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n11')"> Concluído</label>
+      <div class="footer-dica">Tabela config_sistema + check clara_ativa no nó de entrada antes do agente IA</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N12 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🚫</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N12 · Nova feature</div>
+        <div class="card-title">Lista de bloqueados — ignorar paciente + cortar follow-up na recusa manual</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Nova feature</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Por que precisa — e a conexão com o follow-up</div>
+        Alguns pacientes não devem ser atendidos pela Clara (casos difíceis, recusados manualmente, abusivos). Hoje não há como bloquear. <strong>E o mais importante:</strong> quando a Raíssa recusa um paciente na mão, o sistema não marca nada — então o <strong>follow-up automático ainda dispara para quem já foi recusado</strong>. O bloqueio precisa setar o motivo de encerramento automaticamente para fechar esse buraco (ver N4).
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Tabela pacientes_bloqueados</div>
+        <pre>CREATE TABLE pacientes_bloqueados (
+  telefone     TEXT PRIMARY KEY,
+  motivo       TEXT,
+  bloqueado_em TIMESTAMPTZ DEFAULT NOW(),
+  origem       TEXT   -- 'etiqueta_wpp', 'comando', 'manual'
+);</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Dois jeitos de bloquear</div>
+        <pre>Método A — Etiqueta no WhatsApp Business (mais visual):
+  1. Criar etiqueta "nao-atender" no WPP Business
+  2. n8n verifica labels no payload da Evolution API a cada msg
+  3. SE label "nao-atender" presente:
+     → INSERT em pacientes_bloqueados (origem='etiqueta_wpp')
+     → não responder → parar
+
+Método B — Comando via WhatsApp:
+  bloqueia 5511999...    → INSERT na lista
+  desbloqueia 5511999... → DELETE da lista</pre>
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">🛑 Ligação obrigatória com o N4 (follow-up)</div>
+        <pre>Ao bloquear um paciente (qualquer método), TAMBÉM setar na sessão:
+   → motivo_encerramento = "atendimento_recusado"
+   → equipe_assumiu = true
+
+Assim o follow-up NUNCA dispara para quem foi recusado na mão.
+Esta é exatamente a regra que a Raíssa pediu:
+"quando eu recusar manualmente também não pode ter follow-up".</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Verificação no nó de entrada</div>
+        <pre>A cada mensagem, ANTES do agente IA:
+  GET pacientes_bloqueados WHERE telefone = remetente
+  SE encontrado → silêncio total → parar
+  (não processa IA, não dispara follow-up, não responde nada)</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Método escolhido (etiqueta/comando/ambos), se o bloqueio seta o motivo automaticamente..." oninput="saveNota(this,'n12')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n12')"> Concluído</label>
+      <div class="footer-dica">Tabela pacientes_bloqueados + bloqueio seta motivo_encerramento = atendimento_recusado (corta follow-up)</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N13 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">💬</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N13 · Nova feature</div>
+        <div class="card-title">Central de Comandos via WhatsApp (engloba o /liberar do N9)</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Nova feature</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">📌 Substitui e amplia o N9</div>
+        O N9 propunha só o comando <code>/liberar</code>. Esta central de comandos faz tudo de uma vez: liberar, pausar, bloquear, status. <strong>Implementar N13 já resolve o N9.</strong> Todos os comandos são enviados pela Raíssa do número dela (owner) e nunca chegam ao agente IA.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Tabela de comandos</div>
+        <pre>pausa                 → desliga a Clara (N11)
+liga                  → liga a Clara (N11)
+atende 5511999...     → reseta setor p/ TRIAGEM_ATIVA, Clara retoma (N9/N10)
+bloqueia 5511999...   → adiciona à lista + corta follow-up (N12)
+desbloqueia 5511999.. → remove da lista
+status                → "📊 Clara: ATIVA | Bloqueados: 3 | Atendimentos hoje: 12"</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Parser de comandos (nó Function, JavaScript)</div>
+        <pre>const msg    = $input.item.json.message.toLowerCase().trim();
+const sender = $input.item.json.sender;
+const owner  = $('Config').item.json.owner_telefone;
+
+// Só o owner pode mandar comando
+if (sender !== owner) return [{ json: { is_command: false } }];
+
+if (msg === 'pausa')  return [{ json: { cmd: 'pausa' } }];
+if (msg === 'liga')   return [{ json: { cmd: 'liga' } }];
+if (msg === 'status') return [{ json: { cmd: 'status' } }];
+
+if (msg.startsWith('atende '))
+  return [{ json: { cmd: 'atende', telefone: msg.replace('atende ','').trim() } }];
+if (msg.startsWith('bloqueia '))
+  return [{ json: { cmd: 'bloqueia', telefone: msg.replace('bloqueia ','').trim() } }];
+if (msg.startsWith('desbloqueia '))
+  return [{ json: { cmd: 'desbloqueia', telefone: msg.replace('desbloqueia ','').trim() } }];
+
+return [{ json: { cmd: 'ajuda' } }];  // comando não reconhecido</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">🔀 Ordem de verificação a cada mensagem (arquitetura do nó de entrada)</div>
+        <pre>📨 Mensagem chega (webhook)
+   ↓
+👑 É do número da Raíssa (owner)? → executar COMANDO → parar
+   ↓
+🔴 Clara está ativa? (config_sistema) → NÃO → "fora do ar" → parar   [N11]
+   ↓
+🚫 Paciente bloqueado? (pacientes_bloqueados) → SIM → silêncio → parar [N12]
+   ↓
+🏷️ Tem etiqueta "nao-atender" no WPP? → SIM → bloquear + parar        [N12]
+   ↓
+⏱️ Setor = ENCERRADO e tempo > 4h? → resetar p/ TRIAGEM_ATIVA          [N10]
+   ↓
+⏱️ Setor = HUMANO e tempo > 30min sem resposta? → reset TRIAGEM_ATIVA  [N10]
+   ↓
+🔒 Já tem execução processando este número? → enfileirar / aguardar    [N8]
+   ↓
+🗄️ GET sessão no Supabase + atualizar ultimo_contato
+   ↓
+🤖 Agente Clara</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">💡 Tudo isso mora no mesmo nó</div>
+        N8, N9, N10, N11, N12 e N13 são <strong>todas verificações no nó de entrada do webhook</strong>, na ordem acima. Dá para implementar a estrutura inteira de uma vez seguindo esse fluxograma — é o coração do novo controle da Clara.
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Comandos implementados, ordem de verificação montada, testes do owner..." oninput="saveNota(this,'n13')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n13')"> Concluído</label>
+      <div class="footer-dica">Switch de comandos (owner) no topo do webhook + fluxograma de verificação completo</div>
+    </div>
+  </div>
+
   <!-- ── RODAPÉ GERAL ── -->
   <div class="rodape-geral">
     <h3>⚡ Ordem sugerida de execução</h3>
@@ -906,8 +1160,12 @@ Paciente ficou sem atendimento por horas.</pre>
     <div class="linha"><div class="n">🟠 5º</div><div class="t"><strong>N4 Tarefa 3 — IF no follow-up</strong> · Só o IF (NULL = não dispara) já estanca os disparos constrangedores sem precisar de mais nada.</div></div>
     <div class="linha"><div class="n">🟠 6º</div><div class="t"><strong>N6 — Internacional em loop</strong> · Flag <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">internacional_notificado</code> + setar AGUARDANDO_HUMANO após primeira msg.</div></div>
     <div class="linha"><div class="n">🟠 7º</div><div class="t"><strong>N7 + N4 completo — Sessão anterior + Follow-up completo</strong> · Reset de variáveis de sessão + implementação completa do motivo_encerramento.</div></div>
+    <div class="linha"><div class="n">🟠 8º</div><div class="t"><strong>N11 + N12 + N13 — Controle avançado</strong> · Kill switch, lista de bloqueados e central de comandos. N12 corta o follow-up na recusa manual (regra inegociável). N13 já inclui o /liberar do N9.</div></div>
     <div class="lembrete">
-      💡 <strong>N10 + N9 + N8 podem ser feitos em sequência no mesmo dia</strong> — todos mexem no nó de entrada do webhook. Enquanto estiver lá: checar inatividade (N10), checar fromMe+comandos (N9), adicionar lock de processamento (N8). Três fixes no mesmo nó.
+      💡 <strong>O nó de entrada do webhook é o coração de tudo.</strong> N8, N9, N10, N11, N12 e N13 são todas verificações no mesmo nó, na ordem do fluxograma do N13. Recomendação: montar a estrutura do fluxograma primeiro (owner → clara_ativa → bloqueado → etiqueta → reset por tempo → lock → IA) e ir preenchendo cada verificação. Uma vez montado o esqueleto, cada item é só uma condição a mais.
+    </div>
+    <div class="lembrete" style="margin-top:10px;background:rgba(232,48,74,0.12);border-color:rgba(232,48,74,0.35);">
+      🛑 <strong>Regra inegociável do follow-up:</strong> recusa <em>automática</em> (Clara) e recusa <em>manual</em> (equipe/comando bloqueia) <strong>nunca</strong> disparam follow-up. A recusa manual precisa setar <code style="background:rgba(232,48,74,0.2);color:#ff6b6b;padding:1px 5px;border-radius:4px;font-family:monospace;">motivo_encerramento = "atendimento_recusado"</code> — sem isso, o follow-up dispara para quem já foi recusado (N4 + N12).
     </div>
   </div>
 
@@ -935,7 +1193,7 @@ Paciente ficou sem atendimento por horas.</pre>
       if (localStorage.getItem('nic5_chk_' + k) === '1') el.checked = true;
     });
 
-    const notaKeys = ['n2','n4','n5','n6','n7','n8','n9','n10'];
+    const notaKeys = ['n2','n4','n5','n6','n7','n8','n9','n10','n11','n12','n13'];
     document.querySelectorAll('textarea').forEach(el => {
       const attr = el.getAttribute('oninput');
       if (!attr) return;
