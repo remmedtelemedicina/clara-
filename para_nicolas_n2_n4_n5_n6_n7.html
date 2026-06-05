@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Clara · Bugs para Nicolas</title>
+  <title>Clara · Bugs para Nicolas — N2 N4 N5 N6 N7 N8 N9 N10</title>
   <style>
     :root{
       --azul-escuro:#0b1f35;
@@ -213,11 +213,11 @@
   <div class="header-inner">
     <div class="header-pill">⚙️ n8n · Clara Triagem</div>
     <h1>Bugs para <span>Nicolas</span> resolver</h1>
-    <p class="header-sub">Problemas confirmados em conversas reais · Atualizado em 04/06/2026</p>
+    <p class="header-sub">Problemas confirmados em conversas reais · Atualizado em 05/06/2026</p>
     <div class="header-meta">
-      <div class="meta-chip"><div class="dot dot-red"></div> 2 críticos (N2, N5)</div>
-      <div class="meta-chip"><div class="dot dot-ora"></div> 3 alta prioridade (N4, N6, N7)</div>
-      <div class="meta-chip"><div class="dot dot-grn"></div> 5 itens no total</div>
+      <div class="meta-chip"><div class="dot dot-red"></div> 4 críticos (N2, N5, N8, N10)</div>
+      <div class="meta-chip"><div class="dot dot-ora"></div> 4 alta prioridade (N4, N6, N7, N9)</div>
+      <div class="meta-chip"><div class="dot dot-grn"></div> 8 itens no total</div>
     </div>
   </div>
 </div>
@@ -233,8 +233,8 @@
     </div>
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="bar"></div></div>
     <div class="progress-labels">
-      <div class="plabel"><span class="badge" style="background:#fff1f3;color:#e8304a;border:1px solid #ffc5cd;">🔴 Crítico</span> N2 — Mensagens duplicadas · N5 — Horários/link não enviado</div>
-      <div class="plabel"><span class="badge" style="background:#fff8f1;color:#f5811f;border:1px solid #ffd4a8;">🟠 Alta</span> N4 — Follow-up cego · N6 — Internacional em loop · N7 — Sessão contaminada</div>
+      <div class="plabel"><span class="badge" style="background:#fff1f3;color:#e8304a;border:1px solid #ffc5cd;">🔴 Crítico</span> N2 — Mensagens duplicadas · N5 — Horários/link não enviado · N8 — Corrida de execuções · N10 — Paciente retorna após handoff silenciado</div>
+      <div class="plabel"><span class="badge" style="background:#fff8f1;color:#f5811f;border:1px solid #ffd4a8;">🟠 Alta</span> N4 — Follow-up cego · N6 — Internacional em loop · N7 — Sessão contaminada · N9 — Comando /liberar para devolver paciente à IA</div>
     </div>
   </div>
 
@@ -664,16 +664,250 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N8 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-critico"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-critico">⚡</div>
+      <div class="card-head-info">
+        <div class="card-number num-critico">N8 · Crítico</div>
+        <div class="card-title">Corrida de execuções — duas msgs simultâneas corrompem o estado da sessão</div>
+      </div>
+      <div class="card-badge badge-critico"><div class="badge-dot"></div> Crítico</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ O que aconteceu — conversa analisada em 04/06/2026</div>
+        O paciente escolheu o horário e <strong>no mesmo segundo</strong> fez uma pergunta ("a consulta é por chat?"). São duas mensagens separadas em milissegundos. A Evolution API disparou <strong>dois webhooks</strong> e o n8n abriu <strong>duas execuções paralelas</strong>. As duas leram o mesmo estado da sessão ao mesmo tempo e começaram a se atropelar:
+        <ul style="margin:8px 0 0 16px;font-size:13px;color:#5a6880;line-height:1.9;">
+          <li>Execução A leu estado = "escolha horário" → processou o "1" → avançou para "pedir CPF" → gravou novo estado</li>
+          <li>Execução B leu o estado <em>velho</em> (antes do CPF) → ficou bloqueada tentando responder a FAQ</li>
+          <li>CPF chegou e caiu no meio dessa briga → <strong>5 minutos parado</strong></li>
+          <li>Execução B "acordou" → pediu o CPF de novo (ignorou que já foi enviado) → "problema técnico"</li>
+        </ul>
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Sequência real da conversa</div>
+        <pre>09:09  Clara: mostra horários disponíveis
+09:10  Paciente: "1"                              ← escolheu
+09:10  Paciente: "A consulta é por chat? Ou vídeo?" ← SIMULTÂNEO → dois webhooks
+09:10  Clara: "preciso do seu CPF"                 ← execução A respondeu o "1"
+09:11  Paciente: "40842469800"                     ← CPF enviado
+       ⏳ 5 MINUTOS DE SILÊNCIO                    ← execuções em conflito
+09:16  Clara: [responde chat/vídeo] + "preciso do CPF" ← pediu CPF DE NOVO ❌
+09:16  Clara: "Tive um problema técnico..."         ← desistiu</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Solução — Lock por número de telefone</div>
+        <pre>O debounce do N2 resolve parcialmente, mas N8 precisa de um
+lock de sessão para garantir serialização mesmo com delay:
+
+1. Ao receber mensagem: verificar se existe lock ativo para o número
+   SE lock = true:
+     → Enfileirar a mensagem (ou aguardar 3s e tentar de novo)
+     → NÃO processar em paralelo
+
+2. Ao iniciar processamento: setar lock = true no Supabase
+   Campos sugeridos:
+     processando          = true / false
+     processando_desde    = timestamp  (para detectar lock travado)
+
+3. Ao finalizar resposta: setar processando = false
+
+4. Safety: se processando_desde > 30s → forçar processando = false
+   (evita lock permanente em caso de crash no nó)
+
+5. Ao detectar duas msgs em < 3s do mesmo número:
+   → Concatenar as duas em uma só mensagem antes de processar
+   → Ex: "1\nA consulta é por chat?" → processa tudo junto
+   → Clara responde escolha do horário E a dúvida de uma vez</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">✅ Resultado esperado com o fix</div>
+        Paciente envia "1" + "consulta é por chat?" → n8n junta as duas → Clara responde:<br>
+        <em>"Ótimo, horário 11:00 reservado! A consulta é por videochamada, mas também pode ser por chat dentro da plataforma 😊 Me diz seu CPF..."</em><br><br>
+        Uma única execução, nenhum conflito de estado.
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Abordagem de lock escolhida, campo Supabase criado, resultado dos testes..." oninput="saveNota(this,'n8')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n8')"> Concluído</label>
+      <div class="footer-dica">Lock por número (processando = true/false) + concatenar msgs simultâneas antes de processar</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N9 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-alta"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-alta">🔑</div>
+      <div class="card-head-info">
+        <div class="card-number num-alta">N9 · Alta prioridade</div>
+        <div class="card-title">Sem mecanismo para devolver paciente à IA após handoff humano</div>
+      </div>
+      <div class="card-badge badge-alta"><div class="badge-dot"></div> Nova feature</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Situação atual</div>
+        Quando a equipe assume uma conversa, o <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">setor</code> vai para <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">AGUARDANDO_HUMANO</code> e a IA fica silenciosa. <strong>Não existe nenhuma forma de dizer ao sistema "ok, pode voltar a atender este paciente".</strong><br><br>
+        Para liberar hoje, a equipe precisaria acessar o Supabase diretamente e alterar o campo manualmente — completamente inviável no dia a dia.
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Feature — Comando /liberar via WhatsApp</div>
+        <pre>Fluxo proposto:
+
+1. A equipe (Raíssa ou atendente) envia no WhatsApp do paciente:
+   /liberar
+   (pode ser: /liberar, /ia, /voltar, /clara — definir o mais intuitivo)
+
+2. O webhook do n8n recebe a mensagem.
+   ANTES de passar para o agente IA, verificar:
+   SE a mensagem veio do número da equipe (fromMe = true na Evolution API)
+   E a mensagem começa com "/"
+     → NÃO processar como mensagem do paciente
+     → Interpretar como comando interno
+
+3. Comando /liberar:
+   → Setar setor = "MENU" (ou "INICIO")
+   → Setar equipe_assumiu = false
+   → Limpar quaisquer variáveis de contexto da sessão anterior
+   → (Opcional) Clara envia mensagem automática ao paciente:
+     "Olá! Posso te ajudar com mais alguma coisa? 🧡"
+
+4. Outros comandos úteis para o futuro:
+   /status  → retorna o setor atual do paciente (debug)
+   /reset   → limpa toda a sessão e começa do zero
+   /info    → mostra dados da sessão atual</pre>
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Como distinguir msg da equipe vs. msg do paciente (Evolution API)</div>
+        <pre>No payload do webhook da Evolution API, o campo:
+  message.key.fromMe = true   → mensagem enviada pelo número REMMED
+  message.key.fromMe = false  → mensagem enviada pelo paciente
+
+Já existe essa informação no webhook — só precisa checar
+antes de passar para o nó da IA.</pre>
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Qual comando foi escolhido, como foi implementado no nó de entrada, testes realizados..." oninput="saveNota(this,'n9')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n9')"> Concluído</label>
+      <div class="footer-dica">Checar fromMe no webhook + detectar comandos / antes de passar para o agente IA</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- N10 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-bar bar-critico"></div>
+    <div class="card-head">
+      <div class="card-icon-wrap icon-critico">🔇</div>
+      <div class="card-head-info">
+        <div class="card-number num-critico">N10 · Crítico</div>
+        <div class="card-title">Paciente retorna após handoff — Clara fica silenciosa para sempre</div>
+      </div>
+      <div class="card-badge badge-critico"><div class="badge-dot"></div> Crítico</div>
+    </div>
+    <div class="card-body">
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Caso real — 04/06/2026</div>
+        <pre>Domingo: paciente enviou mensagem → equipe assumiu manualmente
+         → setor ficou = "AGUARDANDO_HUMANO"
+
+Quinta (4 dias depois):
+09:34  Paciente: "Bom dia aí tem atendimento hoje?"
+10:03  Paciente: "Olá, gostaria de falar sobre"
+14:00  REMMED: [mensagem em branco / silêncio]
+
+Clara não respondeu nenhuma das duas mensagens.
+Paciente ficou sem atendimento por horas.</pre>
+      </div>
+
+      <div class="bloco bloco-prob">
+        <div class="bloco-label">⚠️ Por que acontece</div>
+        O <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">setor</code> ficou travado em <code style="background:#ffeef0;color:#c0392b;padding:1px 5px;border-radius:4px;font-family:monospace;">AGUARDANDO_HUMANO</code> do domingo. Quando o paciente voltou 4 dias depois, o n8n viu esse setor e <strong>silenciou a IA</strong> — exatamente como deveria fazer durante um handoff ativo. Mas o handoff do domingo já tinha terminado. Não há nenhuma lógica que detecte "o handoff está ativo agora ou já era do passado?"
+      </div>
+
+      <div class="bloco bloco-tec">
+        <div class="bloco-label">🔧 Solução — Auto-release por inatividade humana</div>
+        <pre>Adicionar campo: ultima_atividade_humana = timestamp
+
+1. Quando equipe assume → setar:
+   - setor = "AGUARDANDO_HUMANO"
+   - ultima_atividade_humana = now()
+
+2. Quando equipe envia mensagem → atualizar:
+   - ultima_atividade_humana = now()
+
+3. No nó de entrada do webhook (antes de silenciar a IA),
+   verificar se o handoff ainda está "ativo":
+
+   SE setor = "AGUARDANDO_HUMANO"
+   E (now() - ultima_atividade_humana) > 4 horas
+     → Auto-liberar: setor = "MENU"
+     → Clara retoma o atendimento normalmente
+
+   SE setor = "AGUARDANDO_HUMANO"
+   E ultima_atividade_humana recente (< 4h)
+     → Manter silêncio (handoff ativo)
+
+4. O threshold de 4h é configurável — pode ser 2h, 6h, 8h.
+   Sugestão: 4h em horário comercial, 8h fora do horário.</pre>
+      </div>
+
+      <div class="bloco bloco-ok">
+        <div class="bloco-label">✅ Integração com N9 (/liberar)</div>
+        N9 e N10 se complementam:<br>
+        — <strong>N9 (/liberar)</strong>: equipe libera manualmente, na hora que quiser<br>
+        — <strong>N10 (auto-release)</strong>: sistema libera sozinho se equipe ficou inativa por X horas<br><br>
+        Com os dois implementados, nenhum paciente fica no limbo indefinidamente.
+      </div>
+
+      <div class="nota-wrap">
+        <label>📝 Anotações</label>
+        <textarea placeholder="Threshold de inatividade definido, campo ultima_atividade_humana criado, testes com diferentes cenários..." oninput="saveNota(this,'n10')"></textarea>
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="chk-main"><input type="checkbox" onchange="saveChk(this,'n10')"> Concluído</label>
+      <div class="footer-dica">Campo ultima_atividade_humana + verificar threshold de inatividade no nó de entrada</div>
+    </div>
+  </div>
+
   <!-- ── RODAPÉ GERAL ── -->
   <div class="rodape-geral">
     <h3>⚡ Ordem sugerida de execução</h3>
-    <div class="linha"><div class="n">🔴 1º</div><div class="t"><strong>N2 — Debounce</strong> · Mensagens duplicadas afetam toda interação. Resolver primeiro.</div></div>
-    <div class="linha"><div class="n">🔴 2º</div><div class="t"><strong>N5 — Horários/link</strong> · Falha silenciosa = perda direta de agendamento e pagamento.</div></div>
-    <div class="linha"><div class="n">🟠 3º</div><div class="t"><strong>N4 Tarefa 3 — IF no follow-up</strong> · Só o IF (NULL = não dispara) já estanca os disparos constrangedores agora.</div></div>
-    <div class="linha"><div class="n">🟠 4º</div><div class="t"><strong>N6 — Internacional</strong> · Loop de mensagens pode ser resolvido junto com N2 (debounce ajuda).</div></div>
-    <div class="linha"><div class="n">🟠 5º</div><div class="t"><strong>N7 — Sessão anterior</strong> · Reset de variáveis + N4 completo em seguida.</div></div>
+    <div class="linha"><div class="n">🔴 1º</div><div class="t"><strong>N10 — Auto-release por inatividade</strong> · Pacientes ficando sem atendimento por dias. Implementar campo <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">ultima_atividade_humana</code> e check de threshold no nó de entrada — 1 hora de trabalho, impacto imediato.</div></div>
+    <div class="linha"><div class="n">🔴 2º</div><div class="t"><strong>N8 + N2 — Lock de sessão + Debounce</strong> · Fazer juntos: são a mesma família de bug. Debounce (2–3s) + campo <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">processando</code> resolve corrida de execuções e duplicatas.</div></div>
+    <div class="linha"><div class="n">🟠 3º</div><div class="t"><strong>N9 — Comando /liberar</strong> · Checar <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">fromMe</code> no webhook já resolve. Implementar junto com N10 (mesma área do código).</div></div>
+    <div class="linha"><div class="n">🔴 4º</div><div class="t"><strong>N5 — Horários/link não enviado</strong> · Falha silenciosa = perda direta de agendamento e pagamento. Tratar erros dos nós de tool call.</div></div>
+    <div class="linha"><div class="n">🟠 5º</div><div class="t"><strong>N4 Tarefa 3 — IF no follow-up</strong> · Só o IF (NULL = não dispara) já estanca os disparos constrangedores sem precisar de mais nada.</div></div>
+    <div class="linha"><div class="n">🟠 6º</div><div class="t"><strong>N6 — Internacional em loop</strong> · Flag <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">internacional_notificado</code> + setar AGUARDANDO_HUMANO após primeira msg.</div></div>
+    <div class="linha"><div class="n">🟠 7º</div><div class="t"><strong>N7 + N4 completo — Sessão anterior + Follow-up completo</strong> · Reset de variáveis de sessão + implementação completa do motivo_encerramento.</div></div>
     <div class="lembrete">
-      💡 <strong>N4 Tarefa 3</strong> pode ser feita antes de qualquer outra coisa: adicionar <code style="background:rgba(0,194,168,0.2);color:#00e6cc;padding:1px 5px;border-radius:4px;font-family:monospace;">SE motivo IS NULL → não disparar</code> no nó de follow-up já protege os casos urgentes enquanto o resto é implementado.
+      💡 <strong>N10 + N9 + N8 podem ser feitos em sequência no mesmo dia</strong> — todos mexem no nó de entrada do webhook. Enquanto estiver lá: checar inatividade (N10), checar fromMe+comandos (N9), adicionar lock de processamento (N8). Três fixes no mesmo nó.
     </div>
   </div>
 
@@ -701,7 +935,7 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
       if (localStorage.getItem('nic5_chk_' + k) === '1') el.checked = true;
     });
 
-    const notaKeys = ['n2','n4','n5','n6','n7'];
+    const notaKeys = ['n2','n4','n5','n6','n7','n8','n9','n10'];
     document.querySelectorAll('textarea').forEach(el => {
       const attr = el.getAttribute('oninput');
       if (!attr) return;
