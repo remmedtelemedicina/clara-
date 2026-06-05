@@ -204,6 +204,51 @@
       color:white;font-size:11px;font-weight:800;letter-spacing:1.5px;
       text-transform:uppercase;padding:8px 24px;
     }
+
+    /* ── CHAT WHATSAPP (conversa real visual) ── */
+    .chat{
+      margin:0 24px 14px;background:#e5ddd5;
+      background-image:linear-gradient(rgba(229,221,213,0.92),rgba(229,221,213,0.92));
+      border-radius:12px;padding:14px 12px;border:1px solid #d4cabb;
+    }
+    .chat-top{
+      display:flex;align-items:center;gap:9px;margin:-14px -12px 12px;
+      padding:10px 14px;background:#075e54;border-radius:12px 12px 0 0;color:#fff;
+    }
+    .chat-top .ava{width:30px;height:30px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+    .chat-top .nm{font-size:13px;font-weight:700;line-height:1.2;}
+    .chat-top .st{font-size:10.5px;color:rgba(255,255,255,0.7);}
+    .msg{
+      max-width:82%;padding:7px 11px 6px;border-radius:9px;margin-bottom:7px;
+      font-size:13px;line-height:1.5;position:relative;box-shadow:0 1px 1px rgba(0,0,0,0.08);
+      word-break:break-word;
+    }
+    .msg .meta{display:block;font-size:9.5px;color:rgba(0,0,0,0.4);text-align:right;margin-top:2px;}
+    .msg.in{background:#fff;border-top-left-radius:2px;margin-right:auto;}
+    .msg.out{background:#dcf8c6;border-top-right-radius:2px;margin-left:auto;}
+    .msg.bot{background:#dcf8c6;border-top-right-radius:2px;margin-left:auto;}
+    .msg.sys{
+      background:#fff6d6;border:1px dashed #e3c766;color:#7a5b00;
+      max-width:100%;text-align:center;font-size:11.5px;font-weight:600;
+      box-shadow:none;border-radius:8px;
+    }
+    .msg.erro{background:#ffe1e4;border:1px solid #ffb3bc;}
+    .msg .who{display:block;font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;margin-bottom:2px;opacity:.6;}
+    .msg.in .who{color:#075e54;}
+    .msg.out .who, .msg.bot .who{color:#128c3e;}
+    .chat-nota{
+      background:rgba(232,48,74,0.08);border-left:3px solid #e8304a;
+      font-size:11.5px;color:#b91c1c;padding:7px 10px;border-radius:6px;margin-top:6px;line-height:1.5;
+    }
+    .fork{
+      display:flex;gap:10px;margin:0 24px 14px;
+    }
+    .fork-col{flex:1;background:#fff;border:1px solid var(--borda);border-radius:10px;overflow:hidden;}
+    .fork-col .fh{padding:8px 12px;font-size:11px;font-weight:800;color:#fff;text-align:center;letter-spacing:.5px;}
+    .fork-col .fh.a{background:#12b76a;}
+    .fork-col .fh.b{background:#e8304a;}
+    .fork-col .fb{padding:11px 12px;font-size:12px;line-height:1.6;color:#445;}
+    @media(max-width:600px){.fork{flex-direction:column;}}
   </style>
 </head>
 <body>
@@ -213,7 +258,7 @@
   <div class="header-inner">
     <div class="header-pill">⚙️ n8n · Clara Triagem</div>
     <h1>Documento Técnico Completo — <span>Nicolas</span></h1>
-    <p class="header-sub">Clara · Bugs e features para implementar no n8n · Baseado em conversas reais · Atualizado em 05/06/2026</p>
+    <p class="header-sub">Clara · Bugs e features para implementar no n8n · Conversas reais reproduzidas · Atualizado em 05/06/2026</p>
     <div class="header-meta">
       <div class="meta-chip"><div class="dot dot-red"></div> 4 críticos (N2, N5, N8, N10)</div>
       <div class="meta-chip"><div class="dot dot-ora"></div> 10 features/infra</div>
@@ -308,14 +353,17 @@
         <strong>Confirmado nas conversas 4 e 6:</strong> endereço pedido em duplicata, e mensagem de número internacional disparando múltiplas vezes para o mesmo evento.
       </div>
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ Aconteceu de novo — 05/06/2026 (dois menus seguidos)</div>
-        <pre>10:06  Paciente: "Olá, Bom dia!!"
-10:06  Paciente: "Estou precisando marcar uma consulta"  ← 2 msgs juntas
-10:06  Clara: [menu completo de opções 1 a 7]            ← respondeu a 1ª
-10:06  Clara: "Entendi! 🧡 ...escolha uma das opções..." ← respondeu a 2ª
-       → paciente recebe o menu DUAS vezes no mesmo minuto ❌</pre>
-        É o caso clássico: duas mensagens no mesmo segundo → dois webhooks → duas respostas. O debounce abaixo resolve.
+        É o caso clássico: duas mensagens no mesmo segundo → dois webhooks → duas respostas. Veja a conversa real:
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Paciente</div><div class="st">online</div></div></div>
+        <div class="msg in">Olá, Bom dia!!<span class="meta">10:06</span></div>
+        <div class="msg in">Estou precisando marcar uma consulta <span class="meta">10:06 ✓✓</span></div>
+        <div class="msg bot"><span class="who">Clara</span>[menu completo de opções 1 a 7]<span class="meta">10:06</span></div>
+        <div class="msg bot"><span class="who">Clara</span>Entendi! 🧡 ...escolha uma das opções...<span class="meta">10:06</span></div>
+        <div class="chat-nota">❌ Paciente recebe o menu <strong>duas vezes</strong> no mesmo minuto — uma execução respondeu "Olá", a outra respondeu "marcar consulta".</div>
       </div>
 
       <div class="bloco bloco-tec">
@@ -598,18 +646,26 @@ No nó de follow-up, além da condição acima:
     </div>
     <div class="card-body">
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ Conversa 1 — horários que nunca chegaram</div>
-        Clara disse: <em>"Agora vou te mostrar os horários disponíveis com o médico"</em><br>
-        → <strong>Silêncio total. A conversa terminou ali.</strong><br><br>
         Possíveis causas: tool call falhou silenciosamente, timeout na API de agenda, resposta truncada pelo n8n.
       </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">🤖</div><div><div class="nm">Clara</div><div class="st">agendamento</div></div></div>
+        <div class="msg bot"><span class="who">Clara</span>Agora vou te mostrar os horários disponíveis com o médico 🗓️</div>
+        <div class="msg sys">… silêncio total — os horários nunca chegaram. A conversa terminou aqui.</div>
+        <div class="chat-nota">❌ A Clara <strong>narrou uma ação que não verificou</strong>. Agendamento perdido.</div>
+      </div>
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ Conversa 2 — link de pagamento nunca enviado</div>
-        Paciente escolhe PIX pela 2ª vez (após erro na 1ª tentativa)<br>
-        Clara: <em>"Seu pagamento via PIX já foi gerado e seu atendimento está finalizado 😊"</em><br>
-        → <strong>Nunca enviou o link de pagamento. Paciente não sabe como pagar. ❌</strong>
+        Paciente escolhe PIX pela 2ª vez (após erro na 1ª tentativa):
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">🤖</div><div><div class="nm">Clara</div><div class="st">pagamento</div></div></div>
+        <div class="msg in">PIX<span class="meta">✓✓</span></div>
+        <div class="msg bot"><span class="who">Clara</span>Seu pagamento via PIX já foi gerado e seu atendimento está finalizado 😊</div>
+        <div class="chat-nota">❌ Nunca enviou o link de pagamento. O paciente <strong>não tem como pagar</strong> — venda perdida e confirmação falsa.</div>
       </div>
 
       <div class="bloco bloco-tec">
@@ -659,14 +715,18 @@ No nó de follow-up, além da condição acima:
     </div>
     <div class="card-body">
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ O que aconteceu (conversa 6 — número +58 Venezuela)</div>
-        <pre>Sistema: "Para atendimento internacional, nossa equipe entrará em contato em breve. 🧡"
-Raíssa:  "Boa noite! Tudo bem? Como posso te ajudar hoje?"
-Sistema: "Para atendimento internacional..." ← dispara de novo ❌
-Paciente: "Atestado"
-Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
-        A mensagem continuou disparando a cada mensagem enviada — tanto pela equipe quanto pelo paciente.
+        A mensagem continuou disparando a cada mensagem enviada — tanto pela equipe quanto pelo paciente:
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">🌎</div><div><div class="nm">Paciente +58</div><div class="st">internacional</div></div></div>
+        <div class="msg bot"><span class="who">Sistema</span>Para atendimento internacional, nossa equipe entrará em contato em breve. 🧡<span class="meta">auto</span></div>
+        <div class="msg out"><span class="who">Raíssa (equipe)</span>Boa noite! Tudo bem? Como posso te ajudar hoje?</div>
+        <div class="msg bot erro"><span class="who">Sistema</span>Para atendimento internacional...<span class="meta">disparou de novo ❌</span></div>
+        <div class="msg in">Atestado<span class="meta">✓✓</span></div>
+        <div class="msg bot erro"><span class="who">Sistema</span>Para atendimento internacional...<span class="meta">disparou de novo ❌</span></div>
+        <div class="chat-nota">❌ A automação dispara mesmo depois da equipe já ter assumido — atropela a Raíssa.</div>
       </div>
 
       <div class="bloco bloco-tec">
@@ -715,12 +775,18 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
     </div>
     <div class="card-body">
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ Caso real — Agda, dia 2 (01/06/2026)</div>
-        Agda foi bloqueada na sessão anterior (31/05) por relatar <em>"abscesso com pus"</em>.<br>
-        No dia seguinte, voltou, escolheu opção 1, disse que sintomas eram <strong>leves</strong>.<br>
-        Clara exibiu o checklist de <strong>TRAUMA</strong> (dor após impacto, deformidade, dormência).<br>
-        Agda nunca mencionou nenhum sintoma musculoesquelético.<br><br>
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Agda</div><div class="st">bloqueada em 31/05 por "abscesso com pus"</div></div></div>
+        <div class="msg sys">⏩ Dia seguinte (01/06) — nova sessão</div>
+        <div class="msg in">1<span class="meta">✓✓</span></div>
+        <div class="msg in">Os sintomas são leves<span class="meta">✓✓</span></div>
+        <div class="msg bot erro"><span class="who">Clara</span>Checklist de <strong>TRAUMA</strong>: dor após impacto? deformidade? dormência?</div>
+        <div class="chat-nota">❌ Agda <strong>nunca falou</strong> de trauma ou impacto. A sessão velha (abscesso) contaminou a nova triagem — variável de rota não foi limpa.</div>
+      </div>
+      <div class="bloco bloco-prob">
         <strong>Hipótese:</strong> variável de grupo/rota da sessão anterior não foi limpa e influenciou a nova triagem, ou houve cache de contexto entre conversas.
       </div>
 
@@ -783,16 +849,21 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
         </ul>
       </div>
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ Sequência real — Caso 1</div>
-        <pre>09:09  Clara: mostra horários disponíveis
-09:10  Paciente: "1"                              ← escolheu
-09:10  Paciente: "A consulta é por chat? Ou vídeo?" ← SIMULTÂNEO → dois webhooks
-09:10  Clara: "preciso do seu CPF"                 ← execução A respondeu o "1"
-09:11  Paciente: "40842469800"                     ← CPF enviado
-       ⏳ 5 MINUTOS DE SILÊNCIO                    ← execuções em conflito
-09:16  Clara: [responde chat/vídeo] + "preciso do CPF" ← pediu CPF DE NOVO ❌
-09:16  Clara: "Tive um problema técnico..."         ← desistiu</pre>
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Paciente</div><div class="st">online</div></div></div>
+        <div class="msg bot"><span class="who">Clara</span>Mostra horários disponíveis 🗓️<span class="meta">09:09</span></div>
+        <div class="msg in">1<span class="meta">09:10 ✓✓</span></div>
+        <div class="msg in">A consulta é por chat? Ou vídeo?<span class="meta">09:10 ✓✓</span></div>
+        <div class="chat-nota">↑ duas mensagens no mesmo segundo → <strong>dois webhooks → duas execuções paralelas</strong></div>
+        <div class="msg bot"><span class="who">Clara · exec A</span>Perfeito! Agora preciso do seu CPF<span class="meta">09:10</span></div>
+        <div class="msg in">40842469800<span class="meta">09:11 ✓✓</span></div>
+        <div class="msg sys">⏳ 5 MINUTOS DE SILÊNCIO — execuções em conflito sobre o mesmo estado</div>
+        <div class="msg bot erro"><span class="who">Clara · exec B</span>[responde chat/vídeo] ...e preciso do seu CPF<span class="meta">09:16</span></div>
+        <div class="chat-nota">❌ Pediu o CPF <strong>de novo</strong> — ignorou que já tinha sido enviado às 09:11</div>
+        <div class="msg bot erro"><span class="who">Clara</span>Tive um problema técnico...<span class="meta">09:16</span></div>
       </div>
 
       <div class="bloco" style="background:#fff1f3;border:1.5px solid #ffc5cd;border-radius:10px;padding:14px 16px;">
@@ -805,25 +876,30 @@ Sistema: "Para atendimento internacional..." ← dispara de novo ❌</pre>
         </ul>
       </div>
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ Sequência real — Caso 2</div>
-        <pre>Paciente envia (quasi-simultâneas):
-  MSG-A: "Cólica menstrual"
-  MSG-B: "É fraqueza nas pernas"
-          ↓               ↓
-    Webhook-A          Webhook-B
-    n8n exec-A         n8n exec-B
-          ↓               ↓
-  Checklist         Processa "fraqueza" ISOLADA
-  de alarme         → conclui: precisa presencial
-          ↓               ↓
-  Aguarda resp...   ENVIA CANCELAMENTO ❌
-                    (sem esperar checklist)
-
-Paciente vê: checklist + aviso de cancelamento ao mesmo tempo
-→ Nunca respondeu a checklist
-→ Consulta cancelada sem motivo real
-→ Atendimento perdido + paciente angustiada</pre>
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Paciente</div><div class="st">online</div></div></div>
+        <div class="msg in">Cólica menstrual<span class="meta">✓✓</span></div>
+        <div class="msg in">É fraqueza nas pernas<span class="meta">✓✓</span></div>
+        <div class="chat-nota">↑ duas mensagens quase simultâneas → <strong>dois webhooks → exec-A e exec-B em paralelo</strong></div>
+      </div>
+      <div class="fork">
+        <div class="fork-col">
+          <div class="fh a">✅ EXEC A — processou "cólica"</div>
+          <div class="fb">Mostrou a <strong>checklist de alarme</strong> corretamente e ficou <em>aguardando</em> a paciente responder.</div>
+        </div>
+        <div class="fork-col">
+          <div class="fh b">❌ EXEC B — processou "fraqueza" isolada</div>
+          <div class="fb">Sem o contexto da cólica, concluiu sozinha que <strong>precisa de presencial</strong> e <strong>enviou o cancelamento</strong> — sem esperar a checklist.</div>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">🤖</div><div><div class="nm">Clara</div><div class="st">o que a paciente recebeu</div></div></div>
+        <div class="msg bot"><span class="who">Clara · exec A</span>Antes de seguir, preciso confirmar alguns pontos: você tem [checklist de sinais de alarme]?<span class="meta">⏳ aguardando resposta</span></div>
+        <div class="msg bot erro"><span class="who">Clara · exec B</span>Pelo seu quadro, recomendo atendimento presencial. Sua consulta foi cancelada.<span class="meta">enviado sem esperar ❌</span></div>
+        <div class="chat-nota">A paciente <strong>nunca respondeu</strong> a checklist — e mesmo assim recebeu o cancelamento. Nenhum sinal de alarme foi confirmado. Consulta perdida + paciente angustiada.</div>
       </div>
 
       <div class="bloco" style="background:#fff8f1;border:1.5px solid #ffd4a8;border-radius:10px;padding:14px 16px;">
@@ -967,18 +1043,16 @@ antes de passar para o nó da IA.</pre>
     </div>
     <div class="card-body">
 
-      <div class="bloco bloco-prob">
+      <div class="bloco bloco-prob" style="padding-bottom:6px;">
         <div class="bloco-label">⚠️ Caso real — 04/06/2026</div>
-        <pre>Domingo: paciente enviou mensagem → equipe assumiu manualmente
-         → setor ficou = "AGUARDANDO_HUMANO"
-
-Quinta (4 dias depois):
-09:34  Paciente: "Bom dia aí tem atendimento hoje?"
-10:03  Paciente: "Olá, gostaria de falar sobre"
-14:00  REMMED: [mensagem em branco / silêncio]
-
-Clara não respondeu nenhuma das duas mensagens.
-Paciente ficou sem atendimento por horas.</pre>
+      </div>
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Paciente</div><div class="st">visto por último: domingo</div></div></div>
+        <div class="msg sys">🗓️ Domingo — equipe assumiu manualmente → setor ficou travado em "AGUARDANDO_HUMANO"</div>
+        <div class="msg sys">⏩ Quinta-feira (4 dias depois)</div>
+        <div class="msg in">Bom dia aí tem atendimento hoje?<span class="meta">09:34 ✓✓</span></div>
+        <div class="msg in">Olá, gostaria de falar sobre<span class="meta">10:03 ✓✓</span></div>
+        <div class="chat-nota">❌ Clara <strong>não respondeu nenhuma das duas</strong> — o setor seguia em "AGUARDANDO_HUMANO" do domingo, então a IA continuou silenciada. Paciente ficou horas sem atendimento.</div>
       </div>
 
       <div class="bloco bloco-prob">
