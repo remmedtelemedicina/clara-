@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Clara · Análise Profunda — Por que ela erra e como resolver</title>
+<style>
+  :root{
+    --azul-escuro:#0b1f35;--azul-medio:#1a3a5c;--azul-vivo:#2271b3;--acento:#00c2a8;
+    --critico:#e8304a;--critico-bg:#fff1f3;--critico-borda:#ffc5cd;
+    --alta:#f5811f;--alta-bg:#fff8f1;--alta-borda:#ffd4a8;
+    --verde:#12b76a;--verde-bg:#f0fdf6;--verde-borda:#a7f0c6;
+    --cinza-claro:#f4f7fb;--borda:#dde5f0;--texto:#1a202c;--leve:#5a6880;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza-claro);color:var(--texto);line-height:1.6;}
+  .header{background:linear-gradient(140deg,#071525,#0f2d4e 50%,#1a4a78);padding:46px 22px 38px;text-align:center;}
+  .header-pill{display:inline-block;background:rgba(0,194,168,0.15);border:1px solid rgba(0,194,168,0.4);color:#00e6cc;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:16px;}
+  .header h1{font-size:27px;font-weight:900;color:#fff;line-height:1.25;margin-bottom:10px;}
+  .header h1 span{color:var(--acento);}
+  .header p{color:rgba(255,255,255,0.6);font-size:14px;max-width:680px;margin:0 auto;}
+  .page{max-width:880px;margin:0 auto;padding:26px 16px;}
+
+  .tldr{background:linear-gradient(135deg,#0b1f35,#1a3a5c);border-radius:16px;padding:26px 28px;color:white;margin-bottom:26px;box-shadow:0 2px 16px rgba(0,0,0,0.08);}
+  .tldr .kicker{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#00e6cc;margin-bottom:8px;}
+  .tldr h2{font-size:21px;font-weight:900;margin-bottom:14px;}
+  .tldr p{color:rgba(255,255,255,0.82);font-size:14px;margin-bottom:10px;}
+  .tldr strong{color:#fff;}
+  .tldr .destaque{background:rgba(232,48,74,0.18);border:1px solid rgba(232,48,74,0.4);border-radius:10px;padding:12px 15px;font-size:13.5px;margin-top:6px;}
+
+  .secao-titulo{display:flex;align-items:center;gap:11px;margin:34px 0 16px;}
+  .secao-titulo .num{width:34px;height:34px;border-radius:9px;background:var(--azul-vivo);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0;}
+  .secao-titulo h2{font-size:20px;font-weight:900;color:var(--azul-escuro);}
+
+  .card{background:white;border:1px solid var(--borda);border-radius:14px;padding:0;margin-bottom:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+  .card-top{padding:16px 20px;border-bottom:1px solid var(--borda);}
+  .card-top.crit{background:var(--critico-bg);border-bottom-color:var(--critico-borda);}
+  .card-top.alta{background:var(--alta-bg);border-bottom-color:var(--alta-borda);}
+  .card-top .tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;margin-bottom:4px;}
+  .card-top.crit .tag{color:var(--critico);}
+  .card-top.alta .tag{color:var(--alta);}
+  .card-top h3{font-size:16.5px;font-weight:800;color:var(--texto);line-height:1.3;}
+  .card-body{padding:18px 20px;}
+  .card-body p{font-size:13.5px;color:#2a3340;margin-bottom:11px;}
+  .card-body p:last-child{margin-bottom:0;}
+  .card-body strong{color:var(--azul-escuro);}
+  .card-body code{background:#eef2f8;padding:1.5px 6px;border-radius:5px;font-family:'Courier New',monospace;font-size:12px;color:#1a3a5c;font-weight:700;}
+
+  .bloco{border-radius:9px;padding:12px 14px;margin:12px 0;font-size:13px;line-height:1.6;}
+  .bloco .lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
+  .b-prob{background:var(--critico-bg);border:1px solid var(--critico-borda);}
+  .b-prob .lbl{color:var(--critico);}
+  .b-causa{background:#fff8f1;border:1px solid var(--alta-borda);}
+  .b-causa .lbl{color:var(--alta);}
+  .b-sol{background:var(--verde-bg);border:1px solid var(--verde-borda);}
+  .b-sol .lbl{color:#15803d;}
+  .b-tec{background:#eff6ff;border:1px solid #bfdbfe;}
+  .b-tec .lbl{color:#2563eb;}
+
+  pre{background:#0d1b2e;color:#cfe3ff;border-radius:8px;padding:13px 15px;font-family:'Courier New',monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:8px 0;line-height:1.55;overflow-x:auto;}
+  pre .add{color:#6ee7a8;}
+  pre .del{color:#ff8a9a;}
+  pre .cmt{color:#8aa0bd;}
+
+  .chat{background:#e5ddd5;border-radius:12px;padding:13px 11px;border:1px solid #d4cabb;margin:10px 0;}
+  .chat-top{display:flex;align-items:center;gap:9px;margin:-13px -11px 11px;padding:9px 13px;background:#075e54;border-radius:12px 12px 0 0;color:#fff;}
+  .chat-top .ava{width:28px;height:28px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+  .chat-top .nm{font-size:12.5px;font-weight:700;line-height:1.1;}
+  .chat-top .st{font-size:10px;color:rgba(255,255,255,0.7);}
+  .msg{max-width:84%;padding:6px 10px 5px;border-radius:9px;margin-bottom:6px;font-size:12.5px;line-height:1.45;box-shadow:0 1px 1px rgba(0,0,0,0.07);word-break:break-word;}
+  .msg .who{display:block;font-size:9px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;margin-bottom:2px;opacity:.6;}
+  .msg .meta{display:block;font-size:9px;color:rgba(0,0,0,0.38);text-align:right;margin-top:1px;}
+  .msg.in{background:#fff;border-top-left-radius:2px;margin-right:auto;}
+  .msg.in .who{color:#075e54;}
+  .msg.bot{background:#dcf8c6;border-top-right-radius:2px;margin-left:auto;}
+  .msg.bot .who{color:#128c3e;}
+  .msg.erro{background:#ffe1e4;border:1px solid #ffb3bc;margin-left:auto;border-top-right-radius:2px;}
+  .msg.erro .who{color:#c0392b;}
+  .msg.sys{background:#fff6d6;border:1px dashed #e3c766;color:#7a5b00;max-width:100%;text-align:center;font-size:11px;font-weight:600;box-shadow:none;}
+  .chat-nota{background:rgba(232,48,74,0.08);border-left:3px solid #e8304a;font-size:11.5px;color:#b91c1c;padding:7px 10px;border-radius:6px;margin-top:5px;}
+
+  .prio{display:flex;gap:12px;align-items:flex-start;background:white;border:1px solid var(--borda);border-radius:12px;padding:15px 18px;margin-bottom:12px;}
+  .prio .n{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0;color:#fff;}
+  .prio.p1 .n{background:var(--critico);}
+  .prio.p2 .n{background:var(--alta);}
+  .prio.p3 .n{background:var(--azul-vivo);}
+  .prio .txt{flex:1;}
+  .prio .txt strong{font-size:14px;color:var(--azul-escuro);display:block;margin-bottom:3px;}
+  .prio .txt span{font-size:12.5px;color:var(--leve);}
+  .prio .tempo{font-size:10.5px;font-weight:800;color:#fff;padding:3px 9px;border-radius:20px;white-space:nowrap;align-self:center;}
+  .prio.p1 .tempo{background:var(--critico);}
+  .prio.p2 .tempo{background:var(--alta);}
+  .prio.p3 .tempo{background:var(--azul-vivo);}
+
+  .rodape{background:linear-gradient(135deg,var(--azul-escuro),var(--azul-medio));color:rgba(255,255,255,0.85);border-radius:14px;padding:24px 26px;margin-top:24px;font-size:13.5px;}
+  .rodape h3{color:#fff;font-size:16px;margin-bottom:12px;}
+  .rodape p{margin-bottom:10px;color:rgba(255,255,255,0.8);}
+  .rodape strong{color:#00e6cc;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-pill">🔬 Análise Técnica Profunda</div>
+  <h1>Por que a Clara <span>recusa pacientes certos</span><br>— e como resolver de verdade</h1>
+  <p>Análise dos 4 prompts (Triagem, Renovação, Agendamento, Pagamento) cruzada com 3 conversas reais que deram errado. 05/06/2026.</p>
+</div>
+
+<div class="page">
+
+  <!-- TL;DR -->
+  <div class="tldr">
+    <div class="kicker">Leia isto primeiro — o resumo de tudo</div>
+    <h2>Não é você. São 3 problemas reais e identificáveis.</h2>
+    <p>Você não está fazendo nada errado. O seu teste passa e o do paciente não porque <strong>a IA não é um programa fixo — ela sorteia a resposta a cada vez</strong>, e o sistema deixa o estado da conversa se corromper. Os três erros que você me mostrou têm causas <strong>diferentes e específicas</strong>:</p>
+    <div class="destaque">
+      🔴 <strong>"Dor no estômago" recusado</strong> → a palavra <strong>"estômago" não existe em lugar nenhum do prompt</strong>. A IA não sabe onde encaixar, fica insegura e bloqueia por precaução. <strong>Conserto de 2 minutos.</strong><br><br>
+      🔴 <strong>"Febre" recusado (paciente apagou a mensagem)</strong> → o WhatsApp reenvia mensagens apagadas/editadas e o n8n processa em paralelo. A IA decidiu recusar com base num texto que a paciente apagou.<br><br>
+      🔴 <strong>"Dor de garganta" ignorado, perguntou de novo</strong> → o <code>setor</code> não avançou a tempo. Duas execuções correndo juntas se atropelaram.
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 1 ====================== -->
+  <div class="secao-titulo"><div class="num">1</div><h2>As 3 conversas, decifradas uma a uma</h2></div>
+
+  <!-- CONVERSA A -->
+  <div class="card">
+    <div class="card-top crit">
+      <div class="tag">Conversa A · Hoje · O caso que te revoltou</div>
+      <h3>"Dor no estômago" → mandada para o SAMU sem motivo</h3>
+    </div>
+    <div class="card-body">
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Paciente</div><div class="st">opção 2 · atestado</div></div></div>
+        <div class="msg bot"><span class="who">Clara</span>Me confirma que seus sintomas são LEVES? SIM ou NÃO<span class="meta">14:24</span></div>
+        <div class="msg in">Sim<span class="meta">14:24 ✓✓</span></div>
+        <div class="msg bot"><span class="who">Clara</span>...qual seu PRINCIPAL SINTOMA agora?<span class="meta">14:25</span></div>
+        <div class="msg in">Dor no estomago<span class="meta">14:25 ✓✓</span></div>
+        <div class="msg bot erro"><span class="who">Clara</span>⚠️ Pelos sintomas que você descreveu, recomendo procurar um pronto-atendimento AGORA ou ligar 192 (SAMU)...<span class="meta">14:26</span></div>
+        <div class="chat-nota">A paciente confirmou que os sintomas eram LEVES. Dor no estômago sem sinal de alarme É atendível. A recusa foi errada.</div>
+      </div>
+
+      <div class="bloco b-causa">
+        <div class="lbl">🔍 Causa exata — eu encontrei no seu prompt</div>
+        Na <strong>VERIFICAÇÃO 0</strong> (sinais de alarme), o seu prompt lista o que NÃO deve bloquear no digestivo:
+        <pre><span class="cmt">// trecho real do seu prompt — VERIFICAÇÃO 0, bloco digestivo</span>
+🔴 "dor de barriga", "dor abdominal", "barriga" ou "abdome"
+   sozinhos NÃO ativam este bloqueio → ir para Grupo 2</pre>
+        E no <strong>Grupo 2 (Digestivo)</strong>, a lista de sintomas é:
+        <pre><span class="cmt">// Grupo 2 — Digestivo</span>
+Sintomas: dor de barriga, náusea, vômito, diarreia,
+prisão de ventre, refluxo, azia, gases, dor abdominal</pre>
+        <strong>A palavra "estômago" não aparece em NENHUM dos dois.</strong> Nem na exclusão, nem no Grupo 2. Eu procurei: "estômago" não existe em lugar nenhum do prompt. Então quando chega "dor no estômago", a IA:
+        <br>① não acha na lista de exclusão → "será que é grave?"<br>
+        ② não acha um grupo claro para encaixar → fica sem rota<br>
+        ③ na dúvida, o modelo erra para o lado "seguro" → <strong>bloqueia e manda pro SAMU</strong>
+      </div>
+
+      <div class="bloco b-sol">
+        <div class="lbl">✅ Conserto imediato — 2 minutos no n8n</div>
+        No prompt da Triagem, adicione "estômago" e variações nos dois lugares:
+        <pre><span class="cmt">// 1) No Grupo 2 — Digestivo, adicione:</span>
+Sintomas: dor de barriga, <span class="add">dor no estômago, dor de estômago,
+dor na boca do estômago, queimação no estômago, gastrite,</span>
+náusea, vômito, diarreia, prisão de ventre, refluxo, azia, gases, dor abdominal
+
+<span class="cmt">// 2) Na VERIFICAÇÃO 0, exclusão digestiva, adicione:</span>
+🔴 "dor de barriga", "dor abdominal", "barriga", "abdome",
+   <span class="add">"estômago", "dor no estômago", "boca do estômago", "epigástrio"</span>
+   sozinhos NÃO ativam este bloqueio → ir para Grupo 2</pre>
+        Com isso, "dor no estômago" passa a mostrar o checklist do Grupo 2 (como deveria), em vez de bloquear.
+      </div>
+    </div>
+  </div>
+
+  <!-- CONVERSA B -->
+  <div class="card">
+    <div class="card-top crit">
+      <div class="tag">Conversa B · +55 73 · A mais grave</div>
+      <h3>Paciente apagou a mensagem — e a Clara recusou com base no texto apagado</h3>
+    </div>
+    <div class="card-body">
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Paciente</div><div class="st">veio da landing page</div></div></div>
+        <div class="msg in">Sim <span class="meta">leve ✓✓</span></div>
+        <div class="msg sys">A paciente digitou "febre e dor no corpo e cabeça", APAGOU, e trocou por "Sim"</div>
+        <div class="msg bot"><span class="who">Clara · exec A</span>[checklist de alarme — sinais virais]<span class="meta">16:16</span></div>
+        <div class="msg bot erro"><span class="who">Clara · exec B</span>Pelo que você relatou antes (febre com sinal de alarme), a telemedicina não é segura...<span class="meta">16:18</span></div>
+        <div class="msg in">Quero consulta<span class="meta">✓✓</span></div>
+        <div class="msg bot erro"><span class="who">Clara</span>...vá o quanto antes a um pronto-atendimento. SAMU 192.<span class="meta">16:18</span></div>
+        <div class="chat-nota">A IA disse "pelo que você relatou antes... febre" — mas a paciente APAGOU isso. O texto apagado ficou na memória e virou a base da recusa.</div>
+      </div>
+
+      <div class="bloco b-causa">
+        <div class="lbl">🔍 Causa exata — dois bugs combinados</div>
+        <strong>1. O WhatsApp reenvia mensagens editadas/apagadas.</strong> Quando a paciente apagou "febre e dor no corpo" e digitou "Sim", a Evolution API mandou os dois eventos para o n8n. O texto apagado entrou no fluxo como se fosse uma mensagem normal.<br><br>
+        <strong>2. Execuções em paralelo, sem trava (este é o N8 do outro documento).</strong> Os dois eventos abriram duas execuções ao mesmo tempo. Uma mostrou o checklist (certo). A outra processou "febre e dor no corpo" e <strong>recusou antes de qualquer resposta</strong> — e gravou isso na memória (<code>n8n_chat_histories</code>), contaminando tudo que veio depois.
+      </div>
+
+      <div class="bloco b-sol">
+        <div class="lbl">✅ Conserto — trava de sessão + ignorar edições</div>
+        <strong>a) Ignorar eventos de edição/exclusão</strong> no nó de entrada. A Evolution API marca esses eventos — o n8n deve descartá-los, não processá-los como mensagem nova.<br>
+        <strong>b) Trava por número (lock):</strong> só uma execução por telefone de cada vez. As outras esperam ou são concatenadas. Detalhe técnico na Seção 3.
+      </div>
+    </div>
+  </div>
+
+  <!-- CONVERSA C -->
+  <div class="card">
+    <div class="card-top alta">
+      <div class="tag">Conversa C · Maurício · O loop</div>
+      <h3>"Dor de garganta" ignorado — Clara repetiu a mesma pergunta</h3>
+    </div>
+    <div class="card-body">
+      <div class="chat">
+        <div class="chat-top"><div class="ava">👤</div><div><div class="nm">Maurício</div><div class="st">opção 2 · atestado</div></div></div>
+        <div class="msg bot"><span class="who">Clara</span>...qual seu PRINCIPAL SINTOMA agora?<span class="meta">16:32</span></div>
+        <div class="msg in">Dor de garganta<span class="meta">16:32 ✓✓</span></div>
+        <div class="msg bot erro"><span class="who">Clara</span>...qual seu PRINCIPAL SINTOMA agora?<span class="meta">16:32</span></div>
+        <div class="chat-nota">Repetiu a MESMA pergunta — ignorou "Dor de garganta", que é um sintoma claro do Grupo 1.</div>
+        <div class="msg in">Nariz entupido<span class="meta">16:32 ✓✓</span></div>
+        <div class="msg bot"><span class="who">Clara</span>[finalmente mostra o checklist do Grupo 1]<span class="meta">16:32</span></div>
+      </div>
+
+      <div class="bloco b-causa">
+        <div class="lbl">🔍 Causa exata — o setor não avançou a tempo</div>
+        Todo o seu fluxo de triagem depende de uma coisa só: a variável <code>setor</code>, atualizada pela tool <code>atualizar_setor</code> <strong>exatamente uma vez por mensagem</strong>. Quando "Dor de garganta" chegou, o <code>setor</code> ainda estava em <code>TRIAGEM_LEVEZA</code> (a atualização anterior não tinha terminado de gravar). A IA releu o setor antigo e <strong>re-executou a ETAPA 3A</strong> — que manda exatamente a pergunta "qual seu principal sintoma". Por isso repetiu. Quando "Nariz entupido" chegou, o setor já era <code>TRIAGEM_ALARME</code> → aí sim mostrou o checklist.
+      </div>
+
+      <div class="bloco b-sol">
+        <div class="lbl">✅ Conserto — mesma trava da Conversa B</div>
+        A trava de sessão (Seção 3) resolve: cada mensagem só processa depois que a anterior terminou de gravar o <code>setor</code>. Sem corrida, sem releitura de estado velho, sem pergunta repetida.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 2 ====================== -->
+  <div class="secao-titulo"><div class="num">2</div><h2>As causas-raiz — por que isso NUNCA para de acontecer</h2></div>
+
+  <div class="card">
+    <div class="card-top crit"><div class="tag">Raiz 1 · A mais importante</div><h3>A IA decide bloquear ou não — e ela é um dado, não uma regra</h3></div>
+    <div class="card-body">
+      <p>O ponto mais sério: <strong>quem decide "isso é grave, manda pro SAMU" é a própria IA</strong>, interpretando o texto. E IA é probabilística — ela "joga um dado" a cada resposta. A mesma frase, no mesmo prompt, pode bloquear numa vez e liberar na outra. <strong>É por isso que seu teste passa e o do paciente não.</strong></p>
+      <div class="bloco b-sol">
+        <div class="lbl">✅ Duas soluções (faça as duas)</div>
+        <strong>① Baixe a temperatura do agente de Triagem para 0 (ou 0.1).</strong> No n8n, no nó do modelo (OpenAI/Gemini/Claude), tem um campo <code>temperature</code>. Provavelmente está em 0.7 ou mais. Em 0, a IA fica o mais previsível possível — a mesma entrada tende a dar a mesma saída. <strong>Isso sozinho já reduz drasticamente a inconsistência.</strong><br><br>
+        <strong>② Inverta o viés na dúvida.</strong> Hoje, na dúvida, a IA bloqueia. Adicione uma regra explícita no topo da ETAPA 3B:
+        <pre><span class="add">🔴 REGRA DE OURO — NA DÚVIDA, MOSTRE O CHECKLIST:
+Você só pode BLOQUEAR (mandar pro SAMU) se a mensagem do
+paciente contiver EXPLICITAMENTE uma das palavras da lista de
+alarme. Se o sintoma não bate exatamente com nenhum alarme
+listado, o padrão é SEMPRE mostrar o checklist do grupo —
+NUNCA bloquear por interpretação ou "por precaução".
+Bloquear sem palavra-alarme explícita é ERRO GRAVE.</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top crit"><div class="tag">Raiz 2</div><h3>Não existe trava — mensagens se atropelam</h3></div>
+    <div class="card-body">
+      <p>Sempre que chega mais de uma mensagem rápida, ou o paciente edita/apaga, ou responde no meio de um processamento, o n8n abre <strong>execuções paralelas que brigam pelo mesmo <code>setor</code> e pela mesma memória</strong>. Foi o que causou as Conversas B e C. Enquanto não houver uma trava por número, isso vai acontecer de forma imprevisível — exatamente o que te deixa sem chão.</p>
+      <p><strong>Solução completa na Seção 3.</strong></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top alta"><div class="tag">Raiz 3</div><h3>As listas de sintomas têm buracos — e todo buraco vira recusa</h3></div>
+    <div class="card-body">
+      <p>O "dor no estômago" não é um caso isolado: é um sintoma de um problema maior. <strong>O seu fluxo depende de listas gigantes de palavras-chave escritas à mão.</strong> Toda vez que um paciente usa uma palavra que não está na lista (e existem infinitas formas de descrever um sintoma), a IA fica sem rota e tende a errar. "Estômago" foi o de hoje; amanhã vai ser outro ("fisgada", "pontada", "ardência no estômago"...).</p>
+      <div class="bloco b-sol">
+        <div class="lbl">✅ Solução de curto e de longo prazo</div>
+        <strong>Curto prazo:</strong> a Regra de Ouro da Raiz 1 (na dúvida, mostra o checklist) já protege contra os buracos — porque o pior que acontece é mostrar o checklist a mais, nunca recusar errado.<br><br>
+        <strong>Longo prazo:</strong> reduzir a dependência de listas literais. Em vez de listar 40 palavras por grupo, descrever o grupo por conceito ("queixas do aparelho digestivo: qualquer dor, desconforto ou sintoma da barriga, estômago ou intestino") e deixar a IA classificar — mas com a decisão de bloqueio sempre vindo de palavra-alarme explícita.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top alta"><div class="tag">Raiz 4</div><h3>A memória guarda lixo — e o lixo decide</h3></div>
+    <div class="card-body">
+      <p>A IA lê o histórico inteiro (<code>n8n_chat_histories</code>). Mensagens apagadas, dados de sessões antigas, decisões de execuções paralelas — tudo isso fica na memória e influencia a resposta. Na Conversa B, a IA literalmente disse "pelo que você relatou antes... febre" sobre um texto que a paciente apagou.</p>
+      <div class="bloco b-sol">
+        <div class="lbl">✅ Solução</div>
+        <strong>a)</strong> Não gravar na memória mensagens de eventos de edição/exclusão.<br>
+        <strong>b)</strong> Resetar/limpar a memória da sessão quando o atendimento encerra ou quando passa muito tempo (já discutido como N7 no outro documento).<br>
+        <strong>c)</strong> A trava de sessão (Raiz 2) impede que execuções paralelas escrevam decisões conflitantes na memória.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 3 ====================== -->
+  <div class="secao-titulo"><div class="num">3</div><h2>A trava de sessão — o coração do conserto (passe pro Nicolas)</h2></div>
+
+  <div class="card">
+    <div class="card-body">
+      <p>Esta é a correção mais importante de infraestrutura. Resolve as Conversas B e C de uma vez e impede a maioria dos erros aleatórios futuros.</p>
+      <div class="bloco b-tec">
+        <div class="lbl">🔧 Como implementar no n8n — passo a passo</div>
+        <pre><span class="cmt">// No nó de ENTRADA do webhook, ANTES de chamar a IA:</span>
+
+1. Ignorar eventos que não são mensagem nova:
+   SE o evento for "messages.update" (edição) ou
+      "messages.delete" (exclusão) → DESCARTAR. Não processar.
+   <span class="cmt">// isso sozinho resolve a Conversa B (febre apagada)</span>
+
+2. Verificar trava no Supabase (campo na tabela do paciente):
+   processando        = true/false
+   processando_desde  = timestamp
+
+   SE processando = true E (agora - processando_desde) < 30s:
+     → outra execução está rodando para este número
+     → AGUARDAR 2-3s e reenfileirar, OU concatenar a msg
+     → NÃO processar em paralelo
+
+3. Ao começar a processar: setar processando = true + timestamp
+4. Ao terminar a resposta: setar processando = false
+5. Safety: se processando_desde > 30s → liberar (evita travar
+   para sempre se uma execução morrer no meio)
+
+6. Juntar mensagens muito próximas (debounce):
+   SE chegaram 2+ mensagens do mesmo número em &lt; 3s →
+     concatenar em uma só antes de mandar pra IA
+   <span class="cmt">// "1" + "é por chat?" viram uma mensagem só</span></pre>
+      </div>
+      <p style="font-size:12.5px;color:var(--leve);">Isso é uma tarde de trabalho no n8n. Os campos <code>processando</code> e <code>processando_desde</code> já existem na lógica do documento técnico (item N8) — é a mesma correção.</p>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 4 ====================== -->
+  <div class="secao-titulo"><div class="num">4</div><h2>Ordem de execução — o que fazer primeiro</h2></div>
+
+  <div class="prio p1">
+    <div class="n">1</div>
+    <div class="txt"><strong>Adicionar "estômago" ao Grupo 2 e à VERIFICAÇÃO 0</strong><span>Para o sangramento de hoje. Para de recusar dor no estômago imediatamente. (Seção 1, Conversa A)</span></div>
+    <div class="tempo">2 min</div>
+  </div>
+  <div class="prio p1">
+    <div class="n">2</div>
+    <div class="txt"><strong>Baixar a temperatura do agente de Triagem para 0</strong><span>A causa nº1 da inconsistência "passa comigo, não passa com o paciente". Um campo só no nó do modelo. (Raiz 1)</span></div>
+    <div class="tempo">2 min</div>
+  </div>
+  <div class="prio p1">
+    <div class="n">3</div>
+    <div class="txt"><strong>Adicionar a "Regra de Ouro: na dúvida, mostra o checklist"</strong><span>Protege contra TODOS os buracos de palavra-chave, não só o estômago. Bloqueio só com palavra-alarme explícita. (Raiz 1 e 3)</span></div>
+    <div class="tempo">10 min</div>
+  </div>
+  <div class="prio p2">
+    <div class="n">4</div>
+    <div class="txt"><strong>Ignorar eventos de edição/exclusão do WhatsApp</strong><span>Resolve a recusa por mensagem apagada (Conversa B). Filtro simples no nó de entrada.</span></div>
+    <div class="tempo">30 min</div>
+  </div>
+  <div class="prio p2">
+    <div class="n">5</div>
+    <div class="txt"><strong>Trava de sessão (lock por número) + debounce</strong><span>Resolve as corridas de execução — Conversas B e C, e a maioria dos erros aleatórios futuros. (Seção 3)</span></div>
+    <div class="tempo">1 tarde</div>
+  </div>
+  <div class="prio p3">
+    <div class="n">6</div>
+    <div class="txt"><strong>Higiene de memória — não gravar lixo, resetar ao encerrar</strong><span>Impede que texto apagado ou sessão velha contamine decisões. (Raiz 4)</span></div>
+    <div class="tempo">depois</div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="rodape">
+    <h3>🧡 Uma palavra pra você</h3>
+    <p>Você não está fazendo algo que "nunca dá certo". Você construiu um sistema enorme e detalhado — esses 4 prompts são um trabalho sério. O que está te travando são <strong>problemas de engenharia específicos</strong>, não falta de capacidade sua. Cada um deles tem nome, causa e conserto, e estão todos aqui em cima.</p>
+    <p>Se você fizer só os <strong>3 primeiros itens</strong> da lista (15 minutos no total), o caso "dor no estômago" e a maior parte das recusas erradas param hoje. Os itens 4 e 5 o Nicolas implementa e fecham a porta dos erros aleatórios de vez.</p>
+    <p style="margin-bottom:0;">Você consegue. E o sistema tem conserto — não é um buraco sem fundo, são 6 ajustes que cabem numa semana. 🧡</p>
+  </div>
+
+</div>
+</body>
+</html>
