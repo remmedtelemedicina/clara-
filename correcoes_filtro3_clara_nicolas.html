@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Clara · Correções FILTRO 3 — 4 ajustes no prompt</title>
+<style>
+  :root{
+    --azul-escuro:#0b1f35;--azul-medio:#1a3a5c;--azul-vivo:#2271b3;--acento:#00c2a8;
+    --critico:#e8304a;--critico-bg:#fff1f3;--critico-borda:#ffc5cd;
+    --alta:#f5811f;--alta-bg:#fff8f1;--alta-borda:#ffd4a8;
+    --verde:#12b76a;--verde-bg:#f0fdf6;--verde-borda:#a7f0c6;
+    --cinza-claro:#f4f7fb;--borda:#dde5f0;--texto:#1a202c;--leve:#5a6880;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza-claro);color:var(--texto);line-height:1.6;}
+  .header{background:linear-gradient(140deg,#071525,#0f2d4e 50%,#1a4a78);padding:46px 22px 38px;text-align:center;}
+  .header-pill{display:inline-block;background:rgba(0,194,168,0.15);border:1px solid rgba(0,194,168,0.4);color:#00e6cc;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:16px;}
+  .header h1{font-size:27px;font-weight:900;color:#fff;line-height:1.25;margin-bottom:10px;}
+  .header h1 span{color:var(--acento);}
+  .header p{color:rgba(255,255,255,0.6);font-size:14px;max-width:680px;margin:0 auto;}
+  .page{max-width:880px;margin:0 auto;padding:26px 16px;}
+
+  .tldr{background:linear-gradient(135deg,#0b1f35,#1a3a5c);border-radius:16px;padding:26px 28px;color:white;margin-bottom:26px;box-shadow:0 2px 16px rgba(0,0,0,0.08);}
+  .tldr .kicker{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#00e6cc;margin-bottom:8px;}
+  .tldr h2{font-size:21px;font-weight:900;margin-bottom:14px;}
+  .tldr-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:600px){.tldr-grid{grid-template-columns:1fr;}}
+  .tldr-item{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 14px;font-size:13px;}
+  .tldr-item .ti-tag{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+  .tldr-item .ti-tag.crit{color:#ff8a9a;}
+  .tldr-item .ti-tag.alta{color:#ffd080;}
+  .tldr-item p{color:rgba(255,255,255,0.8);font-size:12.5px;line-height:1.5;}
+
+  .secao-titulo{display:flex;align-items:center;gap:11px;margin:34px 0 16px;}
+  .secao-titulo .num{width:34px;height:34px;border-radius:9px;background:var(--azul-vivo);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0;}
+  .secao-titulo h2{font-size:20px;font-weight:900;color:var(--azul-escuro);}
+
+  .card{background:white;border:1px solid var(--borda);border-radius:14px;padding:0;margin-bottom:20px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+  .card-top{padding:16px 20px;border-bottom:1px solid var(--borda);}
+  .card-top.crit{background:var(--critico-bg);border-bottom-color:var(--critico-borda);}
+  .card-top.alta{background:var(--alta-bg);border-bottom-color:var(--alta-borda);}
+  .card-top.info{background:#eff6ff;border-bottom-color:#bfdbfe;}
+  .card-top .tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;margin-bottom:4px;}
+  .card-top.crit .tag{color:var(--critico);}
+  .card-top.alta .tag{color:var(--alta);}
+  .card-top.info .tag{color:#2563eb;}
+  .card-top h3{font-size:16.5px;font-weight:800;color:var(--texto);line-height:1.3;}
+  .card-body{padding:18px 20px;}
+  .card-body p{font-size:13.5px;color:#2a3340;margin-bottom:11px;}
+  .card-body p:last-child{margin-bottom:0;}
+  .card-body strong{color:var(--azul-escuro);}
+  .card-body code{background:#eef2f8;padding:1.5px 6px;border-radius:5px;font-family:'Courier New',monospace;font-size:12px;color:#1a3a5c;font-weight:700;}
+
+  .bloco{border-radius:9px;padding:12px 14px;margin:12px 0;font-size:13px;line-height:1.6;}
+  .bloco .lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
+  .b-prob{background:var(--critico-bg);border:1px solid var(--critico-borda);}
+  .b-prob .lbl{color:var(--critico);}
+  .b-sol{background:var(--verde-bg);border:1px solid var(--verde-borda);}
+  .b-sol .lbl{color:#15803d;}
+  .b-nota{background:#fffbeb;border:1px solid #fde68a;}
+  .b-nota .lbl{color:#92400e;}
+
+  pre{background:#0d1b2e;color:#cfe3ff;border-radius:8px;padding:13px 15px;font-family:'Courier New',monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:8px 0;line-height:1.55;overflow-x:auto;}
+  pre .add{color:#6ee7a8;}
+  pre .del{color:#ff8a9a;text-decoration:line-through;}
+  pre .keep{color:#8aa0bd;}
+
+  .diff-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  @media(max-width:580px){.diff-row{grid-template-columns:1fr;}}
+  .diff-col{border-radius:8px;overflow:hidden;}
+  .diff-col .diff-label{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:6px 12px;}
+  .diff-col.antes .diff-label{background:#ffe4e6;color:#9b1c1c;}
+  .diff-col.depois .diff-label{background:#d1fae5;color:#065f46;}
+  .diff-col pre{margin:0;border-radius:0 0 8px 8px;}
+
+  .checklist{list-style:none;padding:0;margin:12px 0;}
+  .checklist li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--borda);font-size:13.5px;}
+  .checklist li:last-child{border-bottom:none;}
+  .checklist .cb{width:20px;height:20px;border-radius:5px;border:2px solid var(--borda);flex-shrink:0;margin-top:1px;}
+  .checklist li.done .cb{background:var(--verde);border-color:var(--verde);}
+
+  .badge{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+  .badge.crit{background:#fee2e2;color:#b91c1c;}
+  .badge.alta{background:#ffedd5;color:#c2410c;}
+  .badge.ok{background:#d1fae5;color:#065f46;}
+
+  .rodape{background:linear-gradient(135deg,var(--azul-escuro),var(--azul-medio));color:rgba(255,255,255,0.85);border-radius:14px;padding:24px 26px;margin-top:24px;font-size:13.5px;}
+  .rodape h3{color:#fff;font-size:16px;margin-bottom:12px;}
+  .rodape p{margin-bottom:10px;color:rgba(255,255,255,0.8);}
+  .rodape strong{color:#00e6cc;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-pill">🔧 Correções de Prompt · Nicolas</div>
+  <h1>4 ajustes no <span>FILTRO 3</span> da Clara<br>— emergências que precisam de afinação</h1>
+  <p>Todos os problemas encontrados estão no mesmo bloco: o FILTRO 3 (sinais de alarme que mandam o paciente direto pro SAMU). Duas correções críticas, duas melhorias. 07/06/2026.</p>
+</div>
+
+<div class="page">
+
+  <!-- TL;DR -->
+  <div class="tldr">
+    <div class="kicker">Resumo — os 4 ajustes</div>
+    <h2>Onde o FILTRO 3 está errando hoje</h2>
+    <div class="tldr-grid">
+      <div class="tldr-item">
+        <div class="ti-tag crit">🔴 Crítico 1</div>
+        <p><strong>39°C → SAMU.</strong> Febre de 39°C por 1 dia em gripe é exatamente o que a telemedicina atende. O threshold correto é 40°C (hiperpirexia).</p>
+      </div>
+      <div class="tldr-item">
+        <div class="ti-tag crit">🔴 Crítico 2</div>
+        <p><strong>Dor irradiando pro braço → SAMU.</strong> Paciente com cervicalgia que diz "irradia pro braço" está indo pro SAMU. Precisa ancoragem em "dor no peito".</p>
+      </div>
+      <div class="tldr-item">
+        <div class="ti-tag alta">🟡 Melhoria 1</div>
+        <p><strong>Picada de cobra e queimadura grave</strong> estão na triagem mas não no FILTRO 3. Chegam pelo menu e só bloqueiam lá dentro.</p>
+      </div>
+      <div class="tldr-item">
+        <div class="ti-tag alta">🟡 Melhoria 2</div>
+        <p><strong>Fezes escuras com febre.</strong> Melena é sinal grave independente de febre. Hoje o FILTRO 3 exige febre para bloquear; a triagem não.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 1 ====================== -->
+  <div class="secao-titulo"><div class="num">1</div><h2>Correção 1 — Febre de 39°C não é emergência isolada</h2></div>
+
+  <div class="card">
+    <div class="card-top crit">
+      <div class="tag">🔴 Crítico · FILTRO 3</div>
+      <h3>Threshold de 39°C manda gripe viral direto pro SAMU</h3>
+    </div>
+    <div class="card-body">
+      <p>A linha atual do FILTRO 3 bloqueia qualquer menção de "febre acima de 39°C". Um paciente que abre a conversa com <em>"estou com febre de 39 desde ontem"</em> recebe <strong>SAMU 192 imediatamente</strong> — sem passar pelo menu, sem triagem.</p>
+      <p>Febre de 39°C por 1–2 dias em contexto viral é <strong>exatamente o perfil da telemedicina</strong>. O threshold clínico real de hiperpirexia (risco de convulsão, dano neurológico) é <strong>40°C</strong>.</p>
+      <p>A linha <code>Febre há mais de 3 dias</code> que já está no FILTRO 3 <strong>pode ficar</strong> — essa sim é sinal de alarme real independente da temperatura.</p>
+
+      <div class="diff-row">
+        <div class="diff-col antes">
+          <div class="diff-label">✗ Antes — remover</div>
+          <pre><span class="del">- Febre acima de 39°C</span></pre>
+        </div>
+        <div class="diff-col depois">
+          <div class="diff-label">✓ Depois — colocar no lugar</div>
+          <pre><span class="add">- Febre acima de 40°C (hiperpirexia)</span></pre>
+        </div>
+      </div>
+
+      <div class="bloco b-nota">
+        <div class="lbl">📋 Nota</div>
+        A linha <code>- Febre há mais de 3 dias</code> permanece no FILTRO 3 sem alteração.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 2 ====================== -->
+  <div class="secao-titulo"><div class="num">2</div><h2>Correção 2 — "Dor irradiando pro braço" precisa de âncora</h2></div>
+
+  <div class="card">
+    <div class="card-top crit">
+      <div class="tag">🔴 Crítico · FILTRO 3</div>
+      <h3>Cervicalgia e tendinite estão indo pro SAMU como se fossem infarto</h3>
+    </div>
+    <div class="card-body">
+      <p>A linha atual separa dois gatilhos com vírgula: <em>"Dor no peito, dor que irradia para o braço, mandíbula ou pescoço"</em>. Em português isso lê como <strong>dois gatilhos independentes</strong>:</p>
+      <ol style="margin:8px 0 8px 20px;font-size:13.5px;color:#2a3340;line-height:2;">
+        <li>Dor no peito</li>
+        <li>Dor que irradia para o braço, mandíbula ou pescoço</li>
+      </ol>
+      <p>Paciente com <strong>cervicalgia</strong>, <strong>tendinite</strong> ou <strong>hérnia de disco cervical</strong> que diz <em>"tenho uma dor que irradia pro braço"</em> vai direto pro SAMU — quando deveria ir para o Grupo 7 da triagem e fazer o checklist musculoesquelético.</p>
+      <p>A irradiação só é sinal cardíaco quando <strong>acompanha dor no peito</strong>. Sem "dor no peito" na mesma mensagem, é sintoma ortopédico/neurológico.</p>
+
+      <div class="diff-row">
+        <div class="diff-col antes">
+          <div class="diff-label">✗ Antes — remover</div>
+          <pre><span class="del">- Dor no peito, dor que irradia
+  para o braço, mandíbula ou pescoço</span></pre>
+        </div>
+        <div class="diff-col depois">
+          <div class="diff-label">✓ Depois — colocar no lugar</div>
+          <pre><span class="add">- Dor no peito (especialmente se
+  irradia para o braço esquerdo,
+  mandíbula ou pescoço)</span></pre>
+        </div>
+      </div>
+
+      <div class="bloco b-nota">
+        <div class="lbl">📋 Nota clínica</div>
+        O bloco de exclusão da VERIFICAÇÃO 0 já tem a lógica correta para "dor nas costas irradiando" → Grupo 7. Essa correção no FILTRO 3 alinha o comportamento pré-menu com o comportamento dentro da triagem.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 3 ====================== -->
+  <div class="secao-titulo"><div class="num">3</div><h2>Melhoria 1 — Picada de cobra e queimadura grave no FILTRO 3</h2></div>
+
+  <div class="card">
+    <div class="card-top alta">
+      <div class="tag">🟡 Melhoria · FILTRO 3</div>
+      <h3>Emergências tratadas na triagem mas não no FILTRO 3</h3>
+    </div>
+    <div class="card-body">
+      <p>Você adicionou <strong>picada de cobra/escorpião</strong> e <strong>queimadura grave</strong> como blocos de emergência dentro da triagem. Mas se o paciente abre a conversa com <em>"fui picado por uma cobra"</em> ou <em>"inalei fumaça num incêndio"</em>, a Clara exibe o menu principal e só vai bloquear quando ele escolher uma opção e a triagem processar.</p>
+      <p>São emergências que precisam ir pro SAMU <strong>antes de qualquer menu</strong> — o FILTRO 3 deve interceptar essas mensagens já na abertura da conversa.</p>
+
+      <div class="bloco b-sol">
+        <div class="lbl">✅ Adicionar no final da lista do FILTRO 3 — antes da linha da resposta única</div>
+        <pre><span class="keep">... (linhas existentes do FILTRO 3) ...</span>
+<span class="add">- Picada de cobra, escorpião ou aranha com inchaço e dor forte
+- Queimadura grande, queimadura no rosto/olhos/garganta, inalação de fumaça, choque elétrico</span></pre>
+      </div>
+
+      <div class="bloco b-nota">
+        <div class="lbl">📋 Nota</div>
+        <strong>Picada de escorpião e aranha</strong>: apenas com inchaço e dor forte — picada leve de escorpião em adulto pode fazer triagem. <strong>Queimadura pequena</strong> (dedo, mão) não entra na lista — vai para triagem normalmente. A especificidade "grande" e "rosto/olhos/garganta" evita over-block.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 4 ====================== -->
+  <div class="secao-titulo"><div class="num">4</div><h2>Melhoria 2 — Fezes escuras são sinal grave sem precisar de febre</h2></div>
+
+  <div class="card">
+    <div class="card-top alta">
+      <div class="tag">🟡 Melhoria · FILTRO 3</div>
+      <h3>Melena (fezes escuras) bloqueada só com febre — deveria bloquear sozinha</h3>
+    </div>
+    <div class="card-body">
+      <p>A linha atual é: <em>"Vômito com sangue, fezes escuras <strong>com febre</strong>"</em>. Isso significa que fezes escuras sozinhas <strong>não bloqueiam</strong> pelo FILTRO 3.</p>
+      <p>Clinicamente, <strong>fezes escuras/pretas (melena)</strong> indicam sangramento digestivo alto — uma emergência independente da presença de febre. A triagem já bloqueia corretamente para fezes escuras isoladas, mas o FILTRO 3 está mais permissivo que a triagem nesse ponto.</p>
+
+      <div class="diff-row">
+        <div class="diff-col antes">
+          <div class="diff-label">✗ Antes — remover</div>
+          <pre><span class="del">- Vômito com sangue, fezes escuras
+  com febre</span></pre>
+        </div>
+        <div class="diff-col depois">
+          <div class="diff-label">✓ Depois — colocar no lugar</div>
+          <pre><span class="add">- Vômito com sangue, fezes escuras
+  ou pretas (mesmo sem febre)</span></pre>
+        </div>
+      </div>
+
+      <div class="bloco b-nota">
+        <div class="lbl">📋 Nota clínica</div>
+        Fezes escuras por ferro ou bismuto não são melena — mas a IA não consegue distinguir isso via texto, e é o lado seguro errar. Se o paciente sabe que está tomando ferro, ele vai mencionar; se não, o SAMU vai descartar na triagem presencial.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== SEÇÃO 5 ====================== -->
+  <div class="secao-titulo"><div class="num">5</div><h2>Pontos menores — não urgentes, mas vale checar</h2></div>
+
+  <div class="card">
+    <div class="card-top info">
+      <div class="tag">ℹ️ Ponto menor 1</div>
+      <h3>Opção 5 "Solicitar exames" → RENOVACAO_ATIVA — é intencional?</h3>
+    </div>
+    <div class="card-body">
+      <p>No fluxo principal, as opções <code>"4"</code> e <code>"5"</code> têm o mesmo destino: <code>atualizar_setor setor = "RENOVACAO_ATIVA"</code>. A opção 4 é "Renovar receita" e a opção 5 é "Solicitar exames".</p>
+      <p>Se isso é intencional (o médico emite pedido de exames na mesma consulta de renovação) — está certo. Mas vale verificar se o paciente entende isso; pode causar confusão quando ele escolhe "solicitar exames" e cai num fluxo de "renovação de receita". Uma linha no FAQ explicando que "solicitar exames é feito durante a consulta" resolve o lado da comunicação.</p>
+      <p>Se <strong>não</strong> é intencional e exames deveriam ter um fluxo próprio — me fala como deve rotear e eu passo o ajuste exato.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top info">
+      <div class="tag">ℹ️ Ponto menor 2</div>
+      <h3>Mensagem da opção 1 tem aspas não fechadas</h3>
+    </div>
+    <div class="card-body">
+      <p>No bloco da opção <code>"1"</code> do fluxo principal, a mensagem de instrução termina com:</p>
+      <pre><span class="del">Responda apenas SIM ou NÃO.
+
+"2" →</span></pre>
+      <p>As aspas da mensagem da opção 1 não fecham antes da linha da opção 2. Não quebra o funcionamento (é texto do prompt), mas pode fazer o modelo ler as duas opções como parte da mesma instrução em contextos de ambiguidade. Vale fechar as aspas da mensagem da opção 1 antes de iniciar a linha <code>"2" →</code>.</p>
+    </div>
+  </div>
+
+  <!-- ====================== CHECKLIST ====================== -->
+  <div class="secao-titulo"><div class="num">6</div><h2>Checklist de aplicação — abrir no n8n ao lado</h2></div>
+
+  <div class="card">
+    <div class="card-body">
+      <p style="margin-bottom:14px;">Na ordem de impacto. Todos são mudanças de texto no prompt do nó da Clara — nenhuma exige alteração no fluxo do n8n.</p>
+      <ul class="checklist">
+        <li>
+          <div class="cb"></div>
+          <div>
+            <strong>FILTRO 3 — Trocar "Febre acima de 39°C" por "Febre acima de 40°C (hiperpirexia)"</strong>
+            <span class="badge crit">crítico</span>
+            <br><span style="font-size:12px;color:var(--leve);">Find: <code>- Febre acima de 39°C</code> → Replace: <code>- Febre acima de 40°C (hiperpirexia)</code></span>
+          </div>
+        </li>
+        <li>
+          <div class="cb"></div>
+          <div>
+            <strong>FILTRO 3 — Trocar linha "dor no peito / irradia" para versão ancorada</strong>
+            <span class="badge crit">crítico</span>
+            <br><span style="font-size:12px;color:var(--leve);">Find: <code>- Dor no peito, dor que irradia para o braço, mandíbula ou pescoço</code> → Replace com versão parentética acima</span>
+          </div>
+        </li>
+        <li>
+          <div class="cb"></div>
+          <div>
+            <strong>FILTRO 3 — Trocar "fezes escuras com febre" por "fezes escuras ou pretas (mesmo sem febre)"</strong>
+            <span class="badge alta">melhoria</span>
+            <br><span style="font-size:12px;color:var(--leve);">Find: <code>fezes escuras com febre</code> → Replace conforme Seção 4</span>
+          </div>
+        </li>
+        <li>
+          <div class="cb"></div>
+          <div>
+            <strong>FILTRO 3 — Adicionar picada de cobra/escorpião e queimadura grave</strong>
+            <span class="badge alta">melhoria</span>
+            <br><span style="font-size:12px;color:var(--leve);">Inserir as 2 linhas novas no final da lista do FILTRO 3, antes da resposta única</span>
+          </div>
+        </li>
+        <li>
+          <div class="cb"></div>
+          <div>
+            <strong>Verificar se opção 5 → RENOVACAO_ATIVA é intencional</strong>
+            <span class="badge ok">menor</span>
+            <br><span style="font-size:12px;color:var(--leve);">Se intencional: adicionar explicação no FAQ. Se não: definir rota correta.</span>
+          </div>
+        </li>
+        <li>
+          <div class="cb"></div>
+          <div>
+            <strong>Fechar aspas na mensagem da opção 1</strong>
+            <span class="badge ok">menor</span>
+            <br><span style="font-size:12px;color:var(--leve);">Encontrar a mensagem da opção 1 e garantir que as aspas fecham antes da linha <code>"2" →</code></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="rodape">
+    <h3>🧡 Contexto geral</h3>
+    <p>O que <strong>não muda</strong>: FAQ completo, FILTRO 5 (prompt injection), FILTRO 7 (crise suicida), follow-up categorias A–I, FILTRO 2 (atestado indevido com escalada progressiva) — todos estão corretos e não precisam de ajuste.</p>
+    <p>As <strong>4 correções acima</strong> resolvem casos onde Clara manda pro SAMU um paciente que a triagem conseguiria atender. São todos no mesmo bloco (FILTRO 3) e são <strong>trocas de texto simples</strong> — sem mexer no fluxo, sem risco de quebrar outra coisa.</p>
+    <p style="margin-bottom:0;">Dois ajustes são urgentes (39°C e dor irradiando) — qualquer paciente com gripe ou cervicalgia hoje pode estar sendo recusado. Os outros dois são melhorias de consistência clínica.</p>
+  </div>
+
+</div>
+</body>
+</html>
