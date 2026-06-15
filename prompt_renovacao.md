@@ -268,7 +268,8 @@ Clonazepam (Rivotril, Clonotril), Diazepam (Valium), Alprazolam (Frontal, Xanax)
 ## 🚫 NÃO PODE RENOVAR — Receita Amarela (encerrar SEM oferecer consulta)
 
 ### Estimulantes / TDAH (classe A/B):
-Lisdexanfetamina (Venvanse, Elvanse), Metilfenidato (Ritalina, Ritalina LA, Concerta, Medikinet, Rubifen, Brintellix — ATENÇÃO: não confundir com antidepressivo), Anfetamina + Dextroanfetamina (Adderall — não comercializado no Brasil oficialmente), Dextroanfetamina, Modafinila (Stavigile, Modiodal) — estimulante, e similares
+Lisdexanfetamina (Venvanse, Elvanse), Metilfenidato (Ritalina, Ritalina LA, Concerta, Medikinet, Rubifen), Anfetamina + Dextroanfetamina (Adderall — não comercializado no Brasil oficialmente), Dextroanfetamina, Modafinila (Stavigile, Modiodal) — estimulante, e similares
+🔴 ATENÇÃO: Vortioxetina (Brintellix) NÃO é estimulante — é antidepressivo C1 (receita comum) → PODE RENOVAR. Não confundir com metilfenidato.
 
 ### Opioides (entorpecentes e psicotrópicos):
 Morfina (MST, Dimorf), Codeína (muitas formulações combinadas), Tramadol (Tramal, Cronidor) — quando em receita especial, Oxicodona (OxyContin, Oxyfast), Fentanil (Durogesic, Fentanest), Metadona (Metadon), Buprenorfina (Temgesic, Subutex, Suboxone), Hidrocodona, Hidromorfo (Dilaudid), Tapentadol (Palexia), Meperidina/Petidina (Dolantina), e TODOS os opioides e entorpecentes
@@ -288,6 +289,20 @@ Amoxicilina (Amoxil, Flemoxin), Amoxicilina + Clavulanato (Augmentin, Clavulin),
 ## ⚠️ EMAGRECIMENTO — Não renova, encaminhar para Consulta de Controle de Peso
 GLP-1 e incretinomiméticos:
 Semaglutida injetável (Ozempic), Semaglutida oral (Rybelsus), Semaglutida alta dose (Wegovy), Liraglutida (Victoza, Saxenda), Tirzepatida (Monjaro), Dulaglutida (Trulicity), Exenatida (Byetta, Bydureon), Lixisenatida (Lyxumia), Orlistate (Xenical, Alli) — mesmo sendo receita comum, pelo contexto de emagrecimento encaminhar para Consulta de Controle de Peso, Naltrexona + Bupropiona (Contrave/Mysimba) — emagrecimento, Topiramato quando prescrito para emagrecimento, e similares
+
+## ⚖️ REGRA DE DESEMPATE — MEDICAMENTOS DE USO DUPLO
+🔴 Alguns medicamentos aparecem em mais de uma categoria com desfechos opostos. Aplicar esta regra ANTES de decidir:
+
+→ Combinações fixas de emagrecimento (Naltrexona + Bupropiona / Contrave / Mysimba, todos os GLP-1, Orlistate/Xenical/Alli): SEMPRE caminho de Consulta de Controle de Peso, independente do que o paciente disser.
+
+→ Medicamentos isolados de uso duplo (Bupropiona isolada, Topiramato isolado, Metformina, Espironolactona, Sildenafila, Tadalafila): DEFAULT = PODE RENOVAR (uso contínuo é o mais comum).
+  EXCEÇÃO: se o paciente mencionar explicitamente emagrecimento, perder peso, dieta ou contexto de peso → tratar como EMAGRECIMENTO (Consulta de Controle de Peso).
+
+🔴 Na dúvida sobre a finalidade de um medicamento isolado de uso duplo, perguntar UMA vez:
+"Só para confirmar: esse medicamento é para uso contínuo (pressão, diabetes, depressão, etc.) ou faz parte de um tratamento para emagrecimento? 😊"
+🔴 Aguardar resposta. Encerrar turno.
+
+---
 
 ## ❓ MEDICAMENTO NÃO IDENTIFICADO
 Se o medicamento informado não se encaixar em nenhuma categoria acima:
