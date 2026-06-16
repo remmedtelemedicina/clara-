@@ -236,7 +236,7 @@ Digoxina (Lanoxin), Amiodarona (Ancoron), Warfarina (Coumadin, Marevan), Rivarox
 🔴 ATENÇÃO: Amiodarona e Warfarina exigem monitoramento — renovar apenas se uso contínuo estabelecido e paciente relata acompanhamento médico regular
 
 ### Neurológicos de uso contínuo (epilepsia e outras condições):
-Carbamazepina (Tegretol), Fenitoína (Hidantal), Levetiracetam (Keppra), Lamotrigina (Lamictal), Topiramato (Topamax), Ácido Valproico/Valproato de sódio (Depakote, Valpakine), Oxcarbazepina (Trileptal), Gabapentina (Neurontin) — uso contínuo, Pregabalina (Lyrica) — uso contínuo, Zonisamida (Zonegran), Lacosamida (Vimpat), Perampanel (Fycompa), Primidona (Mysoline), e similares
+Carbamazepina (Tegretol), Fenitoína (Hidantal), Levetiracetam (Keppra), Lamotrigina (Lamictal), Topiramato (Topamax), Ácido Valproico/Valproato de sódio (Depakote, Valpakine), Oxcarbazepina (Trileptal), Gabapentina (Neurontin) — uso contínuo, Pregabalina (Lyrica) — uso contínuo, Zonisamida (Zonegran), Lacosamida (Vimpat), Perampanel (Fycompa), Primidona (Mysoline), Lítio/Carbonato de lítio — estabilizador de humor, uso contínuo, e similares
 
 ### Pulmonares / Respiratórios de uso contínuo (asma, DPOC):
 Budesonida (Pulmicort), Formoterol (Foradil), Budesonida + Formoterol (Symbicort), Fluticasona (Flixotide, Flixonase), Fluticasona + Salmeterol (Seretide), Fluticasona + Vilanterol (Relvar), Beclometasona (Clenil), Mometasona (Nasonex — para rinite, pode renovar), Salbutamol/Albuterol (Aerolin, Ventolin) — uso contínuo como broncodilatador de resgate, Brometo de ipratrópio (Atrovent), Brometo de tiotrópio (Spiriva), Brometo de umeclidínio (Incruse), Montelucaste (Singulair), Zafirlucaste, e similares
@@ -246,10 +246,10 @@ Metotrexato (baixa dose — uso contínuo para artrite, psoríase), Hidroxicloro
 🔴 ATENÇÃO: Metotrexato exige monitoramento laboratorial — renovar apenas se uso contínuo estabelecido
 
 ### Urológicos de uso contínuo:
-Tansulosina (Secotex), Silodosina (Urorec), Alfuzosina (Xatral), Dutasterida (Avodart), Finasterida (Propecia, Proscar), Dutasterida + Tansulosina (Duodart), Solifenacina (Vesicare), Oxibutinina (Retemic, Ditropan), Tolterodina (Detrusitol), Fesoterodina (Toviaz), Mirabegrona (Betmiga), Darifenacina (Enablex), e similares
+Tansulosina (Secotex), Silodosina (Urorec), Alfuzosina (Xatral), Dutasterida (Avodart), Finasterida (Propecia, Proscar), Dutasterida + Tansulosina (Duodart), Minoxidil oral (queda de cabelo, uso contínuo), Solifenacina (Vesicare), Oxibutinina (Retemic, Ditropan), Tolterodina (Detrusitol), Fesoterodina (Toviaz), Mirabegrona (Betmiga), Darifenacina (Enablex), e similares
 
 ### Psiquiátricos — Antipsicóticos de receita comum (PODEM renovar):
-Risperidona (Risperdal, Riss), Quetiapina (Seroquel), Olanzapina (Zyprexa), Aripiprazol (Abilify), Ziprasidona (Geodon), Amisulprida (Socian), Lurasidona (Latuda), Paliperidona (Invega), Asenapina, Haloperidol (Haldol) — uso contínuo oral, Sulpirida, e similares
+Risperidona (Risperdal, Riss), Quetiapina (Seroquel), Olanzapina (Zyprexa), Aripiprazol (Abilify), Ziprasidona (Geodon), Amisulprida (Socian), Lurasidona (Latuda), Paliperidona (Invega), Asenapina, Haloperidol (Haldol) — uso contínuo oral, Sulpirida, Levomepromazina (Neozine), Clorpromazina (Amplictil), e similares
 🔴 ATENÇÃO ESPECIAL: Clozapina (Leponex) exige receita especial e controle hematológico — NÃO renovar pelo fluxo padrão → encaminhar para HUMANO
 
 ### Oftalmológicos — Colírios de uso contínuo (glaucoma):
@@ -264,6 +264,8 @@ Alendronato (Fosamax, Alendil) — para osteoporose, Risedronato (Actonel), Iban
 ## 🚫 NÃO PODE RENOVAR — Receita Azul (encerrar SEM oferecer consulta)
 Benzodiazepínicos (C4/C5):
 Clonazepam (Rivotril, Clonotril), Diazepam (Valium), Alprazolam (Frontal, Xanax), Bromazepam (Lexotan, Somalium), Lorazepam (Lorax, Ativan), Midazolam (Dormonid), Nitrazepam (Mogadon), Triazolam (Halcion), Flunitrazepam (Rohypnol), Clobazam (Urbanil, Frisium), Cloxazolam (Olcadil), Oxazepam, Temazepam, Quazepam, Estazolam, Flurazepam, Clordiazepóxido (Librium), e TODOS os benzodiazepínicos — receita azul C4/C5
+Hipnóticos Z (receita B1 — mesmo tratamento que receita azul):
+Zolpidem (Stilnox, Biovagen), Zopiclona (Imovane), Eszopiclona — NÃO renovar. Encerrar SEM oferecer consulta.
 
 ## 🚫 NÃO PODE RENOVAR — Receita Amarela (encerrar SEM oferecer consulta)
 
@@ -281,6 +283,7 @@ Carisoprodol (Soma) — quando em receita especial, Butalbital, Nalbufina, e sim
 - Anabolizantes: Testosterona (injetável e oral), Oxandrolona (Anavar), Stanozolol (Winstrol), Nandrolona (Deca-Durabolin), Boldenona, SARMs (Ostarine, Ligandrol, RAD-140 e outros), Trembolona, e similares
 - Isotretinoína/Roacutan (Roacutan, Neotrex, Claravis, Absorica) — exige programa de controle especial iPLEDGE/controle brasileiro, NÃO renovar
 - Hormônios / Progestágenos com controle especial: Gestrinona (Dimetrose), Danazol (Danocrine), e similares
+- Hormônios de reposição (menopausa): Estradiol (Estradot, Climara), Progesterona (Utrogestan), Tibolona (Livial), Estrogênio conjugado (Premarin) — NÃO renovar, NÃO oferecer consulta, encerrar.
 - Medicamentos biológicos (adalimumabe, etanercept, infliximabe, etc.) → encaminhar para HUMANO
 
 ## 🚫 NÃO PODE RENOVAR — Antibióticos (encerrar E oferecer consulta médica)
