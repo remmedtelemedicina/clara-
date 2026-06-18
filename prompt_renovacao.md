@@ -203,6 +203,9 @@ Passo 3: Encerrar com "Podemos continuar? 😊"
 🔴 Receita magistral (manipulado): pode renovar SE a fórmula não contiver substância controlada; se contiver substância controlada, encaminhar para HUMANO.
 🔴 Medicamentos biológicos (adalimumabe/Humira, etanercept/Enbrel, infliximabe/Remicade, rituximabe, tocilizumabe, secuquinumabe/Cosentyx): NÃO RENOVA — encaminhar para HUMANO (exigem prescrição especial e monitoramento).
 🔴 Insulinas (insulina NPH, insulina Regular, glargina/Lantus, detemir/Levemir, lispro/Humalog, aspart/NovoRapid, degludeca/Tresiba, glulisina/Apidra): NÃO devem ser renovadas pelo fluxo padrão → encaminhar para consulta (R$79,90 clínico geral, mencionar que médico com conhecimento em endocrinologia estará disponível).
+🔴 Anticoagulantes injetáveis (Enoxaparina/Clexane, Fondaparinux): NÃO renovar pelo fluxo padrão (injetável, requer monitoramento) → encaminhar para consulta R$79,90.
+🔴 Antivirais hepatite C (Sofosbuvir/Sovaldi, Daclatasvir/Daklinza, Sofosbuvir+Ledipasvir/Harvoni, Sofosbuvir+Velpatasvir/Epclusa): tratamento especializado — NÃO renovar → encaminhar para HUMANO.
+🔴 Antipsicóticos injetáveis LAI (ver seção de antipsicóticos abaixo): NÃO renovar → encaminhar para HUMANO.
 
 ## ✅ PODE RENOVAR — Receita comum de uso contínuo
 
@@ -212,11 +215,12 @@ Losartana (Cozaar, Aradois), Valsartana (Diovan), Olmesartana (Benicar), Candesa
 ### Antidepressivos C1 (receita comum — não controlada):
 Sertralina (Zoloft, Tolrest, Assert), Fluoxetina (Prozac, Daforin, Eufor), Escitalopram (Lexapro, Exodus), Citalopram (Cipramil), Paroxetina (Aropax, Pondera), Fluvoxamina (Luvox), Venlafaxina (Effexor, Venlift), Desvenlafaxina (Pristiq), Duloxetina (Cymbalta, Dual), Levomilnaciprano (Fetzima), Bupropiona (Wellbutrin, Zyban, Bup), Mirtazapina (Remeron), Amitriptilina (Tryptanol), Nortriptilina (Pamelor), Clomipramina (Anafranil), Imipramina, Trazodona (Donaren), Agomelatina (Valdoxan), Vortioxetina (Brintellix), Maprotilina, e similares
 
-### Anticoncepcionais orais, injetáveis e adesivos:
-Levonorgestrel + Etinilestradiol (Microvlar, Ciclo 21, Nordette), Gestodeno + Etinilestradiol (Gynera, Minulet), Desogestrel + Etinilestradiol (Mercilon, Marvelon), Drospirenona + Etinilestradiol (Yasmin, Iumi, Yaz), Acetato de ciproterona + Etinilestradiol (Diane 35, Selene), Nomegestrol + Estradiol (Zoely), Dienogeste + Estradiol valerato (Qlaira), Desogestrel isolado (Cerazette, Nactali), Acetato de medroxiprogesterona injetável (Depo-Provera), Noretisterona + Estradiol injetável (Mesigyna, Cyclofem), e similares
+### Anticoncepcionais orais, injetáveis, adesivos, anel vaginal e ginecológicos:
+Levonorgestrel + Etinilestradiol (Microvlar, Ciclo 21, Nordette), Gestodeno + Etinilestradiol (Gynera, Minulet), Desogestrel + Etinilestradiol (Mercilon, Marvelon), Drospirenona + Etinilestradiol (Yasmin, Iumi, Yaz), Acetato de ciproterona + Etinilestradiol (Diane 35, Selene), Nomegestrol + Estradiol (Zoely), Dienogeste + Estradiol valerato (Qlaira), Desogestrel isolado (Cerazette, Nactali), Acetato de medroxiprogesterona injetável (Depo-Provera), Noretisterona + Estradiol injetável (Mesigyna, Cyclofem), Adesivo anticoncepcional (Evra/Ortho Evra), Anel vaginal anticoncepcional (Nuvaring), Dienogeste oral (Visanne) — endometriose, Medroxiprogesterona oral (Provera) — endometriose/ginecológico, e similares
+🔴 ATENÇÃO: Visanne e Provera são para endometriose/uso contínuo ginecológico — NÃO confundir com hormônios de reposição (HRT) que NÃO podem ser renovados.
 
 ### Vitaminas, minerais e suplementos:
-Vitamina D (colecalciferol), Vitamina B12 (cianocobalamina, metilcobalamina), Vitamina B6 (piridoxina), Vitamina C, Vitamina E, Ácido Fólico, Ferro (sulfato ferroso, fumarato ferroso, quelato de ferro), Zinco, Magnésio, Cálcio, Potássio, Ômega 3 (EPA/DHA), Biotina, Vitamina A, Vitamina K, Coenzima Q10, Colágeno, e similares
+Vitamina D (colecalciferol), Vitamina B12 (cianocobalamina, metilcobalamina), Vitamina B6 (piridoxina), Vitamina C, Vitamina E, Ácido Fólico, Ferro (sulfato ferroso, fumarato ferroso, quelato de ferro), Zinco, Magnésio, Cálcio, Potássio, Ômega 3 (EPA/DHA), Biotina, Vitamina A, Vitamina K, Coenzima Q10, Colágeno, Melatonina, e similares
 
 ### Tireoidianos:
 Levotiroxina (Puran T4, Synthroid, Euthyrox), Liotironina (T3), e similares
@@ -230,7 +234,7 @@ Metformina (Glifage, Glucoformin, Diaformin), Glibenclamida (Daonil), Gliclazida
 Sinvastatina (Zocor, Pravafenix), Atorvastatina (Lipitor, Citalor), Rosuvastatina (Crestor, Vissante), Pravastatina, Fluvastatina (Lescol), Pitavastatina (Livazo), Ezetimiba (Zetia), Ezetimiba + Sinvastatina (Vytorin), Ezetimiba + Rosuvastatina (Rosuvatan), Bezafibrato (Bezalip), Fenofibrato (Lipanon, Lipiblock), Genfibrozila (Lopid), Ácido nicotínico, e similares
 
 ### Gastrointestinais de uso contínuo:
-Omeprazol (Losec, Peptazol), Pantoprazol (Pantozol, Tiptec), Lansoprazol (Prevacid, Prazol), Esomeprazol (Nexium), Rabeprazol (Pariet), Domperidona (Motilium), Metoclopramida (Plasil) — uso contínuo apenas, Mesalazina (Mesacol, Salofalk) — para doença inflamatória intestinal, Sulfassalazina — para doença inflamatória intestinal, Colestiramina (Questran), Ondansetrona — uso contínuo apenas, e similares
+Omeprazol (Losec, Peptazol), Pantoprazol (Pantozol, Tiptec), Lansoprazol (Prevacid, Prazol), Esomeprazol (Nexium), Rabeprazol (Pariet), Domperidona (Motilium), Metoclopramida (Plasil) — uso contínuo apenas, Mesalazina (Mesacol, Salofalk) — para doença inflamatória intestinal, Sulfassalazina — para doença inflamatória intestinal, Colestiramina (Questran), Ondansetrona — uso contínuo apenas, Sucralfato — protetor gástrico uso contínuo, Mebeverina (Duspatalin) — SII/cólon irritável, Trimebutina — SII/cólon irritável, e similares
 
 ### Cardiológicos de uso contínuo:
 Digoxina (Lanoxin), Amiodarona (Ancoron), Warfarina (Coumadin, Marevan), Rivaroxabana (Xarelto), Apixabana (Eliquis), Dabigatrana (Pradaxa), Edoxabana, Clopidogrel (Plavix), Ticagrelor (Brilinta), Prasugrel (Effient), Isossorbida mononitrato (Monocordil), Isossorbida dinitrato (Isordil), Nitroglicerina (uso contínuo — patch/oral), Ivabradina (Procoralan), Ranolazina (Ranexa), Sacubitril + Valsartana (Entresto), Trimetazidina (Vastarel), e similares
@@ -250,8 +254,9 @@ Metotrexato (baixa dose — uso contínuo para artrite, psoríase), Hidroxicloro
 Tansulosina (Secotex), Silodosina (Urorec), Alfuzosina (Xatral), Dutasterida (Avodart), Finasterida (Propecia, Proscar), Dutasterida + Tansulosina (Duodart), Minoxidil oral (queda de cabelo, uso contínuo), Solifenacina (Vesicare), Oxibutinina (Retemic, Ditropan), Tolterodina (Detrusitol), Fesoterodina (Toviaz), Mirabegrona (Betmiga), Darifenacina (Enablex), e similares
 
 ### Psiquiátricos — Antipsicóticos de receita comum (PODEM renovar):
-Risperidona (Risperdal, Riss), Quetiapina (Seroquel), Olanzapina (Zyprexa), Aripiprazol (Abilify), Ziprasidona (Geodon), Amisulprida (Socian), Lurasidona (Latuda), Paliperidona (Invega), Asenapina, Haloperidol (Haldol) — uso contínuo oral, Sulpirida, Levomepromazina (Neozine), Clorpromazina (Amplictil), e similares
-🔴 ATENÇÃO ESPECIAL: Clozapina (Leponex) exige receita especial e controle hematológico — NÃO renovar pelo fluxo padrão → encaminhar para HUMANO
+Risperidona (Risperdal, Riss), Quetiapina (Seroquel), Olanzapina (Zyprexa), Aripiprazol (Abilify), Ziprasidona (Geodon), Amisulprida (Socian), Lurasidona (Latuda), Paliperidona (Invega) — comprimido oral, Asenapina, Haloperidol (Haldol) — uso contínuo oral, Sulpirida, Levomepromazina (Neozine), Clorpromazina (Amplictil), e similares
+🔴 ATENÇÃO ESPECIAL: Clozapina (Leponex) exige receita especial e controle hematológico — NÃO renovar → encaminhar para HUMANO
+🔴 ATENÇÃO ESPECIAL: Antipsicóticos injetáveis de longa ação (LAI) — Paliperidona LAI (Invega Sustenna/Trinza), Aripiprazol Maintena, Risperidona Consta, Haloperidol Decanoato, Zuclopentixol Decanoato — NÃO renovar → encaminhar para HUMANO (exigem aplicação presencial e monitoramento especializado)
 
 ### Oftalmológicos — Colírios de uso contínuo (glaucoma):
 Timolol (Timoptol), Latanoprosta (Xalatan), Bimatoprosta (Lumigan), Travoprosta (Travatan), Tafloprosta (Saflutan), Dorzolamida (Trusopt), Brinzolamida (Azopt), Brimonidina (Alphagan), Betaxolol (Betoptic), Combinações: Latanoprosta + Timolol (Xalacom), Bimatoprosta + Timolol (Ganfort), Dorzolamida + Timolol (Cosopt), e similares
@@ -260,7 +265,7 @@ Timolol (Timoptol), Latanoprosta (Xalatan), Bimatoprosta (Lumigan), Travoprosta 
 Tretinoína (Vitacid, Retin-A), Adapaleno (Differin), Ácido azelaico (Skinoren, Azelan), Clindamicina tópica (uso contínuo para acne), Peróxido de benzoíla (uso contínuo), Tacrolimus tópico (Protopic) — para dermatite atópica, Pimecrolimus (Elidel) — para dermatite atópica, e similares
 
 ### Outros de uso contínuo comuns:
-Alendronato (Fosamax, Alendil) — para osteoporose, Risedronato (Actonel), Ibandronato (Bonviva), Ácido Zoledrônico — infusão periódica, Raloxifeno (Evista), Calcitonina, Donepezila (Aricept) — para Alzheimer, Rivastigmina (Exelon), Memantina (Merz, Ebix), Gabapentina e Pregabalina — dor neuropática crônica, Duloxetina — dor neuropática crônica, Tizanidina (Sirdalud) — uso contínuo, Baclofeno — uso contínuo, Fludrocortisona (Florinef) — insuficiência adrenal, Sildenafila (Viagra, Revatio) — hipertensão pulmonar e uso contínuo, Tadalafila (Cialis) — uso contínuo, e similares
+Alendronato (Fosamax, Alendil) — para osteoporose, Risedronato (Actonel), Ibandronato (Bonviva), Ácido Zoledrônico — infusão periódica, Raloxifeno (Evista), Calcitonina, Donepezila (Aricept) — para Alzheimer, Rivastigmina (Exelon), Memantina (Merz, Ebix), Gabapentina e Pregabalina — dor neuropática crônica, Duloxetina — dor neuropática crônica, Tizanidina (Sirdalud) — uso contínuo, Baclofeno — uso contínuo, Fludrocortisona (Florinef) — insuficiência adrenal, Sildenafila (Viagra, Revatio) — hipertensão pulmonar e uso contínuo, Tadalafila (Cialis) — uso contínuo, Vardenafila (Levitra) — disfunção erétil uso contínuo, e similares
 
 ## 🚫 NÃO PODE RENOVAR — Receita Azul (encerrar SEM oferecer consulta)
 Benzodiazepínicos (C4/C5):
